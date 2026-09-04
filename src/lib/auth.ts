@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { isAzureProvider, isAllowedEmail } from "@/lib/domain";
+import { isAllowedMember } from "@/lib/domain";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import type { Profile } from "@/lib/help-types";
@@ -23,7 +23,7 @@ export async function getSessionUser() {
       ? String(data.claims.app_metadata.provider)
       : null;
 
-  if (!isAllowedEmail(email) || !isAzureProvider(provider)) {
+  if (!isAllowedMember(email, provider)) {
     return null;
   }
 

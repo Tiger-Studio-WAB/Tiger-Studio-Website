@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MicrosoftSignIn } from "@/components/microsoft-sign-in";
+import { GitHubSignIn } from "@/components/github-sign-in";
 import { PageHero } from "@/components/page-hero";
 import { PageShell } from "@/components/page-shell";
 import { getSessionUser } from "@/lib/auth";
@@ -22,7 +22,7 @@ export default async function JoinPage() {
       <PageHero
         kicker="Join"
         title="Post an idea. Ask for help."
-        lede="Proj.Help lives on this site now. Sign in with a school Microsoft account, then publish an idea or reply to someone else's."
+        lede="Proj.Help lives on this site now. Sign in with GitHub, then publish an idea or reply to someone else's."
       />
       <PageShell>
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
@@ -53,7 +53,7 @@ export default async function JoinPage() {
                   {copy.browseCta}
                 </Link>
               ) : (
-                <MicrosoftSignIn label={copy.signIn} nextPath="/ideas" disabled={!configured} />
+                <GitHubSignIn label={copy.signIn} nextPath="/ideas" disabled={!configured} />
               )}
             </div>
             {!configured && !user ? (

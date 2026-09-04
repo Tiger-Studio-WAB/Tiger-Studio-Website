@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { isAzureProvider, isAllowedEmail } from "@/lib/domain";
+import { isAllowedMember } from "@/lib/domain";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
 
 const PROTECTED_PREFIXES = ["/ideas", "/me"];
@@ -53,8 +53,7 @@ export async function updateSession(request: NextRequest) {
       : null;
 
   const signedIn = Boolean(claims);
-  const allowed =
-    signedIn && isAllowedEmail(email) && (!provider || isAzureProvider(provider));
+  const allowed = signedIn && isAllowedMember(email, provider);
   const pathname = request.nextUrl.pathname;
 
   if (signedIn && !allowed) {

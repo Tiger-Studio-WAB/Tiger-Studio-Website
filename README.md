@@ -2,14 +2,14 @@
 
 Public website for **Tiger Studio**, a student passion club.
 
-The hub is: home, products, about, join, and docs. News and changelogs remain pointers to GitHub. Join hosts **Proj.Help** — post an idea, get replies, translate English/Chinese — behind school Microsoft sign-in.
+The hub is: home, products, about, join, and docs. News and changelogs remain pointers to GitHub. Join hosts **Proj.Help** — post an idea, get replies, translate English/Chinese — behind GitHub sign-in.
 
 ## Stack
 
 - Next.js App Router on Vercel
 - TypeScript and Tailwind CSS
 - Live GitHub org data (repos, languages, pull requests, commits, events)
-- Optional Supabase + Microsoft (Entra ID) for the ideas board
+- Optional Supabase + GitHub OAuth for the ideas board
 
 ## Local development
 
@@ -20,52 +20,44 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Copy `.env.example` to `.env.local`. `GITHUB_TOKEN` raises GitHub rate limits. `GITHUB_ORG` defaults to `Tiger-Studio-WAB`.
+Copy `.env.example` to `.env.local`. `GITHUB_TOKEN` raises GitHub API rate limits for the public hub. `GITHUB_ORG` defaults to `Tiger-Studio-WAB`.
 
 ## After connecting Supabase on Vercel
 
-The Marketplace integration only syncs environment variables. Join still needs a schema, Microsoft login, and a redeploy.
+The Marketplace integration only syncs environment variables. Join still needs a schema, GitHub OAuth, and a redeploy.
 
 1. **Confirm env vars** in the Vercel project → Settings → Environment Variables. You should see at least:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (or `NEXT_PUBLIC_SUPABASE_ANON_KEY`)
    Scoped to Production, Preview, and Development.
-2. **Redeploy** the site after those variables appear. `NEXT_PUBLIC_` values are baked in at build time.
+2. **Redeploy** after those variables appear. `NEXT_PUBLIC_` values are baked in at build time.
 3. **Open Supabase Studio** from the Vercel project → Storage → Supabase → **Open in Supabase**.
-4. **Run the schema** in Studio’s **SQL Editor** (left sidebar): paste the full file `supabase/migrations/20260904112922_init_proj_help.sql` and Run.
-
-   Do **not** paste that file into Vercel Storage → Browser → Query. That box only accepts one statement and returns `cannot insert multiple commands into a prepared statement`.
-
-   Alternative: copy `POSTGRES_URL` from Vercel env vars and run locally:
-
-   ```bash
-   psql "$POSTGRES_URL" -f supabase/migrations/20260904112922_init_proj_help.sql
-   ```
+4. **Run the schema** in Studio’s **SQL Editor** (not Vercel Query). Paste each of these files in full and Run:
+   - `supabase/migrations/20260904112922_init_proj_help.sql`
+   - `supabase/migrations/20260904140000_allow_github_auth.sql`
 5. **Authentication → URL configuration**
    - Site URL: your live Vercel URL, e.g. `https://tiger-studio-website.vercel.app`
    - Redirect URLs:
      - `https://tiger-studio-website.vercel.app/auth/callback`
-     - `https://*-*.vercel.app/auth/callback` (preview deploys)
-     - `http://localhost:3000/auth/callback` (local)
+     - `http://localhost:3000/auth/callback`
 6. **Authentication → Providers**
    - Disable Email.
-   - Enable **Azure**. You still have to create an Entra ID app (see below) and paste the client ID, secret, and optional tenant URL.
-7. **Authentication → Hooks** (optional but recommended): set Before User Created to `hook_restrict_signup_to_school` from the migration.
+   - Enable **GitHub** (see below). Leave Azure off.
 
-### Microsoft Entra ID
+### GitHub OAuth (Join)
 
-The Vercel integration does **not** create Microsoft login. In [Azure Portal](https://portal.azure.com) → Microsoft Entra ID → App registrations → New registration:
+You do this in your own GitHub account. No Azure admin is required.
 
-- Name: Tiger Studio
-- Supported accounts: the school tenant only if you have admin access, otherwise accounts in any org directory
-- Redirect URI (Web): `https://<project-ref>.supabase.co/auth/v1/callback`  
-  Find `<project-ref>` in `NEXT_PUBLIC_SUPABASE_URL` (`https://<project-ref>.supabase.co`)
-- Create a client secret and copy the **Value**
-- Optional claims on the ID token: `email` and `xms_edov`
+1. GitHub → Settings → Developer settings → [OAuth Apps](https://github.com/settings/developers) → **New OAuth App**
+2. Application name: `Tiger Studio`
+3. Homepage URL: `https://tiger-studio-website.vercel.app`
+4. Authorization callback URL: `https://<project-ref>.supabase.co/auth/v1/callback`  
+   `<project-ref>` is the subdomain in `NEXT_PUBLIC_SUPABASE_URL`
+5. Register, then **Generate a new client secret**
+6. In Supabase → Authentication → Providers → GitHub: enable it and paste the Client ID and secret
+7. Redeploy the Vercel site, then try Join → Sign in with GitHub
 
-Then paste the client ID, secret, and optional tenant URL (`https://login.microsoftonline.com/<tenant-id>`) into Supabase → Authentication → Providers → Azure.
-
-Only school Microsoft emails on the allowed domain can use Join. The domain is not shown in the UI.
+`GITHUB_TOKEN` on Vercel is separate. That token is only for reading public org stats on the home page. It is not used for Join.
 
 ## Docs and support
 

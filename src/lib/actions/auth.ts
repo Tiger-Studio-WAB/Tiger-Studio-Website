@@ -12,7 +12,7 @@ function originFromHeaders(headerStore: Headers) {
   return `${proto}://${host}`;
 }
 
-export async function signInWithMicrosoft(formData?: FormData) {
+export async function signInWithGitHub(formData?: FormData) {
   if (!isSupabaseConfigured()) {
     redirect("/auth/error?reason=setup");
   }
@@ -25,9 +25,9 @@ export async function signInWithMicrosoft(formData?: FormData) {
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "azure",
+    provider: "github",
     options: {
-      scopes: "email openid profile",
+      scopes: "user:email",
       redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
