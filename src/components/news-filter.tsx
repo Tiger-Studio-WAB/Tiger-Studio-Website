@@ -26,7 +26,7 @@ export function NewsFilter() {
               className={`rounded-full border px-4 py-2 text-sm font-semibold ${
                 active
                   ? "border-navy bg-navy text-white"
-                  : "border-wab-line bg-white text-navy hover:border-navy"
+                  : "border-studio-line bg-white text-navy hover:border-navy"
               }`}
             >
               {item}

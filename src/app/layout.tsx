@@ -14,26 +14,18 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} | ${site.affiliation}`,
+    default: site.name,
     template: `%s | ${site.name}`,
   },
   description: site.description,
   applicationName: site.name,
-  keywords: [
-    "Tiger Studio",
-    "Western Academy of Beijing",
-    "WAB",
-    "passion club",
-    "changelog",
-    "news",
-    "student organization",
-  ],
+  keywords: ["Tiger Studio", "passion club", "changelog", "news", "student organization"],
   authors: [{ name: site.name, url: site.links.github }],
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: site.name,
-    title: `${site.name} | ${site.affiliation}`,
+    title: site.name,
     description: site.description,
   },
   twitter: {

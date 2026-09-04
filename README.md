@@ -1,12 +1,8 @@
 # Tiger Studio
 
-Public website for **Tiger Studio**, a passion club of the [Western Academy of Beijing](https://wab.edu/).
+Public website for **Tiger Studio**, a student passion club.
 
-The site is an organization hub: home, about, news, changelog, destinations, and contact. News, changelogs, and posts are **pointers** — each card opens the website that actually hosts the story (WAB Learning News, GitHub, and other destinations).
-
-## Theme
-
-Visual language follows [wab.edu](https://wab.edu/): navy `#0E2034`, WAB red `#D72316`, blue `#2262D5`, gold `#F4D348`, and the teal / cyan / purple three-bar mark.
+The site is an organization hub: home, about, news, changelog, destinations, and contact. News, changelogs, and posts are **pointers** — each card opens the website that actually hosts the story.
 
 ## Stack
 
@@ -39,5 +35,3 @@ This repository is ready for Vercel (Next.js, `vercel.ts`). Import the GitHub re
 ```bash
 npx vercel
 ```
-
-Production deploys follow the Git integration once the project is linked.

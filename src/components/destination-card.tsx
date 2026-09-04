@@ -3,12 +3,12 @@ import { hostname } from "@/lib/format";
 import type { Destination } from "@/lib/content";
 
 const accents: Record<Destination["accent"], string> = {
-  red: "bg-wab-red",
-  blue: "bg-wab-blue",
-  gold: "bg-wab-gold",
-  teal: "bg-wab-teal",
-  purple: "bg-wab-purple",
-  orange: "bg-wab-orange",
+  red: "bg-studio-red",
+  blue: "bg-studio-blue",
+  gold: "bg-studio-gold",
+  teal: "bg-studio-teal",
+  purple: "bg-studio-purple",
+  orange: "bg-studio-orange",
 };
 
 export function DestinationCard({ destination }: { destination: Destination }) {
@@ -16,7 +16,7 @@ export function DestinationCard({ destination }: { destination: Destination }) {
     <article className="flex h-full flex-col overflow-hidden bg-navy text-white">
       <div className={`h-2 ${accents[destination.accent]}`} />
       <div className="flex flex-1 flex-col gap-4 p-7">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-wab-gold">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-studio-gold">
           {destination.category}
         </p>
         <h3 className="text-2xl font-semibold leading-snug">{destination.name}</h3>
@@ -25,7 +25,7 @@ export function DestinationCard({ destination }: { destination: Destination }) {
         </p>
         <ExternalLink
           href={destination.url}
-          className="mt-2 inline-flex items-center text-sm font-semibold text-wab-gold hover:text-white"
+          className="mt-2 inline-flex items-center text-sm font-semibold text-studio-gold hover:text-white"
         >
           Go to {hostname(destination.url)} →
         </ExternalLink>

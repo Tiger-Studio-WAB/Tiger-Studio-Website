@@ -7,7 +7,7 @@ export default function NotFound() {
       <AccentBars />
       <p className="section-kicker">404</p>
       <h1 className="mt-4 text-5xl font-medium text-navy">This page is not on the hub</h1>
-      <p className="mt-4 text-lg text-wab-muted">
+      <p className="mt-4 text-lg text-studio-muted">
         The path you asked for is not a Tiger Studio page. Try the home hub, or jump to a
         destination we actually point to.
       </p>

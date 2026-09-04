@@ -18,18 +18,18 @@ export default function ChangelogPage() {
       <PageHero
         kicker="Studio changelog"
         title="What changed, where it lives"
-        lede="Release notes stay on GitHub. This page is a timeline of pointers so visitors can see what shipped without leaving the club's public home empty."
+        lede="Release notes stay on GitHub. This page is a timeline of pointers so visitors can see what shipped without leaving the studio's public home empty."
       />
       <div className="mx-auto max-w-5xl px-5 py-12 md:px-8">
-        <p className="mb-4 text-sm text-wab-muted">
+        <p className="mb-4 text-sm text-studio-muted">
           Canonical history:{" "}
           <a
             href={site.links.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-wab-blue hover:text-wab-red"
+            className="font-semibold text-studio-blue hover:text-studio-red"
           >
-            github.com/Tiger-Studio-WAB
+            GitHub organization
           </a>
         </p>
         <ol>{entries.map((pointer) => <ChangelogItem key={pointer.slug} pointer={pointer} />)}</ol>

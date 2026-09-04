@@ -18,7 +18,7 @@ export default function ErrorPage({
     <div className="mx-auto max-w-3xl px-5 py-24 md:px-8">
       <p className="section-kicker">Something went wrong</p>
       <h1 className="mt-4 text-4xl font-medium text-navy">The hub could not load this page</h1>
-      <p className="mt-4 text-wab-muted">Please try again, or return to the Tiger Studio home.</p>
+      <p className="mt-4 text-studio-muted">Please try again, or return to the Tiger Studio home.</p>
       <div className="mt-8 flex gap-4">
         <button
           type="button"

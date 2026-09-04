@@ -10,17 +10,16 @@
   --color-foreground: #0e2034;
   --color-navy: #0e2034;
   --color-ink: #131313;
-  --color-wab-red: #d72316;
-  --color-wab-blue: #2262d5;
-  --color-wab-gold: #f4d348;
-  --color-wab-teal: #53d0ab;
-  --color-wab-cyan: #16c1f1;
-  --color-wab-purple: #948eff;
-  --color-wab-orange: #ff6f27;
-  --color-wab-magenta: #8243a8;
-  --color-wab-muted: #636363;
-  --color-wab-line: #e5e5e5;
-  --color-wab-soft: #f6f4ef;
+  --color-studio-red: #e24b2d;
+  --color-studio-blue: #2262d5;
+  --color-studio-gold: #f4d348;
+  --color-studio-teal: #1f7a72;
+  --color-studio-cyan: #2aa8c7;
+  --color-studio-purple: #5b4d9a;
+  --color-studio-orange: #e47736;
+  --color-studio-muted: #636363;
+  --color-studio-line: #e5e5e5;
+  --color-studio-soft: #f6f4ef;
   --font-sans: "Outfit", "Outfit Fallback", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -59,7 +58,7 @@ a {
 
 .color-rail {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   height: 6px;
 }
 
@@ -67,10 +66,10 @@ a {
   font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #d72316;
+  color: #e24b2d;
   font-weight: 600;
 }
 
-.prose-wab p + p {
+.prose-studio p + p {
   margin-top: 1rem;
 }

@@ -20,18 +20,24 @@ export default function OpenGraphImage() {
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", gap: 12 }}>
-          <div style={{ width: 72, height: 10, background: "#53d0ab" }} />
-          <div style={{ width: 72, height: 10, background: "#16c1f1" }} />
-          <div style={{ width: 72, height: 10, background: "#948eff" }} />
-          <div style={{ width: 72, height: 10, background: "#f4d348" }} />
-          <div style={{ width: 72, height: 10, background: "#d72316" }} />
+        <div
+          style={{
+            width: 72,
+            height: 72,
+            borderRadius: 36,
+            background: "#131313",
+            color: "#f4d348",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 36,
+            fontWeight: 700,
+          }}
+        >
+          T
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: 28, letterSpacing: 6, textTransform: "uppercase", color: "#f4d348" }}>
-            {site.affiliation}
-          </div>
-          <div style={{ fontSize: 88, fontWeight: 700, marginTop: 16 }}>{site.name}</div>
+          <div style={{ fontSize: 88, fontWeight: 700 }}>{site.name}</div>
           <div style={{ fontSize: 32, marginTop: 20, color: "#cfd6de", maxWidth: 900 }}>
             {site.tagline}
           </div>

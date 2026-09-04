@@ -18,27 +18,26 @@ export default function HomePage() {
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{
             background:
-              "radial-gradient(circle at 12% 20%, #2262d5 0, transparent 32%), radial-gradient(circle at 88% 10%, #d72316 0, transparent 28%), radial-gradient(circle at 70% 80%, #53d0ab 0, transparent 30%), radial-gradient(circle at 20% 85%, #948eff 0, transparent 26%)",
+              "radial-gradient(circle at 12% 20%, #2262d5 0, transparent 32%), radial-gradient(circle at 88% 10%, #e24b2d 0, transparent 28%), radial-gradient(circle at 70% 80%, #f4d348 0, transparent 26%)",
           }}
         />
         <div className="relative mx-auto grid max-w-7xl gap-12 px-5 py-20 md:grid-cols-[1.3fr_0.7fr] md:px-8 md:py-28">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-wab-gold">
-              {site.affiliation}
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-studio-gold">
+              {site.name}
             </p>
             <h1 className="mt-5 max-w-3xl text-5xl font-medium leading-[1.05] tracking-tight md:text-7xl">
-              Make a Difference
+              Build in public
             </h1>
             <p className="mt-6 max-w-2xl text-xl text-white/80">{site.tagline}</p>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/70">
-              Tiger Studio is the public doorway for a WAB passion club. We do not host every story
-              here. News, changelogs, posts, and projects live on the websites that own them — and
-              this hub points you there.
+              Tiger Studio is a public doorway. We do not host every story here. News, changelogs,
+              posts, and projects live on the websites that own them — and this hub points you there.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
                 href="/destinations"
-                className="bg-wab-gold px-6 py-3 text-sm font-semibold text-navy hover:bg-white"
+                className="bg-studio-gold px-6 py-3 text-sm font-semibold text-navy hover:bg-white"
               >
                 Browse destinations
               </Link>
@@ -51,31 +50,31 @@ export default function HomePage() {
             </div>
           </div>
           <aside className="flex flex-col justify-end gap-3">
-            <HeroTile href="/news" label="News" color="bg-wab-red" copy="Stories published on WAB and partner sites." />
-            <HeroTile href="/changelog" label="Changelog" color="bg-wab-gold" copy="Release notes that live on GitHub." />
-            <HeroTile href="/destinations" label="Destinations" color="bg-wab-cyan" copy="A directory of other websites." />
+            <HeroTile href="/news" label="News" color="bg-studio-red" copy="Studio stories opened on the site that published them." />
+            <HeroTile href="/changelog" label="Changelog" color="bg-studio-gold" copy="Release notes that live on GitHub." />
+            <HeroTile href="/destinations" label="Destinations" color="bg-studio-cyan" copy="A directory of other websites." />
           </aside>
         </div>
         <ColorRail />
       </section>
 
-      <section className="bg-wab-soft">
+      <section className="bg-studio-soft">
         <div className="mx-auto max-w-6xl px-5 py-20 md:px-8">
           <p className="section-kicker">How we connect</p>
           <h2 className="mt-3 text-4xl font-medium text-navy md:text-5xl">
             How we <strong>point outward</strong>
           </h2>
-          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-wab-muted">
+          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-studio-muted">
             Like any organization site, Tiger Studio has a home, an about page, news, a changelog,
             and a contact path. The difference is editorial: each post is a pointer. Follow it and
-            you land on WAB Learning News, GitHub, or another destination the club actually uses.
+            you land on GitHub or another destination the studio actually uses.
           </p>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             <LearnCard
               href="/news"
               title="News"
               color="purple"
-              body="Campus stories, podcasts, and club mentions — opened on the site that published them."
+              body="Studio notes and project mentions — opened on the site that published them."
             />
             <LearnCard
               href="/changelog"
@@ -87,18 +86,18 @@ export default function HomePage() {
               href="/destinations"
               title="Destinations"
               color="teal"
-              body="A curated directory of school, community, and engineering websites we keep close."
+              body="A curated directory of engineering, tools, and community websites we keep close."
             />
           </div>
         </div>
       </section>
 
-      <section className="border-y border-wab-line bg-white">
+      <section className="border-y border-studio-line bg-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 py-14 sm:grid-cols-2 md:grid-cols-4 md:px-8">
           {stats.map((item) => (
             <div key={item.label} className="text-center">
-              <p className="text-5xl font-semibold text-wab-red">{item.value}</p>
-              <p className="mt-2 text-sm font-semibold uppercase tracking-[0.12em] text-wab-muted">
+              <p className="text-5xl font-semibold text-studio-red">{item.value}</p>
+              <p className="mt-2 text-sm font-semibold uppercase tracking-[0.12em] text-studio-muted">
                 {item.label}
               </p>
             </div>
@@ -109,12 +108,12 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-5 py-20 md:px-8">
         <div className="mb-10 flex items-end justify-between gap-6">
           <div>
-            <p className="section-kicker">Tiger Studio news</p>
+            <p className="section-kicker">Studio news</p>
             <h2 className="mt-3 text-4xl font-medium text-navy">
               Latest <strong>pointers</strong>
             </h2>
           </div>
-          <Link href="/news" className="hidden text-sm font-semibold text-wab-blue hover:text-wab-red md:inline">
+          <Link href="/news" className="hidden text-sm font-semibold text-studio-blue hover:text-studio-red md:inline">
             View all news →
           </Link>
         </div>
@@ -123,20 +122,20 @@ export default function HomePage() {
             <PointerCard key={pointer.slug} pointer={pointer} />
           ))}
         </div>
-        <Link href="/news" className="mt-8 inline-block text-sm font-semibold text-wab-blue md:hidden">
+        <Link href="/news" className="mt-8 inline-block text-sm font-semibold text-studio-blue md:hidden">
           View all news →
         </Link>
       </section>
 
       <section className="bg-navy py-20 text-white">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-wab-gold">Get Social</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-studio-gold">Get Social</p>
           <h2 className="mt-3 text-4xl font-medium">
             Destinations we <strong>keep close</strong>
           </h2>
           <p className="mt-4 max-w-2xl text-white/70">
-            Start at the school, then branch into GitHub, leadership, and learning. Every card leaves
-            this site on purpose.
+            Start with GitHub, then branch into tools and project repos. Every card leaves this site
+            on purpose.
           </p>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {featured.map((destination) => (
@@ -144,7 +143,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="mt-10">
-            <Link href="/destinations" className="bg-wab-gold px-6 py-3 text-sm font-semibold text-navy hover:bg-white">
+            <Link href="/destinations" className="bg-studio-gold px-6 py-3 text-sm font-semibold text-navy hover:bg-white">
               Open the full directory
             </Link>
           </div>
@@ -188,9 +187,9 @@ function LearnCard({
   body: string;
 }) {
   const wash = {
-    purple: "from-[#8243a8]/80",
+    purple: "from-[#5b4d9a]/80",
     gold: "from-[#f4d348]/90",
-    teal: "from-[#007780]/80",
+    teal: "from-[#1f7a72]/80",
   }[color];
 
   return (
@@ -224,11 +223,6 @@ export function JsonLd() {
           name: site.name,
           description: site.description,
           url: site.url,
-          parentOrganization: {
-            "@type": "EducationalOrganization",
-            name: site.affiliation,
-            url: site.links.wab,
-          },
         }),
       }}
     />

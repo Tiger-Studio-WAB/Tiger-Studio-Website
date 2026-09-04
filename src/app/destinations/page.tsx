@@ -5,7 +5,7 @@ import { PageHero } from "@/components/page-hero";
 export const metadata: Metadata = {
   title: "Destinations",
   description:
-    "A directory of websites Tiger Studio points to — WAB, Learning News, GitHub, leadership, and club projects.",
+    "A directory of websites Tiger Studio points to — GitHub, project repos, and the tools we ship with.",
 };
 
 export default function DestinationsPage() {
@@ -14,7 +14,7 @@ export default function DestinationsPage() {
       <PageHero
         kicker="Quick links"
         title="Other websites we point to"
-        lede="Use this directory the way an organization uses a mega-menu: school, news, engineering, community, and learning — each card leaves Tiger Studio on purpose."
+        lede="Use this directory the way an organization uses a mega-menu: engineering, tools, news, and community — each card leaves Tiger Studio on purpose."
       />
       <div className="mx-auto max-w-7xl px-5 py-16 md:px-8">
         <DestinationFilter />

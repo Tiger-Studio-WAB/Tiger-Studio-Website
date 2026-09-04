@@ -12,16 +12,15 @@ export default function Icon() {
           height: 32,
           background: "#131313",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: 3,
           borderRadius: 16,
+          color: "#f4d348",
+          fontSize: 18,
+          fontWeight: 700,
         }}
       >
-        <div style={{ width: 18, height: 3, background: "#53d0ab", borderRadius: 2 }} />
-        <div style={{ width: 18, height: 3, background: "#16c1f1", borderRadius: 2 }} />
-        <div style={{ width: 18, height: 3, background: "#948eff", borderRadius: 2 }} />
+        T
       </div>
     ),
     size,

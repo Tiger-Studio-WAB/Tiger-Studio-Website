@@ -8,7 +8,7 @@ type Props = {
 
 export function PageHero({ kicker, title, lede }: Props) {
   return (
-    <header className="border-b border-wab-line bg-wab-soft">
+    <header className="border-b border-studio-line bg-studio-soft">
       <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <AccentBars />
         {kicker ? <p className="section-kicker mb-4">{kicker}</p> : null}
@@ -16,7 +16,7 @@ export function PageHero({ kicker, title, lede }: Props) {
           {title}
         </h1>
         {lede ? (
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-wab-muted">{lede}</p>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-studio-muted">{lede}</p>
         ) : null}
       </div>
     </header>

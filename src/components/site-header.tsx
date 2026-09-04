@@ -30,18 +30,18 @@ export function SiteHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-wab-line bg-white">
+    <header className="sticky top-0 z-40 border-b border-studio-line bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6">
         <Logo />
         <div className="flex items-center gap-2 md:gap-4">
           <nav aria-label="Header Utility" className="hidden items-center gap-5 text-sm font-semibold text-navy lg:flex">
             {utilityNav.map((item) =>
               item.external ? (
-                <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className="hover:text-wab-red">
+                <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className="hover:text-studio-red">
                   {item.label}
                 </a>
               ) : (
-                <Link key={item.label} href={item.href} className="hover:text-wab-red">
+                <Link key={item.label} href={item.href} className="hover:text-studio-red">
                   {item.label}
                 </Link>
               ),
@@ -49,7 +49,7 @@ export function SiteHeader() {
           </nav>
           <button
             type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-wab-line text-navy hover:border-navy"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-studio-line text-navy hover:border-navy"
             onClick={() => {
               setSearchOpen(true);
               setMenuOpen(false);
@@ -90,7 +90,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className="border-b border-wab-line py-5 text-4xl font-medium text-navy hover:text-wab-red md:text-5xl"
+                className="border-b border-studio-line py-5 text-4xl font-medium text-navy hover:text-studio-red md:text-5xl"
               >
                 {item.label}
               </Link>
@@ -99,11 +99,11 @@ export function SiteHeader() {
           <div className="mx-auto flex max-w-5xl flex-wrap gap-6 px-6 pb-16 text-sm font-semibold">
             {utilityNav.map((item) =>
               item.external ? (
-                <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className="text-wab-blue">
+                <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className="text-studio-blue">
                   {item.label} →
                 </a>
               ) : (
-                <Link key={item.label} href={item.href} onClick={() => setMenuOpen(false)} className="text-wab-blue">
+                <Link key={item.label} href={item.href} onClick={() => setMenuOpen(false)} className="text-studio-blue">
                   {item.label}
                 </Link>
               ),
@@ -126,7 +126,7 @@ function SearchOverlay({ onClose }: { onClose: () => void }) {
       <div className="mx-auto mt-8 max-w-3xl px-4">
         <div className="bg-white p-6 shadow-2xl">
           <div className="mb-4 flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-wab-red">Search</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-studio-red">Search</p>
             <button type="button" className="text-sm font-semibold text-navy" onClick={onClose}>
               Clear
             </button>
@@ -140,13 +140,13 @@ function SearchOverlay({ onClose }: { onClose: () => void }) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="search for something..."
-            className="w-full border-b-2 border-navy bg-transparent py-3 text-2xl text-navy outline-none placeholder:text-wab-muted"
+            className="w-full border-b-2 border-navy bg-transparent py-3 text-2xl text-navy outline-none placeholder:text-studio-muted"
           />
           <div className="mt-6 max-h-[60vh] overflow-y-auto">
             {query && results.length === 0 ? (
-              <p className="text-wab-muted">No matching news, changelogs, or destinations.</p>
+              <p className="text-studio-muted">No matching news, changelogs, or destinations.</p>
             ) : (
-              <ul className="divide-y divide-wab-line">
+              <ul className="divide-y divide-studio-line">
                 {results.map((hit) => (
                   <li key={hitKey(hit)}>
                     <SearchResult hit={hit} onNavigate={onClose} />
@@ -169,13 +169,13 @@ function SearchResult({ hit, onNavigate }: { hit: SearchHit; onNavigate: () => v
         target="_blank"
         rel="noopener noreferrer"
         onClick={onNavigate}
-        className="block py-4 hover:bg-wab-soft"
+        className="block py-4 hover:bg-studio-soft"
       >
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-wab-muted">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-studio-muted">
           Destination · {hit.item.category}
         </p>
         <p className="mt-1 text-lg font-semibold text-navy">{hit.item.name}</p>
-        <p className="text-sm text-wab-blue">{hostname(hit.item.url)} →</p>
+        <p className="text-sm text-studio-blue">{hostname(hit.item.url)} →</p>
       </a>
     );
   }
@@ -186,13 +186,13 @@ function SearchResult({ hit, onNavigate }: { hit: SearchHit; onNavigate: () => v
       target="_blank"
       rel="noopener noreferrer"
       onClick={onNavigate}
-      className="block py-4 hover:bg-wab-soft"
+      className="block py-4 hover:bg-studio-soft"
     >
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-wab-muted">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-studio-muted">
         {hit.item.kind} · {hit.item.source}
       </p>
       <p className="mt-1 text-lg font-semibold text-navy">{hit.item.title}</p>
-      <p className="text-sm text-wab-blue">{hostname(hit.item.url)} →</p>
+      <p className="text-sm text-studio-blue">{hostname(hit.item.url)} →</p>
     </a>
   );
 }
