@@ -9,6 +9,16 @@ import {
 } from "@/lib/github";
 import type { Destination, HubData, Pointer } from "@/lib/types";
 
+function publicText(value: string) {
+  return value
+    .replace(/Western Academy of Beijing/gi, "")
+    .replace(/\bWab\b/gi, "")
+    .replace(/\bWAB[-_]?/g, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/^[-_:\s"]+|[-_:\s"]+$/g, "")
+    .trim();
+}
+
 function day(iso: string) {
   return iso.slice(0, 10);
 }
@@ -24,11 +34,13 @@ function githubRepoUrl(fullName: string) {
 }
 
 function pointerFromRepo(repo: GitHubRepo): Pointer {
+  const name = publicText(repo.name) || repo.name;
+  const description = publicText(repo.description ?? "") || undefined;
   return {
     slug: `repo-${repo.name}`,
-    title: repo.description || `${repo.name} is public`,
+    title: description || `${name} is public`,
     excerpt: excerpt(
-      repo.description,
+      description,
       `Updated ${day(repo.pushed_at)}. Open the repository for commits, issues, and notes.`,
     ),
     date: day(repo.pushed_at || repo.updated_at),
@@ -41,11 +53,13 @@ function pointerFromRepo(repo: GitHubRepo): Pointer {
 
 function destinationFromRepo(repo: GitHubRepo, index: number): Destination {
   const homepage = repo.homepage?.trim();
+  const name = publicText(repo.name) || repo.name;
+  const description = publicText(repo.description ?? "");
   return {
     slug: repo.name.toLowerCase(),
-    name: repo.name,
+    name,
     description:
-      repo.description?.trim() ||
+      description ||
       `${repo.language ? `${repo.language} project` : "Studio project"} on GitHub.`,
     url: homepage || repo.html_url,
     category: homepage ? "Community" : "Engineering",
@@ -54,7 +68,8 @@ function destinationFromRepo(repo: GitHubRepo, index: number): Destination {
 }
 
 function pointerFromEvent(event: GitHubEvent): Pointer | null {
-  const repoName = repoShortName(event.repo.name);
+  const repoName = publicText(repoShortName(event.repo.name)) || repoShortName(event.repo.name);
+  if (repoShortName(event.repo.name) === ".github") return null;
   const repoUrl = githubRepoUrl(event.repo.name);
   const payload = event.payload;
   const date = day(event.created_at);
@@ -63,8 +78,8 @@ function pointerFromEvent(event: GitHubEvent): Pointer | null {
     const release = payload.release as { name?: string; body?: string; html_url?: string } | undefined;
     return {
       slug: `release-${event.id}`,
-      title: release?.name || `Release on ${repoName}`,
-      excerpt: excerpt(release?.body, `A new release landed in ${repoName}.`),
+      title: publicText(release?.name || "") || `Release on ${repoName}`,
+      excerpt: excerpt(publicText(release?.body || ""), `A new release landed in ${repoName}.`),
       date,
       source: "GitHub",
       url: release?.html_url || repoUrl,
@@ -77,7 +92,7 @@ function pointerFromEvent(event: GitHubEvent): Pointer | null {
     const commits = (payload.commits as { message?: string }[] | undefined) ?? [];
     const size = typeof payload.size === "number" ? payload.size : commits.length;
     if (!size) return null;
-    const head = commits[0]?.message?.split("\n")[0];
+    const head = publicText(commits[0]?.message?.split("\n")[0] ?? "");
     return {
       slug: `push-${event.id}`,
       title: head || `${size} commit${size === 1 ? "" : "s"} to ${repoName}`,
@@ -99,9 +114,9 @@ function pointerFromEvent(event: GitHubEvent): Pointer | null {
     const merged = Boolean(pr?.merged);
     return {
       slug: `pr-${event.id}`,
-      title: pr?.title || `Pull request on ${repoName}`,
+      title: publicText(pr?.title || "") || `Pull request on ${repoName}`,
       excerpt: excerpt(
-        pr?.body,
+        publicText(pr?.body || ""),
         merged ? `A pull request merged in ${repoName}.` : `A pull request ${action} in ${repoName}.`,
       ),
       date,
@@ -118,8 +133,8 @@ function pointerFromEvent(event: GitHubEvent): Pointer | null {
     if (action !== "opened") return null;
     return {
       slug: `issue-${event.id}`,
-      title: issue?.title || `Issue opened on ${repoName}`,
-      excerpt: excerpt(issue?.body, `A new issue was opened in ${repoName}.`),
+      title: publicText(issue?.title || "") || `Issue opened on ${repoName}`,
+      excerpt: excerpt(publicText(issue?.body || ""), `A new issue was opened in ${repoName}.`),
       date,
       source: "GitHub",
       url: issue?.html_url || repoUrl,
