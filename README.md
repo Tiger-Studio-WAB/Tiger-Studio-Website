@@ -31,8 +31,16 @@ The Marketplace integration only syncs environment variables. Join still needs a
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (or `NEXT_PUBLIC_SUPABASE_ANON_KEY`)
    Scoped to Production, Preview, and Development.
 2. **Redeploy** the site after those variables appear. `NEXT_PUBLIC_` values are baked in at build time.
-3. **Open Supabase Studio** from the Vercel project → Storage → Supabase → Open in Supabase.
-4. **Run the schema** in SQL Editor: paste and run `supabase/migrations/20260904112922_init_proj_help.sql`.
+3. **Open Supabase Studio** from the Vercel project → Storage → Supabase → **Open in Supabase**.
+4. **Run the schema** in Studio’s **SQL Editor** (left sidebar): paste the full file `supabase/migrations/20260904112922_init_proj_help.sql` and Run.
+
+   Do **not** paste that file into Vercel Storage → Browser → Query. That box only accepts one statement and returns `cannot insert multiple commands into a prepared statement`.
+
+   Alternative: copy `POSTGRES_URL` from Vercel env vars and run locally:
+
+   ```bash
+   psql "$POSTGRES_URL" -f supabase/migrations/20260904112922_init_proj_help.sql
+   ```
 5. **Authentication → URL configuration**
    - Site URL: your live Vercel URL, e.g. `https://tiger-studio-website.vercel.app`
    - Redirect URLs:
