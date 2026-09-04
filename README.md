@@ -2,13 +2,14 @@
 
 Public website for **Tiger Studio**, a student passion club.
 
-The site is an organization hub: home, about, news, changelog, destinations, and contact. News, changelogs, and posts are **pointers** — each card opens the website that actually hosts the story.
+The hub is: home, products, about, join, and docs. News and changelogs remain pointers to GitHub. Join hosts **Proj.Help** — post an idea, get replies, translate English/Chinese — behind school Microsoft sign-in.
 
 ## Stack
 
 - Next.js App Router on Vercel
 - TypeScript and Tailwind CSS
-- Live hub data from the GitHub organization API (repos + events), refreshed about every two minutes
+- Live GitHub org data (repos, languages, pull requests, commits, events)
+- Optional Supabase + Microsoft (Entra ID) for the ideas board
 
 ## Local development
 
@@ -19,20 +20,24 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Optional: copy `.env.example` to `.env.local` and set `GITHUB_TOKEN` to raise GitHub API rate limits. `GITHUB_ORG` defaults to `Tiger-Studio-WAB`.
+Copy `.env.example` to `.env.local`. `GITHUB_TOKEN` raises GitHub rate limits. `GITHUB_ORG` defaults to `Tiger-Studio-WAB`.
 
-## How the data stays live
+To turn on Join / ideas:
 
-News, changelogs, destinations, stats, search, and `/api/feed` are assembled in `src/lib/hub.ts` from:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- Microsoft provider on the Supabase project
+- Apply `supabase/migrations/20260904112922_init_proj_help.sql`
 
-- public repositories on the GitHub organization
-- recent organization events (pushes, pull requests, issues, releases, new repos)
+Without those, Join and Login show a setup message instead of a broken board.
 
-A repository `homepage` field, if set, is used as the destination URL so the hub can point at another website. Tool links (Vercel, Next.js) stay in `src/lib/content.ts`.
+## Docs and support
+
+There is no docs or support repository in the organization yet. Create public repos named `docs` and `support`, then this site can point at them from `/docs` and Products.
 
 ## Deploy on Vercel
 
-This repository is ready for Vercel (Next.js, `vercel.ts`). Import the GitHub repo in the Vercel dashboard, or from the CLI:
+Import the GitHub repo in the Vercel dashboard, or from the CLI:
 
 ```bash
 npx vercel

@@ -2,6 +2,7 @@ import { cache } from "react";
 import { accents, toolDestinations } from "@/lib/content";
 import {
   fetchStudioEvents,
+  fetchStudioOrbit,
   fetchStudioRepos,
   repoShortName,
   type GitHubEvent,
@@ -190,6 +191,7 @@ function uniqueByKey<T extends { slug: string; url: string }>(items: T[], key: (
 export const getHub = cache(async (): Promise<HubData> => {
   try {
     const [repos, events] = await Promise.all([fetchStudioRepos(), fetchStudioEvents()]);
+    const orbit = await fetchStudioOrbit(repos);
     const repoDestinations = repos.map((repo, index) => destinationFromRepo(repo, index));
     const destinations = uniqueByKey(
       [...repoDestinations, ...toolDestinations],
@@ -215,10 +217,13 @@ export const getHub = cache(async (): Promise<HubData> => {
       changelog,
       stats: [
         { value: String(repos.length), label: "Public projects" },
-        { value: String(destinations.length), label: "Destinations we point to" },
-        { value: String(news.length), label: "News pointers" },
-        { value: String(changelog.length), label: "Changelog entries" },
+        { value: String(orbit.pullRequestCount), label: "Pull requests" },
+        { value: String(orbit.commitCount), label: "Commits" },
+        { value: String(orbit.languages.length), label: "Languages" },
       ],
+      languages: orbit.languages,
+      pullRequestCount: orbit.pullRequestCount,
+      commitCount: orbit.commitCount,
       fetchedAt: new Date().toISOString(),
       ok: true,
     };
@@ -231,10 +236,13 @@ export const getHub = cache(async (): Promise<HubData> => {
       changelog: [],
       stats: [
         { value: "—", label: "Public projects" },
-        { value: String(toolDestinations.length), label: "Destinations we point to" },
-        { value: "—", label: "News pointers" },
-        { value: "—", label: "Changelog entries" },
+        { value: "—", label: "Pull requests" },
+        { value: "—", label: "Commits" },
+        { value: "—", label: "Languages" },
       ],
+      languages: [],
+      pullRequestCount: 0,
+      commitCount: 0,
       fetchedAt: new Date().toISOString(),
       ok: false,
     };

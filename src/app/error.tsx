@@ -15,19 +15,15 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-24 md:px-8">
-      <p className="section-kicker">Something went wrong</p>
-      <h1 className="mt-4 text-4xl font-medium text-navy">The hub could not load this page</h1>
-      <p className="mt-4 text-studio-muted">Please try again, or return to the Tiger Studio home.</p>
+    <div className="mx-auto max-w-3xl px-5 py-24">
+      <h1 className="text-4xl font-bold italic">The hub could not load this page</h1>
+      <span className="rule-yellow mt-4" />
+      <p className="mt-5 text-muted-foreground">Try again, or return home.</p>
       <div className="mt-8 flex gap-4">
-        <button
-          type="button"
-          onClick={reset}
-          className="bg-navy px-5 py-3 text-sm font-semibold text-white"
-        >
+        <button type="button" onClick={reset} className="btn btn-red">
           Try again
         </button>
-        <Link href="/" className="border border-navy px-5 py-3 text-sm font-semibold text-navy">
+        <Link href="/" className="btn btn-white border border-brand-red">
           Home
         </Link>
       </div>

@@ -31,6 +31,9 @@ export type HubData = {
   news: Pointer[];
   changelog: Pointer[];
   stats: HubStat[];
+  languages: string[];
+  pullRequestCount: number;
+  commitCount: number;
   fetchedAt: string;
   ok: boolean;
 };

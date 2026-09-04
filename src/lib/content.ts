@@ -2,18 +2,10 @@ import { site } from "@/lib/site";
 import type { Destination } from "@/lib/types";
 
 export const nav = [
-  { href: "/", label: "Home" },
+  { href: "/products", label: "Products" },
   { href: "/about", label: "About" },
-  { href: "/news", label: "News" },
-  { href: "/changelog", label: "Changelog" },
-  { href: "/destinations", label: "Destinations" },
-  { href: "/contact", label: "Contact" },
-] as const;
-
-export const utilityNav = [
-  { href: "/destinations", label: "Quick Links", external: false },
-  { href: site.links.github, label: "GitHub", external: true },
-  { href: "/contact", label: "Join", external: false },
+  { href: "/join", label: "Join" },
+  { href: "/docs", label: "Docs" },
 ] as const;
 
 export const toolDestinations: Destination[] = [

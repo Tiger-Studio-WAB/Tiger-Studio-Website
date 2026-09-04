@@ -15,6 +15,9 @@ export async function GET() {
     news: hub.news,
     changelog: hub.changelog,
     stats: hub.stats,
+    languages: hub.languages,
+    pullRequestCount: hub.pullRequestCount,
+    commitCount: hub.commitCount,
   };
 
   return Response.json(body, {

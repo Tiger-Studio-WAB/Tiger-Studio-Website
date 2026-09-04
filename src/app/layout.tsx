@@ -1,25 +1,33 @@
 import type { Metadata, Viewport } from "next";
-import { Outfit } from "next/font/google";
-import "./globals.css";
-import { SiteHeader } from "@/components/site-header";
+import { Geist } from "next/font/google";
+import { Noto_Sans_SC } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
+import { getProfile } from "@/lib/auth";
+import { getCopy } from "@/lib/locale";
 import { site } from "@/lib/site";
+import "./globals.css";
 
-const outfit = Outfit({
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
-  variable: "--font-outfit",
-  display: "swap",
+});
+
+const notoSansSc = Noto_Sans_SC({
+  variable: "--font-noto-sc",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
     default: site.name,
-    template: `%s | ${site.name}`,
+    template: `%s · ${site.name}`,
   },
   description: site.description,
   applicationName: site.name,
-  keywords: ["Tiger Studio", "passion club", "changelog", "news", "student organization"],
+  keywords: ["Tiger Studio", "passion club", "products", "ideas", "student organization"],
   authors: [{ name: site.name, url: site.links.github }],
   openGraph: {
     type: "website",
@@ -39,23 +47,28 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0e2034",
+  themeColor: "#d72316",
   width: "device-width",
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const [{ locale, copy }, profile] = await Promise.all([getCopy(), getProfile()]);
+
   return (
-    <html lang="en" className={`${outfit.variable} h-full antialiased`}>
-      <body className={`${outfit.className} min-h-full flex flex-col bg-background text-foreground`}>
+    <html
+      lang={locale === "zh" ? "zh-CN" : "en"}
+      className={`${geistSans.variable} ${notoSansSc.variable} h-full`}
+    >
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         <a className="skip-link" href="#main">
           Skip To Main Content
         </a>
-        <SiteHeader />
+        <SiteHeader copy={copy} locale={locale} profile={profile} />
         <main id="main" className="flex-1">
           {children}
         </main>
-        <SiteFooter />
+        <SiteFooter copy={copy} />
       </body>
     </html>
   );
