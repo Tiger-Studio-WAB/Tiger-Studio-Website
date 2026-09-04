@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0e2034;
+}
+
+@theme inline {
+  --color-background: #ffffff;
+  --color-foreground: #0e2034;
+  --color-navy: #0e2034;
+  --color-ink: #131313;
+  --color-wab-red: #d72316;
+  --color-wab-blue: #2262d5;
+  --color-wab-gold: #f4d348;
+  --color-wab-teal: #53d0ab;
+  --color-wab-cyan: #16c1f1;
+  --color-wab-purple: #948eff;
+  --color-wab-orange: #ff6f27;
+  --color-wab-magenta: #8243a8;
+  --color-wab-muted: #636363;
+  --color-wab-line: #e5e5e5;
+  --color-wab-soft: #f6f4ef;
+  --font-sans: "Outfit", "Outfit Fallback", ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: #f4d348;
+  color: #0e2034;
+}
+
+a {
+  text-underline-offset: 0.18em;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 80;
+  background: #131313;
+  color: #fff;
+  padding: 0.6rem 1rem;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.color-rail {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  height: 6px;
+}
+
+.section-kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #d72316;
+  font-weight: 600;
+}
+
+.prose-wab p + p {
+  margin-top: 1rem;
+}
