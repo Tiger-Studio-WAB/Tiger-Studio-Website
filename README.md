@@ -2,14 +2,14 @@
 
 Public website for **Tiger Studio**, a student passion club.
 
-The hub is: home, products, about, join, and docs. News and changelogs remain pointers to GitHub. Join hosts **Proj.Help** — post an idea, get replies, translate English/Chinese — behind GitHub sign-in.
+The hub is: home, products, about, join, and docs. News and changelogs remain pointers to GitHub. Join hosts **Proj.Help** — post an idea, get replies, translate English/Chinese — behind GitHub or Microsoft sign-in.
 
 ## Stack
 
 - Next.js App Router on Vercel
 - TypeScript and Tailwind CSS
 - Live GitHub org data (repos, languages, pull requests, commits, events)
-- Optional Supabase + GitHub OAuth for the ideas board
+- Optional Supabase + GitHub or Microsoft sign-in for the ideas board
 
 ## Local development
 
@@ -24,7 +24,7 @@ Copy `.env.example` to `.env.local`. `GITHUB_TOKEN` raises GitHub API rate limit
 
 ## After connecting Supabase on Vercel
 
-The Marketplace integration only syncs environment variables. Join still needs a schema, GitHub OAuth, and a redeploy.
+The Marketplace integration only syncs environment variables. Join still needs a schema, OAuth providers, and a redeploy.
 
 1. **Confirm env vars** in the Vercel project → Settings → Environment Variables. You should see at least:
    - `NEXT_PUBLIC_SUPABASE_URL`
@@ -42,11 +42,12 @@ The Marketplace integration only syncs environment variables. Join still needs a
      - `http://localhost:3000/auth/callback`
 6. **Authentication → Providers**
    - Disable Email.
-   - Enable **GitHub** (see below). Leave Azure off.
+   - Enable **GitHub** (see below).
+   - Keep **Azure** enabled if you have an Entra app; otherwise GitHub still works.
 
 ### GitHub OAuth (Join)
 
-You do this in your own GitHub account. No Azure admin is required.
+You can create this in your own GitHub account.
 
 1. GitHub → Settings → Developer settings → [OAuth Apps](https://github.com/settings/developers) → **New OAuth App**
 2. Application name: `Tiger Studio`
@@ -55,7 +56,9 @@ You do this in your own GitHub account. No Azure admin is required.
    `<project-ref>` is the subdomain in `NEXT_PUBLIC_SUPABASE_URL`
 5. Register, then **Generate a new client secret**
 6. In Supabase → Authentication → Providers → GitHub: enable it and paste the Client ID and secret
-7. Redeploy the Vercel site, then try Join → Sign in with GitHub
+7. Redeploy, then try Join
+
+Microsoft/Azure still needs an Entra app registration. If Azure portal is blocked, use GitHub.
 
 `GITHUB_TOKEN` on Vercel is separate. That token is only for reading public org stats on the home page. It is not used for Join.
 

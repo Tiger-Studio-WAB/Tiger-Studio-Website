@@ -39,6 +39,33 @@ export async function signInWithGitHub(formData?: FormData) {
   redirect(data.url);
 }
 
+export async function signInWithMicrosoft(formData?: FormData) {
+  if (!isSupabaseConfigured()) {
+    redirect("/auth/error?reason=setup");
+  }
+
+  const headerStore = await headers();
+  const origin = originFromHeaders(headerStore);
+  const nextPath = formData?.get("next");
+  const next =
+    typeof nextPath === "string" && nextPath.startsWith("/") ? nextPath : "/ideas";
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "azure",
+    options: {
+      scopes: "email openid profile",
+      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+    },
+  });
+
+  if (error || !data.url) {
+    redirect("/auth/error?reason=oauth");
+  }
+
+  redirect(data.url);
+}
+
 export async function signOut() {
   if (!isSupabaseConfigured()) {
     redirect("/");

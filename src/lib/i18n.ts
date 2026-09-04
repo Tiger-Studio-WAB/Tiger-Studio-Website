@@ -7,6 +7,8 @@ export type UiCopy = {
   tagline: string;
   restricted: string;
   signIn: string;
+  signInGitHub: string;
+  signInMicrosoft: string;
   signOut: string;
   ideas: string;
   publish: string;
@@ -47,8 +49,10 @@ export type UiCopy = {
 const en: UiCopy = {
   brand: "Tiger Studio",
   tagline: "A student passion club. Products, ideas, and the public doorway.",
-  restricted: "Sign in with GitHub to post and reply.",
-  signIn: "Sign in with GitHub",
+  restricted: "Sign in with GitHub or Microsoft to post and reply.",
+  signIn: "Sign in",
+  signInGitHub: "Sign in with GitHub",
+  signInMicrosoft: "Sign in with Microsoft",
   signOut: "Sign out",
   ideas: "Ideas",
   publish: "Post an idea",
@@ -71,10 +75,10 @@ const en: UiCopy = {
   submitIdea: "Post idea",
   backToIdeas: "Ideas",
   signedInAs: "Signed in as",
-  setupNeeded: "GitHub sign-in needs Supabase and a GitHub OAuth app before it will work.",
+  setupNeeded: "Sign-in needs Supabase. GitHub needs an OAuth app; Microsoft needs Entra ID.",
   browseCta: "See ideas",
-  domainError: "That GitHub account is not allowed to use this site.",
-  authError: "Sign-in did not finish. Try again with GitHub.",
+  domainError: "That account is not allowed to use this site.",
+  authError: "Sign-in did not finish. Try GitHub or Microsoft again.",
   howPost: "Post an idea you want help with.",
   howReply: "Reply if you can help, or have a question.",
   howTranslate: "Translate a post between English and Chinese.",
@@ -97,8 +101,10 @@ const en: UiCopy = {
 const zh: UiCopy = {
   brand: "Tiger Studio",
   tagline: "学生兴趣社团。产品、想法，以及对外的入口。",
-  restricted: "请使用 GitHub 登录后发布和回复。",
-  signIn: "使用 GitHub 登录",
+  restricted: "请使用 GitHub 或 Microsoft 登录后发布和回复。",
+  signIn: "登录",
+  signInGitHub: "使用 GitHub 登录",
+  signInMicrosoft: "使用 Microsoft 登录",
   signOut: "退出",
   ideas: "想法",
   publish: "发布想法",
@@ -121,10 +127,10 @@ const zh: UiCopy = {
   submitIdea: "发布",
   backToIdeas: "想法",
   signedInAs: "当前账户",
-  setupNeeded: "需要先接好 Supabase 和 GitHub OAuth 应用，才能登录。",
+  setupNeeded: "需要先接好 Supabase。GitHub 需要 OAuth 应用，Microsoft 需要 Entra ID。",
   browseCta: "查看想法",
-  domainError: "这个 GitHub 账户不能使用本站。",
-  authError: "登录没有完成。请用 GitHub 再试一次。",
+  domainError: "这个账户不能使用本站。",
+  authError: "登录没有完成。请用 GitHub 或 Microsoft 再试一次。",
   howPost: "发布一个需要帮助的想法。",
   howReply: "能帮忙，或者有问题，就回复。",
   howTranslate: "把内容在中英文之间翻译。",
