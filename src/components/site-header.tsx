@@ -6,6 +6,7 @@ import { Logo, MenuGlyph } from "@/components/logo";
 import { nav, utilityNav } from "@/lib/content";
 import { searchHub, type SearchHit } from "@/lib/search";
 import { hostname } from "@/lib/format";
+import type { Destination, Pointer } from "@/lib/types";
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -119,7 +120,32 @@ export function SiteHeader() {
 
 function SearchOverlay({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState("");
-  const results = useMemo(() => searchHub(query), [query]);
+  const [pointers, setPointers] = useState<Pointer[]>([]);
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/feed")
+      .then((response) => response.json())
+      .then((payload: { pointers?: Pointer[]; destinations?: Destination[] }) => {
+        if (cancelled) return;
+        setPointers(payload.pointers ?? []);
+        setDestinations(payload.destinations ?? []);
+        setReady(true);
+      })
+      .catch(() => {
+        if (!cancelled) setReady(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const results = useMemo(
+    () => searchHub(query, pointers, destinations),
+    [query, pointers, destinations],
+  );
 
   return (
     <div className="fixed inset-0 z-50 bg-navy/40">
@@ -144,7 +170,9 @@ function SearchOverlay({ onClose }: { onClose: () => void }) {
           />
           <div className="mt-6 max-h-[60vh] overflow-y-auto">
             {query && results.length === 0 ? (
-              <p className="text-studio-muted">No matching news, changelogs, or destinations.</p>
+              <p className="text-studio-muted">
+                {ready ? "No matching news, changelogs, or destinations." : "Loading live results…"}
+              </p>
             ) : (
               <ul className="divide-y divide-studio-line">
                 {results.map((hit) => (

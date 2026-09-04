@@ -8,7 +8,7 @@ The site is an organization hub: home, about, news, changelog, destinations, and
 
 - Next.js App Router on Vercel
 - TypeScript and Tailwind CSS
-- Content in `src/lib/content.ts` and `src/lib/site.ts`
+- Live hub data from the GitHub organization API (repos + events), refreshed about every two minutes
 
 ## Local development
 
@@ -19,14 +19,16 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Add a pointer
+Optional: copy `.env.example` to `.env.local` and set `GITHUB_TOKEN` to raise GitHub API rate limits. `GITHUB_ORG` defaults to `Tiger-Studio-WAB`.
 
-Edit `src/lib/content.ts`:
+## How the data stays live
 
-- `pointers` — news, posts, and changelog entries. Set `url` to the canonical page on another site.
-- `destinations` — the directory of websites the hub should send people to.
+News, changelogs, destinations, stats, search, and `/api/feed` are assembled in `src/lib/hub.ts` from:
 
-The JSON feed at `/api/feed` lists the same records.
+- public repositories on the GitHub organization
+- recent organization events (pushes, pull requests, issues, releases, new repos)
+
+A repository `homepage` field, if set, is used as the destination URL so the hub can point at another website. Tool links (Vercel, Next.js) stay in `src/lib/content.ts`.
 
 ## Deploy on Vercel
 

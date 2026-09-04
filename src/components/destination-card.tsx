@@ -1,6 +1,6 @@
 import { ExternalLink } from "@/components/external-link";
 import { hostname } from "@/lib/format";
-import type { Destination } from "@/lib/content";
+import type { Destination } from "@/lib/types";
 
 const accents: Record<Destination["accent"], string> = {
   red: "bg-studio-red",

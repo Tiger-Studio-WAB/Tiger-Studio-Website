@@ -8,8 +8,6 @@ export const site = {
   url: "https://tiger-studio.vercel.app",
   links: {
     github: "https://github.com/Tiger-Studio-WAB",
-    websiteRepo: "https://github.com/Tiger-Studio-WAB/Tiger-Studio-Website",
-    firstProject: "https://github.com/Tiger-Studio-WAB/WAB-Project-1",
   },
 } as const;
 

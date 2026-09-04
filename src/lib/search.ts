@@ -1,4 +1,4 @@
-import { destinations, pointers, type Destination, type Pointer } from "@/lib/content";
+import type { Destination, Pointer } from "@/lib/types";
 
 export type SearchHit =
   | { type: "pointer"; item: Pointer }
@@ -13,7 +13,11 @@ function haystack(hit: SearchHit) {
   return `${d.name} ${d.description} ${d.category} ${d.url}`;
 }
 
-export function searchHub(query: string): SearchHit[] {
+export function searchHub(
+  query: string,
+  pointers: Pointer[],
+  destinations: Destination[],
+): SearchHit[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];
 

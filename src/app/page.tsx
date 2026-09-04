@@ -2,12 +2,13 @@ import Link from "next/link";
 import { ColorRail } from "@/components/color-rail";
 import { DestinationCard } from "@/components/destination-card";
 import { PointerCard } from "@/components/pointer-card";
-import { destinations, latestPointers, stats } from "@/lib/content";
+import { getHub } from "@/lib/hub";
 import { site } from "@/lib/site";
 
-export default function HomePage() {
-  const latest = latestPointers(4);
-  const featured = destinations.slice(0, 3);
+export default async function HomePage() {
+  const hub = await getHub();
+  const latest = hub.pointers.slice(0, 4);
+  const featured = hub.destinations.slice(0, 3);
 
   return (
     <>
@@ -94,7 +95,7 @@ export default function HomePage() {
 
       <section className="border-y border-studio-line bg-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 py-14 sm:grid-cols-2 md:grid-cols-4 md:px-8">
-          {stats.map((item) => (
+          {hub.stats.map((item) => (
             <div key={item.label} className="text-center">
               <p className="text-5xl font-semibold text-studio-red">{item.value}</p>
               <p className="mt-2 text-sm font-semibold uppercase tracking-[0.12em] text-studio-muted">
@@ -118,9 +119,11 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          {latest.map((pointer) => (
-            <PointerCard key={pointer.slug} pointer={pointer} />
-          ))}
+          {latest.length ? (
+            latest.map((pointer) => <PointerCard key={pointer.slug} pointer={pointer} />)
+          ) : (
+            <p className="text-studio-muted">GitHub has not returned any pointers yet. Check back after the next refresh.</p>
+          )}
         </div>
         <Link href="/news" className="mt-8 inline-block text-sm font-semibold text-studio-blue md:hidden">
           View all news →
@@ -134,8 +137,8 @@ export default function HomePage() {
             Destinations we <strong>keep close</strong>
           </h2>
           <p className="mt-4 max-w-2xl text-white/70">
-            Start with GitHub, then branch into tools and project repos. Every card leaves this site
-            on purpose.
+            Public GitHub repositories show up here as they are created. Tools the studio ships with
+            sit alongside them. Every card leaves this site on purpose.
           </p>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {featured.map((destination) => (

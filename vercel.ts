@@ -6,8 +6,8 @@ export const config: VercelConfig = {
   headers: [
     routes.cacheControl("/api/feed", {
       public: true,
-      maxAge: "1hour",
-      staleWhileRevalidate: "1day",
+      maxAge: "2minutes",
+      staleWhileRevalidate: "1hour",
     }),
   ],
 };

@@ -2,19 +2,30 @@
 
 import { useMemo, useState } from "react";
 import { DestinationCard } from "@/components/destination-card";
-import { destinationCategories, destinations } from "@/lib/content";
+import { EmptyState } from "@/components/empty-state";
+import type { Destination } from "@/lib/types";
 
-export function DestinationFilter() {
+export function DestinationFilter({ items }: { items: Destination[] }) {
+  const categories = ["All", ...Array.from(new Set(items.map((item) => item.category)))];
   const [category, setCategory] = useState("All");
-  const items = useMemo(
-    () => (category === "All" ? destinations : destinations.filter((item) => item.category === category)),
-    [category],
+  const visible = useMemo(
+    () => (category === "All" ? items : items.filter((item) => item.category === category)),
+    [category, items],
   );
+
+  if (!items.length) {
+    return (
+      <EmptyState
+        title="No destinations yet"
+        body="Public GitHub repositories will appear here automatically, along with the tools the studio ships with."
+      />
+    );
+  }
 
   return (
     <div>
       <div className="mb-10 flex flex-wrap gap-2">
-        {destinationCategories.map((item) => {
+        {categories.map((item) => {
           const active = item === category;
           return (
             <button
@@ -33,7 +44,7 @@ export function DestinationFilter() {
         })}
       </div>
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {items.map((destination) => (
+        {visible.map((destination) => (
           <DestinationCard key={destination.slug} destination={destination} />
         ))}
       </div>

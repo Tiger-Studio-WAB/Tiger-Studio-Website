@@ -50,9 +50,9 @@ export default function AboutPage() {
             </li>
           </ul>
           <p className="mt-8">
-            New pointers are added in{" "}
-            <code className="bg-studio-soft px-1.5 py-0.5 text-[0.95em]">src/lib/content.ts</code>.
-            Point to a URL, name the source, and the card appears on the right page.
+            News, changelogs, and project destinations are loaded live from GitHub. Create a public
+            repository, open an issue, or merge a pull request and this hub will point to it after
+            the next refresh.
           </p>
         </article>
         <aside className="h-fit bg-navy p-8 text-white">

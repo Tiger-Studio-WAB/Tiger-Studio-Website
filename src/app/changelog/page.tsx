@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { ChangelogItem } from "@/components/changelog-item";
+import { EmptyState } from "@/components/empty-state";
 import { PageHero } from "@/components/page-hero";
-import { changelogPointers } from "@/lib/content";
+import { getHub } from "@/lib/hub";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -10,15 +11,15 @@ export const metadata: Metadata = {
     "Tiger Studio changelog pointers — repositories, origin commits, and release notes hosted on GitHub.",
 };
 
-export default function ChangelogPage() {
-  const entries = changelogPointers();
+export default async function ChangelogPage() {
+  const hub = await getHub();
 
   return (
     <>
       <PageHero
         kicker="Studio changelog"
         title="What changed, where it lives"
-        lede="Release notes stay on GitHub. This page is a timeline of pointers so visitors can see what shipped without leaving the studio's public home empty."
+        lede="This timeline is generated from GitHub events — pushes, pull requests, tags, and releases — and refreshed automatically."
       />
       <div className="mx-auto max-w-5xl px-5 py-12 md:px-8">
         <p className="mb-4 text-sm text-studio-muted">
@@ -32,7 +33,18 @@ export default function ChangelogPage() {
             GitHub organization
           </a>
         </p>
-        <ol>{entries.map((pointer) => <ChangelogItem key={pointer.slug} pointer={pointer} />)}</ol>
+        {hub.changelog.length ? (
+          <ol>
+            {hub.changelog.map((pointer) => (
+              <ChangelogItem key={pointer.slug} pointer={pointer} />
+            ))}
+          </ol>
+        ) : (
+          <EmptyState
+            title="No changelog events yet"
+            body="Pushes, pull requests, and releases from the studio organization will appear here."
+          />
+        )}
       </div>
     </>
   );
