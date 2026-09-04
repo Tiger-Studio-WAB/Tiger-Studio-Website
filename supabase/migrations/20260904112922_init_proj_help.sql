@@ -1,5 +1,7 @@
 -- Proj.Help schema (ported onto the Tiger Studio hub)
 -- Microsoft + allowed school domain only. RLS on every public table.
+-- Run this whole file in Supabase Studio → SQL Editor, or with psql.
+-- Do not paste it into Vercel Storage → Query (one statement only).
 
 create schema if not exists private;
 
