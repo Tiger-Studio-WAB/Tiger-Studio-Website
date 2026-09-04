@@ -1,20 +1,31 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { EmptyState } from "@/components/empty-state";
 import { PointerCard } from "@/components/pointer-card";
-import { newsCategories, newsPointers } from "@/lib/content";
+import type { Pointer } from "@/lib/types";
 
-export function NewsFilter() {
+export function NewsFilter({ items }: { items: Pointer[] }) {
+  const categories = ["All", ...Array.from(new Set(items.map((item) => item.category)))];
   const [category, setCategory] = useState("All");
-  const items = useMemo(() => {
-    const all = newsPointers();
-    return category === "All" ? all : all.filter((item) => item.category === category);
-  }, [category]);
+  const visible = useMemo(
+    () => (category === "All" ? items : items.filter((item) => item.category === category)),
+    [category, items],
+  );
+
+  if (!items.length) {
+    return (
+      <EmptyState
+        title="No news yet"
+        body="When the studio publishes a repository, issue, or public project on GitHub, it will show up here."
+      />
+    );
+  }
 
   return (
     <div>
       <div className="mb-10 flex flex-wrap gap-2" role="tablist" aria-label="News categories">
-        {newsCategories.map((item) => {
+        {categories.map((item) => {
           const active = item === category;
           return (
             <button
@@ -35,7 +46,7 @@ export function NewsFilter() {
         })}
       </div>
       <div className="grid gap-6 md:grid-cols-2">
-        {items.map((pointer) => (
+        {visible.map((pointer) => (
           <PointerCard key={pointer.slug} pointer={pointer} />
         ))}
       </div>

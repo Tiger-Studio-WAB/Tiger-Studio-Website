@@ -2,13 +2,14 @@
 
 Public website for **Tiger Studio**, a student passion club.
 
-The site is an organization hub: home, about, news, changelog, destinations, and contact. News, changelogs, and posts are **pointers** — each card opens the website that actually hosts the story.
+The hub is: home, products, about, join, and docs. News and changelogs remain pointers to GitHub. Join hosts **Proj.Help** — post an idea, get replies, translate English/Chinese — behind school Microsoft sign-in.
 
 ## Stack
 
 - Next.js App Router on Vercel
 - TypeScript and Tailwind CSS
-- Content in `src/lib/content.ts` and `src/lib/site.ts`
+- Live GitHub org data (repos, languages, pull requests, commits, events)
+- Optional Supabase + Microsoft (Entra ID) for the ideas board
 
 ## Local development
 
@@ -19,18 +20,24 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Add a pointer
+Copy `.env.example` to `.env.local`. `GITHUB_TOKEN` raises GitHub rate limits. `GITHUB_ORG` defaults to `Tiger-Studio-WAB`.
 
-Edit `src/lib/content.ts`:
+To turn on Join / ideas:
 
-- `pointers` — news, posts, and changelog entries. Set `url` to the canonical page on another site.
-- `destinations` — the directory of websites the hub should send people to.
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- Microsoft provider on the Supabase project
+- Apply `supabase/migrations/20260904112922_init_proj_help.sql`
 
-The JSON feed at `/api/feed` lists the same records.
+Without those, Join and Login show a setup message instead of a broken board.
+
+## Docs and support
+
+There is no docs or support repository in the organization yet. Create public repos named `docs` and `support`, then this site can point at them from `/docs` and Products.
 
 ## Deploy on Vercel
 
-This repository is ready for Vercel (Next.js, `vercel.ts`). Import the GitHub repo in the Vercel dashboard, or from the CLI:
+Import the GitHub repo in the Vercel dashboard, or from the CLI:
 
 ```bash
 npx vercel

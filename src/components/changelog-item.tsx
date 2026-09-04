@@ -1,6 +1,6 @@
 import { ExternalLink } from "@/components/external-link";
 import { formatDate, hostname } from "@/lib/format";
-import type { Pointer } from "@/lib/content";
+import type { Pointer } from "@/lib/types";
 
 export function ChangelogItem({ pointer }: { pointer: Pointer }) {
   return (

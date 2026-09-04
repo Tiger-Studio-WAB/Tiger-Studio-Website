@@ -1,50 +1,22 @@
 import Link from "next/link";
-import { Logo } from "@/components/logo";
-import { ColorRail } from "@/components/color-rail";
 import { nav } from "@/lib/content";
-import { site } from "@/lib/site";
+import type { UiCopy } from "@/lib/i18n";
 
-export function SiteFooter() {
+export function SiteFooter({ copy }: { copy: UiCopy }) {
   return (
-    <footer className="mt-auto bg-ink text-white">
-      <ColorRail />
-      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 md:grid-cols-[1.2fr_1fr_1fr] md:px-8">
+    <footer className="bg-black text-white">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 py-8 text-sm sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <div className="brightness-0 invert">
-            <Logo compact />
-          </div>
-          <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/70">{site.tagline}</p>
-          <p className="mt-4 text-sm font-semibold text-studio-gold">{site.motto}</p>
+          <p className="font-bold italic">{copy.brand}</p>
+          <p className="mt-2 max-w-sm text-white/70">{copy.tagline}</p>
         </div>
-        <div>
-          <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-studio-gold">Explore</h2>
-          <ul className="mt-4 space-y-2 text-sm">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="hover:text-studio-gold">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-studio-gold">Studio</h2>
-          <p className="mt-4 text-sm leading-relaxed text-white/80">
-            Work happens on GitHub. This site is the public doorway.
-          </p>
-          <a
-            href={site.links.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-block text-sm hover:text-studio-gold"
-          >
-            GitHub →
-          </a>
-        </div>
-      </div>
-      <div className="border-t border-white/10 px-5 py-5 text-center text-xs text-white/50 md:px-8">
-        © {new Date().getFullYear()} {site.name}.
+        <nav className="flex flex-wrap gap-4 font-semibold">
+          {nav.map((item) => (
+            <Link key={item.href} href={item.href} className="hover:underline">
+              {item.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </footer>
   );
