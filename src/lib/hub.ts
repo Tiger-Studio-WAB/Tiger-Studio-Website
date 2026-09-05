@@ -1,6 +1,8 @@
 import { cache } from "react";
 import { accents, toolDestinations } from "@/lib/content";
 import {
+  DOCS_REPO,
+  SUPPORT_REPO,
   fetchStudioEvents,
   fetchStudioOrbit,
   fetchStudioRepos,
@@ -52,7 +54,32 @@ function pointerFromRepo(repo: GitHubRepo): Pointer {
   };
 }
 
+const STUDIO_GUIDES: Record<string, Omit<Destination, "accent">> = {
+  [DOCS_REPO]: {
+    slug: "docs",
+    name: "Docs",
+    description: "Guides from the public docs repository.",
+    url: "/docs",
+    category: "Docs",
+  },
+  [SUPPORT_REPO]: {
+    slug: "support",
+    name: "Support",
+    description: "Help, issue templates, and how to get unstuck.",
+    url: "/support",
+    category: "Support",
+  },
+};
+
 function destinationFromRepo(repo: GitHubRepo, index: number): Destination {
+  const pinned = STUDIO_GUIDES[repo.name.toLowerCase()];
+  if (pinned) {
+    return {
+      ...pinned,
+      accent: accents[index % accents.length],
+    };
+  }
+
   const homepage = repo.homepage?.trim();
   const name = publicText(repo.name) || repo.name;
   const description = publicText(repo.description ?? "");
@@ -66,6 +93,23 @@ function destinationFromRepo(repo: GitHubRepo, index: number): Destination {
     category: homepage ? "Community" : "Engineering",
     accent: accents[index % accents.length],
   };
+}
+
+function pinnedGuideDestinations(): Destination[] {
+  return [
+    { ...STUDIO_GUIDES[DOCS_REPO], accent: "gold" },
+    { ...STUDIO_GUIDES[SUPPORT_REPO], accent: "teal" },
+  ];
+}
+
+function sortDestinations(items: Destination[]) {
+  const rank = (item: Destination) => {
+    if (item.slug === "docs") return 0;
+    if (item.slug === "support") return 1;
+    if (item.category === "Docs") return 2;
+    return 3;
+  };
+  return [...items].sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
 }
 
 function pointerFromEvent(event: GitHubEvent): Pointer | null {
@@ -193,9 +237,10 @@ export const getHub = cache(async (): Promise<HubData> => {
     const [repos, events] = await Promise.all([fetchStudioRepos(), fetchStudioEvents()]);
     const orbit = await fetchStudioOrbit(repos);
     const repoDestinations = repos.map((repo, index) => destinationFromRepo(repo, index));
-    const destinations = uniqueByKey(
-      [...repoDestinations, ...toolDestinations],
-      (item) => item.url,
+    const destinations = sortDestinations(
+      uniqueByKey([...pinnedGuideDestinations(), ...repoDestinations, ...toolDestinations], (item) =>
+        item.slug === "docs" || item.slug === "support" ? item.slug : item.url,
+      ),
     );
 
     const fromEvents = events
@@ -231,7 +276,9 @@ export const getHub = cache(async (): Promise<HubData> => {
     console.error("Failed to load GitHub hub data", error);
     return {
       pointers: [],
-      destinations: toolDestinations,
+      destinations: sortDestinations(
+        uniqueByKey([...pinnedGuideDestinations(), ...toolDestinations], (item) => item.slug),
+      ),
       news: [],
       changelog: [],
       stats: [

@@ -32,7 +32,10 @@ export default function AboutPage() {
               <strong>Join</strong> is Proj.Help: ideas, replies, and English/Chinese translation.
             </li>
             <li>
-              <strong>Docs</strong> will point at a docs repository once that repo exists.
+              <strong>Docs</strong> is the handbook: folders and Markdown, with a sidebar like other developer docs.
+            </li>
+            <li>
+              <strong>Support</strong> is separate — issues and help, not guides.
             </li>
           </ul>
         </article>

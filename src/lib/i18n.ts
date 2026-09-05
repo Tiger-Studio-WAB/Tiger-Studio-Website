@@ -49,6 +49,7 @@ export type UiCopy = {
   about: string;
   join: string;
   docs: string;
+  support: string;
   categories: Record<IdeaCategory, string>;
 };
 
@@ -102,6 +103,7 @@ const en: UiCopy = {
   about: "About",
   join: "Join",
   docs: "Docs",
+  support: "Support",
   categories: {
     stem: "STEM",
     arts: "Arts",
@@ -162,6 +164,7 @@ const zh: UiCopy = {
   about: "关于",
   join: "加入",
   docs: "文档",
+  support: "支持",
   categories: {
     stem: "STEM",
     arts: "艺术",
