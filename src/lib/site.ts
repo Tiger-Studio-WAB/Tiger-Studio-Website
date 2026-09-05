@@ -5,7 +5,7 @@ export const site = {
   description:
     "Tiger Studio is a student passion club. News, changelogs, posts, and projects live on the sites that own them — this website points the way.",
   motto: "Make, ship, share",
-  url: "https://tiger-studio.vercel.app",
+  url: "https://tiger-studio-website.vercel.app",
   links: {
     github: "https://github.com/Tiger-Studio-WAB",
   },

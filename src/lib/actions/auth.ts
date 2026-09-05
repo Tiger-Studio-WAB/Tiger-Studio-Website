@@ -1,7 +1,8 @@
 "use server";
 
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { authErrorPath, OAUTH_NEXT_COOKIE, safeNextPath } from "@/lib/auth-flow";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
@@ -12,58 +13,54 @@ function originFromHeaders(headerStore: Headers) {
   return `${proto}://${host}`;
 }
 
-export async function signInWithGitHub(formData?: FormData) {
+async function rememberNextPath(next: string) {
+  const store = await cookies();
+  store.set(OAUTH_NEXT_COOKIE, next, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV !== "development",
+    path: "/",
+    maxAge: 60 * 10,
+  });
+}
+
+async function startOAuth(
+  provider: "github" | "azure",
+  formData?: FormData,
+) {
   if (!isSupabaseConfigured()) {
-    redirect("/auth/error?reason=setup");
+    redirect(authErrorPath("setup"));
   }
 
   const headerStore = await headers();
   const origin = originFromHeaders(headerStore);
-  const nextPath = formData?.get("next");
-  const next =
-    typeof nextPath === "string" && nextPath.startsWith("/") ? nextPath : "/ideas";
-  const supabase = await createClient();
+  const next = safeNextPath(
+    typeof formData?.get("next") === "string" ? String(formData.get("next")) : null,
+  );
+  await rememberNextPath(next);
 
+  const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "github",
+    provider,
     options: {
-      scopes: "user:email",
-      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+      scopes: provider === "github" ? "user:email" : "email openid profile",
+      redirectTo: `${origin}/auth/callback`,
     },
   });
 
   if (error || !data.url) {
-    redirect("/auth/error?reason=oauth");
+    redirect(authErrorPath("oauth", error?.message ?? `${provider} sign-in did not start`));
   }
 
   redirect(data.url);
 }
 
+export async function signInWithGitHub(formData?: FormData) {
+  await startOAuth("github", formData);
+}
+
 export async function signInWithMicrosoft(formData?: FormData) {
-  if (!isSupabaseConfigured()) {
-    redirect("/auth/error?reason=setup");
-  }
-
-  const headerStore = await headers();
-  const origin = originFromHeaders(headerStore);
-  const nextPath = formData?.get("next");
-  const next =
-    typeof nextPath === "string" && nextPath.startsWith("/") ? nextPath : "/ideas";
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "azure",
-    options: {
-      scopes: "email openid profile",
-      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
-    },
-  });
-
-  if (error || !data.url) {
-    redirect("/auth/error?reason=oauth");
-  }
-
-  redirect(data.url);
+  await startOAuth("azure", formData);
 }
 
 export async function signOut() {
