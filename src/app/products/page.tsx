@@ -26,7 +26,7 @@ export default async function ProductsPage() {
           <h2 className="mt-2 text-2xl font-bold italic">Proj.Help</h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
             Post a project idea and ask for help. Members can reply, and posts can be translated
-            between English and Chinese. Microsoft sign-in for school accounts.
+            between English and Chinese. Sign in with GitHub or Microsoft.
           </p>
           <Link href="/join" className="btn btn-red mt-5">
             Open Join
