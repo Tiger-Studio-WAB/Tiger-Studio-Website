@@ -86,7 +86,7 @@ const en: UiCopy = {
   domainError: "That account is not allowed to use this site.",
   authError: "Sign-in did not finish. The usual cause is the GitHub callback URL.",
   authErrorDetail: "What came back",
-  authFixTitle: "Check these three settings",
+  authFixTitle: "Check these settings",
   authFixCallback:
     "In the GitHub OAuth App, Authorization callback URL must be the Supabase callback below — not this website.",
   authFixRedirect:
@@ -147,7 +147,7 @@ const zh: UiCopy = {
   domainError: "这个账户不能使用本站。",
   authError: "登录没有完成。通常是 GitHub 回调地址填错了。",
   authErrorDetail: "返回的错误",
-  authFixTitle: "核对这三项设置",
+  authFixTitle: "核对这些设置",
   authFixCallback:
     "GitHub OAuth 应用的 Authorization callback URL 必须是下面的 Supabase 回调地址，不能填本站。",
   authFixRedirect:
