@@ -66,8 +66,8 @@ const STUDIO_GUIDES: Record<string, Omit<Destination, "accent">> = {
     slug: "support",
     name: "Support",
     description: "Help, issue templates, and how to get unstuck.",
-    url: "/docs#support",
-    category: "Docs",
+    url: "/support",
+    category: "Support",
   },
 };
 

@@ -64,13 +64,13 @@ Microsoft/Azure still needs an Entra app registration. If Azure portal is blocke
 
 ## Docs and support
 
-The public [`docs`](https://github.com/Tiger-Studio-WAB/docs) and [`support`](https://github.com/Tiger-Studio-WAB/support) repositories are wired into the hub:
+The public [`docs`](https://github.com/Tiger-Studio-WAB/docs) and [`support`](https://github.com/Tiger-Studio-WAB/support) repositories are wired into the hub.
 
-- `/docs` renders Markdown from `docs` (README first, then other `.md` files)
-- `/docs#support` shows the support README and a link to open an issue
-- Products and Destinations list both repos at the top
+**Docs** (`/docs`) is a developer handbook: left sidebar, one page per Markdown file, one sidebar section per folder. That matches how Meta and Microsoft Fabric organize docs. A starter tree lives in `content/docs/` on this site. Files in the GitHub `docs` repo override the starter (except the default GitHub README stub).
 
-Add more guides as Markdown files in `docs`. Help copy and issue templates belong in `support`.
+To add a section: create a folder in the `docs` repo, add `index.md`, and optionally `_category.json`. See `content/docs/how-to-format.md`.
+
+**Support** (`/support`) is separate. It is for issues and help, not guides. Issue templates belong in the `support` repo.
 
 ## Deploy on Vercel
 

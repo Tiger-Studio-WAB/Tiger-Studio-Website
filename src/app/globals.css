@@ -252,3 +252,23 @@ a {
   background: transparent;
   padding: 0;
 }
+
+.prose-docs table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.prose-docs th,
+.prose-docs td {
+  border: 1px solid var(--border);
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+}
+
+.prose-docs th {
+  background: var(--fog);
+  font-weight: 700;
+  color: var(--ink);
+}

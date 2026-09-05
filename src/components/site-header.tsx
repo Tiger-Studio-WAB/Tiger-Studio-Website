@@ -19,6 +19,7 @@ export function SiteHeader({
     "/about": copy.about,
     "/join": copy.join,
     "/docs": copy.docs,
+    "/support": copy.support,
   };
 
   return (

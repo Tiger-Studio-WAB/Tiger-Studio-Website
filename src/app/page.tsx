@@ -18,7 +18,7 @@ export default async function HomePage() {
         <HomeLink href="/products" title="Products" body="Public projects the studio ships." />
         <HomeLink href="/about" title="About" body="What Tiger Studio is, and how the hub works." />
         <HomeLink href="/join" title="Join" body="Post ideas, reply, and ship with the club." />
-        <HomeLink href="/docs" title="Docs" body="Guides from the public docs repository, plus support." />
+        <HomeLink href="/docs" title="Docs" body="Handbook from folders and Markdown. Support is a separate page." />
       </section>
     </>
   );

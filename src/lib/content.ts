@@ -6,6 +6,7 @@ export const nav = [
   { href: "/about", label: "About" },
   { href: "/join", label: "Join" },
   { href: "/docs", label: "Docs" },
+  { href: "/support", label: "Support" },
 ] as const;
 
 export const toolDestinations: Destination[] = [

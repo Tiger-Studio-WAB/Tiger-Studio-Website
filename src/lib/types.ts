@@ -16,7 +16,7 @@ export type Destination = {
   name: string;
   description: string;
   url: string;
-  category: "Engineering" | "News" | "Community" | "Tools" | "Docs";
+  category: "Engineering" | "News" | "Community" | "Tools" | "Docs" | "Support";
   accent: "red" | "blue" | "gold" | "teal" | "purple" | "orange";
 };
 

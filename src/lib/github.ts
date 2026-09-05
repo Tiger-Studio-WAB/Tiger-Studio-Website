@@ -160,6 +160,44 @@ export async function fetchRepoFileText(repo: string, path: string): Promise<str
   return response.text();
 }
 
+export type RepoGuideFile = {
+  path: string;
+  text: string;
+};
+
+export async function fetchRepoGuideSources(repo: string): Promise<{
+  markdown: RepoGuideFile[];
+  categories: RepoGuideFile[];
+}> {
+  const markdown: RepoGuideFile[] = [];
+  const categories: RepoGuideFile[] = [];
+
+  async function walk(path = "") {
+    const items = await listRepoContents(repo, path);
+    await Promise.all(
+      items.map(async (item) => {
+        if (item.type === "dir" && !item.name.startsWith(".")) {
+          await walk(item.path);
+          return;
+        }
+        if (item.type !== "file" || item.name.startsWith(".") ) return;
+        if (/\.md$/i.test(item.name) && !item.name.startsWith("_")) {
+          const text = await fetchRepoFileText(repo, item.path);
+          if (text) markdown.push({ path: item.path, text });
+          return;
+        }
+        if (item.name === "_category.json") {
+          const text = await fetchRepoFileText(repo, item.path);
+          if (text) categories.push({ path: item.path, text });
+        }
+      }),
+    );
+  }
+
+  await walk();
+  return { markdown, categories };
+}
+
 export async function fetchStudioEvents(): Promise<GitHubEvent[]> {
   return github<GitHubEvent[]>(`/orgs/${ORG}/events?per_page=100`);
 }
