@@ -1,4 +1,4 @@
-import { ExternalLink } from "@/components/external-link";
+import { isInternalHref, StudioLink } from "@/components/studio-link";
 import { hostname } from "@/lib/format";
 import type { Destination } from "@/lib/types";
 
@@ -23,12 +23,14 @@ export function DestinationCard({ destination }: { destination: Destination }) {
         <p className="flex-1 text-[0.98rem] leading-relaxed text-white/75">
           {destination.description}
         </p>
-        <ExternalLink
+        <StudioLink
           href={destination.url}
           className="mt-2 inline-flex items-center text-sm font-semibold text-studio-gold hover:text-white"
         >
-          Go to {hostname(destination.url)} →
-        </ExternalLink>
+          {isInternalHref(destination.url)
+            ? `Open ${destination.name} →`
+            : `Go to ${hostname(destination.url)} →`}
+        </StudioLink>
       </div>
     </article>
   );

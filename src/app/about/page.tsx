@@ -32,7 +32,7 @@ export default function AboutPage() {
               <strong>Join</strong> is Proj.Help: ideas, replies, and English/Chinese translation.
             </li>
             <li>
-              <strong>Docs</strong> will point at a docs repository once that repo exists.
+              <strong>Docs</strong> reads Markdown from the public docs repository and links to support.
             </li>
           </ul>
         </article>

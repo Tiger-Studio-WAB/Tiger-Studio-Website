@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/page-hero";
 import { PageShell } from "@/components/page-shell";
+import { StudioLink } from "@/components/studio-link";
 import { getHub } from "@/lib/hub";
 import { site } from "@/lib/site";
 
@@ -37,11 +38,9 @@ export default async function ProductsPage() {
         <span className="rule-yellow mt-3" />
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {hub.destinations.map((destination) => (
-            <a
+            <StudioLink
               key={destination.slug}
               href={destination.url}
-              target="_blank"
-              rel="noopener noreferrer"
               className="panel p-5 hover:border-brand-red"
             >
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
@@ -49,7 +48,7 @@ export default async function ProductsPage() {
               </p>
               <h3 className="mt-2 text-xl font-bold">{destination.name}</h3>
               <p className="mt-2 text-sm leading-7 text-muted-foreground">{destination.description}</p>
-            </a>
+            </StudioLink>
           ))}
         </div>
 

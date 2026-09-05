@@ -1,4 +1,8 @@
-const ORG = process.env.GITHUB_ORG ?? "Tiger-Studio-WAB";
+export const STUDIO_ORG = process.env.GITHUB_ORG ?? "Tiger-Studio-WAB";
+const ORG = STUDIO_ORG;
+export const DOCS_REPO = "docs";
+export const SUPPORT_REPO = "support";
+const PINNED_REPOS = [DOCS_REPO, SUPPORT_REPO];
 
 type GitHubRepo = {
   name: string;
@@ -57,11 +61,103 @@ async function github<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+export async function fetchNamedRepo(name: string): Promise<GitHubRepo | null> {
+  try {
+    const repo = await github<GitHubRepo>(`/repos/${ORG}/${name}`);
+    if (repo.fork || repo.archived) return null;
+    return repo;
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchStudioRepos(): Promise<GitHubRepo[]> {
   const repos = await github<GitHubRepo[]>(
     `/orgs/${ORG}/repos?per_page=100&sort=updated&type=public`,
   );
-  return repos.filter((repo) => !repo.fork && !repo.archived && repo.name !== ".github");
+  const visible = repos.filter((repo) => !repo.fork && !repo.archived && repo.name !== ".github");
+  const known = new Set(visible.map((repo) => repo.name.toLowerCase()));
+
+  const extras = await Promise.all(
+    PINNED_REPOS.filter((name) => !known.has(name)).map((name) => fetchNamedRepo(name)),
+  );
+  for (const extra of extras) {
+    if (extra) visible.push(extra);
+  }
+
+  return visible;
+}
+
+type GitHubContent = {
+  name: string;
+  path: string;
+  type: "file" | "dir" | string;
+  download_url: string | null;
+};
+
+export type RepoMarkdownFile = {
+  name: string;
+  path: string;
+  slug: string;
+};
+
+export function markdownSlug(path: string) {
+  const withoutExt = path.replace(/\.md$/i, "");
+  if (/^readme$/i.test(withoutExt)) return "readme";
+  return withoutExt
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+async function listRepoContents(repo: string, path = ""): Promise<GitHubContent[]> {
+  const suffix = path ? `/${path}` : "";
+  try {
+    const data = await github<GitHubContent | GitHubContent[]>(
+      `/repos/${ORG}/${repo}/contents${suffix}`,
+    );
+    return Array.isArray(data) ? data : [data];
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchRepoMarkdownFiles(repo: string): Promise<RepoMarkdownFile[]> {
+  const collected: RepoMarkdownFile[] = [];
+
+  async function walk(path = "") {
+    const items = await listRepoContents(repo, path);
+    await Promise.all(
+      items.map(async (item) => {
+        if (item.type === "dir" && !item.name.startsWith(".")) {
+          await walk(item.path);
+          return;
+        }
+        if (item.type === "file" && /\.md$/i.test(item.name) && !item.name.startsWith(".")) {
+          collected.push({
+            name: item.name,
+            path: item.path,
+            slug: markdownSlug(item.path),
+          });
+        }
+      }),
+    );
+  }
+
+  await walk();
+  return collected.sort((a, b) => {
+    if (a.slug === "readme") return -1;
+    if (b.slug === "readme") return 1;
+    return a.path.localeCompare(b.path);
+  });
+}
+
+export async function fetchRepoFileText(repo: string, path: string): Promise<string | null> {
+  const response = await githubResponse(`/repos/${ORG}/${repo}/contents/${path}`, {
+    Accept: "application/vnd.github.raw",
+  });
+  if (!response.ok) return null;
+  return response.text();
 }
 
 export async function fetchStudioEvents(): Promise<GitHubEvent[]> {

@@ -180,3 +180,75 @@ a {
 .prose-studio p + p {
   margin-top: 1rem;
 }
+
+.prose-docs > :first-child {
+  margin-top: 0;
+}
+
+.prose-docs h1,
+.prose-docs h2,
+.prose-docs h3 {
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.2;
+}
+
+.prose-docs h1 {
+  font-size: 2rem;
+}
+
+.prose-docs h2 {
+  margin-top: 1.75rem;
+  font-size: 1.35rem;
+}
+
+.prose-docs h3 {
+  margin-top: 1.25rem;
+  font-size: 1.1rem;
+}
+
+.prose-docs p,
+.prose-docs ul,
+.prose-docs ol {
+  margin-top: 0.85rem;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--gray);
+}
+
+.prose-docs ul,
+.prose-docs ol {
+  padding-left: 1.25rem;
+}
+
+.prose-docs ul {
+  list-style: disc;
+}
+
+.prose-docs ol {
+  list-style: decimal;
+}
+
+.prose-docs a {
+  font-weight: 600;
+  color: var(--brand-red);
+  text-decoration: underline;
+}
+
+.prose-docs code {
+  background: var(--fog);
+  padding: 0.1rem 0.35rem;
+  font-size: 0.85em;
+}
+
+.prose-docs pre {
+  margin-top: 1rem;
+  overflow: auto;
+  background: var(--fog);
+  padding: 1rem;
+}
+
+.prose-docs pre code {
+  background: transparent;
+  padding: 0;
+}
