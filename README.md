@@ -37,9 +37,9 @@ The Marketplace integration only syncs environment variables. Join still needs a
    - `supabase/migrations/20260904140000_allow_github_auth.sql`
 5. **Authentication → URL configuration**
    - Site URL: your live Vercel URL, e.g. `https://tiger-studio-website.vercel.app`
-   - Redirect URLs:
-     - `https://tiger-studio-website.vercel.app/auth/callback`
-     - `http://localhost:3000/auth/callback`
+   - Redirect URLs (keep the `**` so query strings and preview URLs still match):
+     - `https://tiger-studio-website.vercel.app/auth/callback**`
+     - `http://localhost:3000/auth/callback**`
 6. **Authentication → Providers**
    - Disable Email.
    - Enable **GitHub** (see below).
@@ -49,14 +49,18 @@ The Marketplace integration only syncs environment variables. Join still needs a
 
 You can create this in your own GitHub account.
 
+If GitHub sign-in “doesn’t finish”, the Authorization callback URL is almost always wrong.
+
 1. GitHub → Settings → Developer settings → [OAuth Apps](https://github.com/settings/developers) → **New OAuth App**
 2. Application name: `Tiger Studio`
 3. Homepage URL: `https://tiger-studio-website.vercel.app`
-4. Authorization callback URL: `https://<project-ref>.supabase.co/auth/v1/callback`  
-   `<project-ref>` is the subdomain in `NEXT_PUBLIC_SUPABASE_URL`
+4. Authorization callback URL must be the **Supabase** callback, not the Vercel site:
+   `https://<project-ref>.supabase.co/auth/v1/callback`  
+   `<project-ref>` is the subdomain in `NEXT_PUBLIC_SUPABASE_URL`.  
+   Do **not** put `https://tiger-studio-website.vercel.app/auth/callback` here.
 5. Register, then **Generate a new client secret**
 6. In Supabase → Authentication → Providers → GitHub: enable it and paste the Client ID and secret
-7. Redeploy, then try Join
+7. Redeploy, then try Join. If it still fails, `/auth/error` now shows the real error and the exact callback URL to paste.
 
 Microsoft/Azure still needs an Entra app registration. If Azure portal is blocked, use GitHub.
 

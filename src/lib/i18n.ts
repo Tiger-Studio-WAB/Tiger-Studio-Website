@@ -35,6 +35,12 @@ export type UiCopy = {
   browseCta: string;
   domainError: string;
   authError: string;
+  authErrorDetail: string;
+  authFixTitle: string;
+  authFixCallback: string;
+  authFixRedirect: string;
+  authFixSql: string;
+  authFixProvider: string;
   howPost: string;
   howReply: string;
   howTranslate: string;
@@ -78,7 +84,16 @@ const en: UiCopy = {
   setupNeeded: "Sign-in needs Supabase. GitHub needs an OAuth app; Microsoft needs Entra ID.",
   browseCta: "See ideas",
   domainError: "That account is not allowed to use this site.",
-  authError: "Sign-in did not finish. Try GitHub or Microsoft again.",
+  authError: "Sign-in did not finish. The usual cause is the GitHub callback URL.",
+  authErrorDetail: "What came back",
+  authFixTitle: "Check these settings",
+  authFixCallback:
+    "In the GitHub OAuth App, Authorization callback URL must be the Supabase callback below — not this website.",
+  authFixRedirect:
+    "In Supabase → Authentication → URL configuration, Site URL should be this site, and Redirect URLs should include this site's /auth/callback** address.",
+  authFixSql:
+    "In Supabase Studio → SQL Editor, run both migration files. The second one allows GitHub accounts.",
+  authFixProvider: "In Supabase → Authentication → Providers, enable GitHub and paste the Client ID and secret.",
   howPost: "Post an idea you want help with.",
   howReply: "Reply if you can help, or have a question.",
   howTranslate: "Translate a post between English and Chinese.",
@@ -130,7 +145,15 @@ const zh: UiCopy = {
   setupNeeded: "需要先接好 Supabase。GitHub 需要 OAuth 应用，Microsoft 需要 Entra ID。",
   browseCta: "查看想法",
   domainError: "这个账户不能使用本站。",
-  authError: "登录没有完成。请用 GitHub 或 Microsoft 再试一次。",
+  authError: "登录没有完成。通常是 GitHub 回调地址填错了。",
+  authErrorDetail: "返回的错误",
+  authFixTitle: "核对这些设置",
+  authFixCallback:
+    "GitHub OAuth 应用的 Authorization callback URL 必须是下面的 Supabase 回调地址，不能填本站。",
+  authFixRedirect:
+    "在 Supabase → Authentication → URL configuration 中，Site URL 应为本站，Redirect URLs 需包含本站的 /auth/callback**。",
+  authFixSql: "在 Supabase Studio → SQL Editor 中运行两份迁移。第二份才会允许 GitHub 账户。",
+  authFixProvider: "在 Supabase → Authentication → Providers 中启用 GitHub，并填入 Client ID 和 secret。",
   howPost: "发布一个需要帮助的想法。",
   howReply: "能帮忙，或者有问题，就回复。",
   howTranslate: "把内容在中英文之间翻译。",
