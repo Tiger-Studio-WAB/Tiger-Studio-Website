@@ -238,10 +238,8 @@ export function OrbitHero({
             scrollTrigger: {
               trigger: rootRef.current,
               start: "top top",
-              end: "+=140%",
-              pin: true,
+              end: "bottom bottom",
               scrub: 0.55,
-              anticipatePin: 1,
               invalidateOnRefresh: true,
               onRefresh: () => {
                 placed = layoutBoxes(nodes, innerRadius());
@@ -259,8 +257,8 @@ export function OrbitHero({
   );
 
   return (
-    <section ref={rootRef} className="relative min-h-[100svh]">
-      <div className="hero-grid relative min-h-[100svh] overflow-hidden text-white">
+    <section ref={rootRef} className="relative h-[240svh]">
+      <div className="hero-grid sticky top-0 min-h-[100svh] overflow-hidden text-white">
         <h1 className="sr-only">Tiger Studio</h1>
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-none items-center justify-center px-5 py-16">
         {boxes.map((box, index) => {
