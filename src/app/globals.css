@@ -336,8 +336,23 @@ a.orbit-box {
 }
 
 .code-block-copy:hover,
-.code-block-copy[data-copied="true"] {
+.code-block-copy[data-copied="true"],
+.code-block-copy.is-copied {
   background: var(--brand-yellow);
+}
+
+.code-block-copy[data-copied="true"],
+.code-block-copy.is-copied {
+  animation: copy-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes copy-pop {
+  from {
+    transform: scale(0.88);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 .code-block-copy:focus-visible {
@@ -348,6 +363,18 @@ a.orbit-box {
 .code-block-copy svg {
   width: 0.9rem;
   height: 0.9rem;
+}
+
+.code-block-copy .copied-icon {
+  display: none;
+}
+
+.code-block-copy.is-copied .copy-icon {
+  display: none;
+}
+
+.code-block-copy.is-copied .copied-icon {
+  display: block;
 }
 
 .prose-docs .code-block pre {
@@ -390,6 +417,10 @@ a.orbit-box {
   .pointer-card,
   .destination-card {
     transition: none;
+  }
+
+  .code-block-copy[data-copied="true"] {
+    animation: none;
   }
 
   .panel:hover,
