@@ -217,7 +217,7 @@ export function OrbitHero({
           let placed = layoutBoxes(nodes, innerRadius(), maxRadius());
 
           const apply = (progress: number) => {
-            const fly = 1 + progress * 2.85;
+            const fly = 1 + progress * 2.2;
             nodes.forEach((node, index) => {
               const point = placed[index];
               if (!point) return;
@@ -263,7 +263,7 @@ export function OrbitHero({
   );
 
   return (
-    <section ref={rootRef} className="relative h-[240svh]">
+    <section ref={rootRef} className="relative h-[170svh]">
       <div className="hero-grid sticky top-0 min-h-[100svh] overflow-hidden text-white">
         <h1 className="sr-only">Tiger Studio</h1>
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-none items-center justify-center px-5 py-16">
