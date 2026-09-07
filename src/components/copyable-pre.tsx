@@ -1,28 +1,10 @@
 "use client";
 
-import { isValidElement, useRef, useState, type ReactNode } from "react";
+import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP);
-
-function nodeText(node: ReactNode): string {
-  if (node == null || typeof node === "boolean") return "";
-  if (typeof node === "string" || typeof node === "number") return String(node);
-  if (Array.isArray(node)) return node.map(nodeText).join("");
-  if (isValidElement<{ children?: ReactNode }>(node)) {
-    return nodeText(node.props.children);
-  }
-  return "";
-}
-
-function languageOf(node: ReactNode): string | undefined {
-  const child = Array.isArray(node) ? node[0] : node;
-  if (!isValidElement<{ className?: string }>(child)) return undefined;
-  const className = child.props.className;
-  if (typeof className !== "string") return undefined;
-  return className.match(/language-([a-z0-9+_-]+)/i)?.[1];
-}
 
 function CopyIcon() {
   return (
@@ -41,13 +23,17 @@ function CheckIcon() {
   );
 }
 
-export function CopyablePre(props: React.ComponentProps<"pre"> & { node?: unknown }) {
-  const { children, className, node, ...rest } = props;
+export function CopyablePre({
+  language,
+  children,
+  className,
+  node,
+  ...rest
+}: React.ComponentProps<"pre"> & { language?: string; node?: unknown }) {
   void node;
   const rootRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef(0);
   const [copied, setCopied] = useState(false);
-  const language = languageOf(children);
 
   useGSAP(
     () => {
@@ -57,7 +43,7 @@ export function CopyablePre(props: React.ComponentProps<"pre"> & { node?: unknow
   );
 
   async function onCopy() {
-    const text = nodeText(children).replace(/\n$/, "");
+    const text = (rootRef.current?.querySelector("pre")?.textContent ?? "").replace(/\n$/, "");
     try {
       await navigator.clipboard.writeText(text);
     } catch {
@@ -96,7 +82,7 @@ export function CopyablePre(props: React.ComponentProps<"pre"> & { node?: unknow
   return (
     <div ref={rootRef} className="code-block">
       <div className="code-block-bar">
-        {language ? <span className="code-block-lang">{language}</span> : <span />}
+        <span className="code-block-lang">{language || "\u00a0"}</span>
         <button
           type="button"
           className="code-block-copy"

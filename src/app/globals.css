@@ -202,8 +202,8 @@ a.orbit-box {
 .lift-card:hover,
 .lift-card:focus-visible {
   z-index: 4;
-  transform: translateY(-5px);
-  box-shadow: 0 16px 40px rgba(14, 32, 52, 0.1);
+  transform: translateY(-8px);
+  box-shadow: 0 18px 44px rgba(14, 32, 52, 0.14);
 }
 
 .swatch {
