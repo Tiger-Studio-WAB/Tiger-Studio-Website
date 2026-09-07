@@ -19,7 +19,7 @@ const BOX_COLORS = [
 
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 const LANGUAGE_LIMIT = 10;
-const COMMIT_LIMIT = 6;
+const COMMIT_LIMIT = 4;
 
 type BoxKind = "language" | "commit" | "stat";
 
@@ -134,14 +134,15 @@ function layoutBoxes(nodes: HTMLElement[], inner: number) {
   nodes.forEach((node, index) => {
     const box = sizes[index];
     const angle = index * GOLDEN_ANGLE - Math.PI / 2;
-    let radius = inner + Math.sqrt(index + 1) * 36;
+    const minRadius = inner + Math.max(box.w, box.h) * 0.55;
+    let radius = Math.max(minRadius, inner + Math.sqrt(index + 1) * 28);
     let x = 0;
     let y = 0;
 
     const overlaps = () => {
       const hw = box.w / 2;
       const hh = box.h / 2;
-      if (Math.hypot(x, y) < inner + Math.min(hw, hh) * 0.35) return true;
+      if (Math.hypot(x, y) < inner + Math.max(hw, hh) * 0.55) return true;
       return placed.some((point, otherIndex) => {
         const other = sizes[otherIndex];
         return (
@@ -204,7 +205,7 @@ export function OrbitHero({
 
           const innerRadius = () => {
             const width = rootRef.current?.offsetWidth ?? window.innerWidth;
-            return Math.min(168, Math.max(92, width * 0.12));
+            return Math.min(200, Math.max(120, width * 0.16));
           };
 
           let placed = layoutBoxes(nodes, innerRadius());
@@ -332,7 +333,7 @@ export function OrbitHero({
         })}
         <div
           aria-label="Logo placeholder"
-          className="relative z-20 aspect-square w-28 border-2 border-white bg-transparent sm:w-36"
+          className="relative z-20 aspect-square w-28 border-2 border-white bg-brand-red sm:w-36"
         />
       </div>
     </section>
