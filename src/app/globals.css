@@ -100,6 +100,16 @@ a {
   background-size: 48px 48px;
 }
 
+.orbit-box {
+  will-change: transform;
+}
+
+@media (max-width: 640px) {
+  .orbit-box[data-priority="low"] {
+    display: none;
+  }
+}
+
 .rule-yellow {
   display: block;
   width: 11rem;

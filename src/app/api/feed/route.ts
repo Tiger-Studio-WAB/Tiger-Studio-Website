@@ -16,6 +16,8 @@ export async function GET() {
     changelog: hub.changelog,
     stats: hub.stats,
     languages: hub.languages,
+    languageStats: hub.languageStats,
+    recentCommits: hub.recentCommits,
     pullRequestCount: hub.pullRequestCount,
     commitCount: hub.commitCount,
   };

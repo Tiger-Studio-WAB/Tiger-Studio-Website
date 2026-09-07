@@ -10,7 +10,7 @@ import {
   type GitHubEvent,
   type GitHubRepo,
 } from "@/lib/github";
-import type { Destination, HubData, Pointer } from "@/lib/types";
+import type { Destination, HubData, OrbitCommit, Pointer } from "@/lib/types";
 
 function publicText(value: string) {
   return value
@@ -222,6 +222,39 @@ function pointerFromEvent(event: GitHubEvent): Pointer | null {
   return null;
 }
 
+function commitsFromEvents(events: GitHubEvent[]): OrbitCommit[] {
+  const items: OrbitCommit[] = [];
+  const seen = new Set<string>();
+
+  for (const event of events) {
+    if (event.type !== "PushEvent") continue;
+    const repo = repoShortName(event.repo.name);
+    if (repo === ".github") continue;
+    const commits =
+      (event.payload.commits as { message?: string; sha?: string }[] | undefined) ?? [];
+
+    for (const commit of commits) {
+      const message = publicText(commit.message?.split("\n")[0] ?? "");
+      if (!message) continue;
+      const id = commit.sha || `${event.id}-${message}`;
+      if (seen.has(id) || seen.has(message)) continue;
+      seen.add(id);
+      seen.add(message);
+      items.push({
+        id,
+        message,
+        repo: publicText(repo) || repo,
+        url: commit.sha
+          ? `https://github.com/${event.repo.name}/commit/${commit.sha}`
+          : githubRepoUrl(event.repo.name),
+      });
+      if (items.length >= 8) return items;
+    }
+  }
+
+  return items;
+}
+
 function uniqueByKey<T extends { slug: string; url: string }>(items: T[], key: (item: T) => string) {
   const seen = new Set<string>();
   return items.filter((item) => {
@@ -266,7 +299,9 @@ export const getHub = cache(async (): Promise<HubData> => {
         { value: String(orbit.commitCount), label: "Commits" },
         { value: String(orbit.languages.length), label: "Languages" },
       ],
-      languages: orbit.languages,
+      languages: orbit.languages.map((language) => language.name),
+      languageStats: orbit.languages,
+      recentCommits: commitsFromEvents(events),
       pullRequestCount: orbit.pullRequestCount,
       commitCount: orbit.commitCount,
       fetchedAt: new Date().toISOString(),
@@ -288,6 +323,8 @@ export const getHub = cache(async (): Promise<HubData> => {
         { value: "—", label: "Languages" },
       ],
       languages: [],
+      languageStats: [],
+      recentCommits: [],
       pullRequestCount: 0,
       commitCount: 0,
       fetchedAt: new Date().toISOString(),

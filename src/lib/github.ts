@@ -1,3 +1,5 @@
+import type { LanguageStat } from "@/lib/types";
+
 export const STUDIO_ORG = process.env.GITHUB_ORG ?? "Tiger-Studio-WAB";
 const ORG = STUDIO_ORG;
 export const DOCS_REPO = "docs";
@@ -29,7 +31,7 @@ type GitHubEvent = {
 };
 
 export type StudioOrbit = {
-  languages: string[];
+  languages: LanguageStat[];
   pullRequestCount: number;
   commitCount: number;
 };
@@ -257,7 +259,7 @@ async function countCommits(repos: GitHubRepo[]): Promise<number> {
   return counts.reduce((sum, value) => sum + value, 0);
 }
 
-async function collectLanguages(repos: GitHubRepo[]): Promise<string[]> {
+async function collectLanguages(repos: GitHubRepo[]): Promise<LanguageStat[]> {
   const tallies = new Map<string, number>();
 
   const results = await Promise.all(
@@ -278,7 +280,7 @@ async function collectLanguages(repos: GitHubRepo[]): Promise<string[]> {
 
   return [...tallies.entries()]
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .map(([name]) => name);
+    .map(([name, bytes]) => ({ name, bytes }));
 }
 
 export async function fetchStudioOrbit(repos: GitHubRepo[]): Promise<StudioOrbit> {
