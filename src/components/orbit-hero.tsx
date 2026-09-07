@@ -124,7 +124,7 @@ function buildBoxes(
   }));
 }
 
-function layoutBoxes(nodes: HTMLElement[], inner: number) {
+function layoutBoxes(nodes: HTMLElement[], inner: number, maxRadius: number) {
   const sizes = nodes.map((node) => ({
     w: node.offsetWidth,
     h: node.offsetHeight,
@@ -134,29 +134,29 @@ function layoutBoxes(nodes: HTMLElement[], inner: number) {
   nodes.forEach((node, index) => {
     const box = sizes[index];
     const angle = index * GOLDEN_ANGLE - Math.PI / 2;
-    const minRadius = inner + Math.max(box.w, box.h) * 0.55;
-    let radius = Math.max(minRadius, inner + Math.sqrt(index + 1) * 28);
+    const minRadius = inner + Math.max(box.w, box.h) * 0.45;
+    let radius = Math.min(maxRadius, Math.max(minRadius, inner + Math.sqrt(index + 1) * 24));
     let x = 0;
     let y = 0;
 
     const overlaps = () => {
       const hw = box.w / 2;
       const hh = box.h / 2;
-      if (Math.hypot(x, y) < inner + Math.max(hw, hh) * 0.55) return true;
+      if (Math.hypot(x, y) < inner + Math.max(hw, hh) * 0.4) return true;
       return placed.some((point, otherIndex) => {
         const other = sizes[otherIndex];
         return (
-          Math.abs(x - point.x) < (hw + other.w / 2) * 0.84 &&
-          Math.abs(y - point.y) < (hh + other.h / 2) * 0.84
+          Math.abs(x - point.x) < (hw + other.w / 2) * 0.78 &&
+          Math.abs(y - point.y) < (hh + other.h / 2) * 0.78
         );
       });
     };
 
-    for (let step = 0; step < 48; step += 1) {
+    for (let step = 0; step < 32; step += 1) {
       x = Math.cos(angle) * radius;
       y = Math.sin(angle) * radius;
-      if (!overlaps()) break;
-      radius += 16;
+      if (!overlaps() || radius >= maxRadius) break;
+      radius = Math.min(maxRadius, radius + 14);
     }
 
     placed.push({ x, y, r: radius, angle });
@@ -205,10 +205,16 @@ export function OrbitHero({
 
           const innerRadius = () => {
             const width = rootRef.current?.offsetWidth ?? window.innerWidth;
-            return Math.min(200, Math.max(120, width * 0.16));
+            return Math.min(150, Math.max(100, width * 0.13));
           };
 
-          let placed = layoutBoxes(nodes, innerRadius());
+          const maxRadius = () => {
+            const width = rootRef.current?.offsetWidth ?? window.innerWidth;
+            const height = rootRef.current?.querySelector(".hero-grid")?.clientHeight ?? window.innerHeight;
+            return Math.min(width, height) * 0.38;
+          };
+
+          let placed = layoutBoxes(nodes, innerRadius(), maxRadius());
 
           const apply = (progress: number) => {
             const fly = 1 + progress * 2.85;
@@ -242,7 +248,7 @@ export function OrbitHero({
               scrub: 0.55,
               invalidateOnRefresh: true,
               onRefresh: () => {
-                placed = layoutBoxes(nodes, innerRadius());
+                placed = layoutBoxes(nodes, innerRadius(), maxRadius());
                 apply(tween.t);
               },
               onUpdate: () => apply(tween.t),
