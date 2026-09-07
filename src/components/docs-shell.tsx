@@ -61,7 +61,7 @@ export function DocsShell({
             <div className="mt-10 grid gap-4 md:grid-cols-2">
               {sections.map((section) =>
                 section.href ? (
-                  <Link key={section.label} href={section.href} className="panel p-5 hover:border-brand-red">
+                  <Link key={section.label} href={section.href} className="panel lift-card p-5 hover:border-brand-red">
                     <h2 className="text-lg font-bold italic">{section.label}</h2>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">{section.body}</p>
                   </Link>

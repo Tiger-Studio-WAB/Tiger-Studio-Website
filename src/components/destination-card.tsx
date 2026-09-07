@@ -13,7 +13,7 @@ const accents: Record<Destination["accent"], string> = {
 
 export function DestinationCard({ destination }: { destination: Destination }) {
   return (
-    <article className="flex h-full flex-col overflow-hidden bg-navy text-white">
+    <article className="destination-card relative z-[1] flex h-full flex-col overflow-hidden bg-navy text-white transition duration-300 hover:z-10 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(14,32,52,0.22)]">
       <div className={`h-2 ${accents[destination.accent]}`} />
       <div className="flex flex-1 flex-col gap-4 p-7">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-studio-gold">

@@ -195,7 +195,8 @@ export function OrbitHero({
   const weights = useMemo(() => boxes.map((box) => box.weight), [boxes]);
 
   useGSAP(
-    () => {
+    (_context, contextSafe) => {
+      const safe = contextSafe ?? ((fn: () => void) => fn);
       const mm = gsap.matchMedia();
 
       mm.add(
@@ -243,7 +244,62 @@ export function OrbitHero({
           };
 
           apply(0);
-          if (reduce) return;
+
+          const cleanups = nodes.map((node) => {
+            const inner = node.querySelector<HTMLElement>(".orbit-box-inner");
+            const enter = safe(() => {
+              nodes.forEach((other) => {
+                if (other !== node && Number(gsap.getProperty(other, "zIndex")) >= 30) {
+                  gsap.set(other, { zIndex: 16 });
+                }
+              });
+              gsap.set(node, { zIndex: 30 });
+              if (!reduce && inner) {
+                gsap.to(inner, { scale: 1.1, duration: 0.28, ease: "power2.out", overwrite: "auto" });
+              }
+            });
+            const leave = safe(() => {
+              gsap.set(node, { zIndex: 16 });
+              if (!reduce && inner) {
+                gsap.to(inner, { scale: 1, duration: 0.28, ease: "power2.out", overwrite: "auto" });
+              }
+            });
+            node.addEventListener("pointerenter", enter);
+            node.addEventListener("pointerleave", leave);
+            node.addEventListener("focusin", enter);
+            node.addEventListener("focusout", leave);
+            return () => {
+              node.removeEventListener("pointerenter", enter);
+              node.removeEventListener("pointerleave", leave);
+              node.removeEventListener("focusin", enter);
+              node.removeEventListener("focusout", leave);
+            };
+          });
+
+          if (reduce) return () => cleanups.forEach((fn) => fn());
+
+          const inners = nodes
+            .map((node) => node.querySelector<HTMLElement>(".orbit-box-inner"))
+            .filter((node): node is HTMLElement => Boolean(node));
+          gsap.from(inners, {
+            scale: 0.78,
+            autoAlpha: 0,
+            duration: 0.7,
+            stagger: { each: 0.045, from: "center" },
+            ease: "back.out(1.4)",
+            overwrite: "auto",
+          });
+
+          const logo = rootRef.current?.querySelector(".orbit-logo");
+          if (logo) {
+            gsap.to(logo, {
+              scale: 1.045,
+              duration: 2.4,
+              yoyo: true,
+              repeat: -1,
+              ease: "sine.inOut",
+            });
+          }
 
           ScrollTrigger.create({
             trigger: rootRef.current,
@@ -256,6 +312,8 @@ export function OrbitHero({
             },
             onUpdate: (self) => apply(self.progress),
           });
+
+          return () => cleanups.forEach((fn) => fn());
         },
       );
 
@@ -268,7 +326,7 @@ export function OrbitHero({
     <section ref={rootRef} className="relative h-[150svh]">
       <div className="hero-grid sticky top-0 min-h-[100svh] overflow-hidden text-white">
         <h1 className="sr-only">Tiger Studio</h1>
-        <div className="relative mx-auto flex min-h-[100svh] w-full max-w-none items-center justify-center px-5 py-16">
+        <div className="relative isolate mx-auto flex min-h-[100svh] w-full max-w-none items-center justify-center px-5 py-16">
         {boxes.map((box, index) => {
           const importance = importanceFor(box.weight, weights);
           const width =
@@ -278,7 +336,7 @@ export function OrbitHero({
           const padding = sizeFromImportance(importance, 10, 22);
           const titleSize = sizeFromImportance(importance, 14, 28);
           const tilt = ((index * 47) % 13) - 6;
-          const className = `orbit-box absolute left-1/2 top-1/2 z-10 block shadow-[0_12px_32px_rgba(0,0,0,0.2)] ${
+          const className = `orbit-box absolute left-1/2 top-1/2 block shadow-[0_12px_32px_rgba(0,0,0,0.2)] ${
             BOX_COLORS[index % BOX_COLORS.length]
           } ${box.kind === "stat" ? "uppercase tracking-wide" : ""}`;
           const style = {
@@ -287,7 +345,7 @@ export function OrbitHero({
             transform: initialTransform(index, tilt, width),
           };
           const inner = (
-            <>
+            <span className="orbit-box-inner">
               <span className="block text-[0.62em] font-semibold uppercase tracking-[0.16em] opacity-70">
                 {box.kicker}
               </span>
@@ -304,7 +362,7 @@ export function OrbitHero({
                   {box.meta}
                 </span>
               ) : null}
-            </>
+            </span>
           );
 
           if (box.href) {
@@ -341,7 +399,7 @@ export function OrbitHero({
         })}
         <div
           aria-label="Logo placeholder"
-          className="relative z-20 aspect-square w-28 border-2 border-white bg-brand-red sm:w-36"
+          className="orbit-logo relative z-20 aspect-square w-28 border-2 border-white bg-brand-red sm:w-36"
         />
         </div>
       </div>

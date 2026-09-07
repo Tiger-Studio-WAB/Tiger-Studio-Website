@@ -1,5 +1,6 @@
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { CopyablePre } from "@/components/copyable-pre";
 import { resolveDocHref } from "@/lib/docs";
 
 export function MarkdownDoc({
@@ -14,6 +15,7 @@ export function MarkdownDoc({
       <Markdown
         remarkPlugins={[remarkGfm]}
         components={{
+          pre: CopyablePre,
           a: ({ href, children }) => {
             const next = resolveDocHref(href, currentSlug) ?? href;
             return (

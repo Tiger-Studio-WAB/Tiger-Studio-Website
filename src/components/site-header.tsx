@@ -28,26 +28,22 @@ export function SiteHeader({
         <Link href="/" className="text-lg font-bold italic text-white">
           {copy.brand}
         </Link>
-        <nav className="flex flex-wrap items-center gap-4 text-sm font-semibold">
+        <nav className="site-nav flex flex-wrap items-center gap-4 text-sm font-semibold">
           {nav.map((item) => (
-            <Link key={item.href} href={item.href} className="hover:underline">
+            <Link key={item.href} href={item.href}>
               {labels[item.href]}
             </Link>
           ))}
           {profile ? (
             <>
-              <Link href="/ideas" className="hover:underline">
-                {copy.ideas}
-              </Link>
-              <Link href="/me" className="hidden hover:underline sm:inline">
+              <Link href="/ideas">{copy.ideas}</Link>
+              <Link href="/me" className="hidden sm:inline">
                 {copy.myBoard}
               </Link>
               <SignOutButton label={copy.signOut} />
             </>
           ) : (
-            <Link href="/login" className="hover:underline">
-              {copy.signIn}
-            </Link>
+            <Link href="/login">{copy.signIn}</Link>
           )}
           <LanguageToggle locale={locale} />
         </nav>

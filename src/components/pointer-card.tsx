@@ -10,7 +10,7 @@ const accents: Record<Pointer["kind"], string> = {
 
 export function PointerCard({ pointer }: { pointer: Pointer }) {
   return (
-    <article className="group flex h-full flex-col border border-studio-line bg-white transition hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(14,32,52,0.08)]">
+    <article className="pointer-card group relative z-[1] flex h-full flex-col border border-studio-line bg-white transition hover:z-10 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(14,32,52,0.08)]">
       <div className={`h-1.5 ${accents[pointer.kind]}`} />
       <div className="flex flex-1 flex-col gap-4 p-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold uppercase tracking-[0.14em] text-studio-muted">
