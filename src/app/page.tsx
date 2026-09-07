@@ -10,7 +10,8 @@ export default async function HomePage() {
     <>
       <JsonLd />
       <OrbitHero
-        languages={hub.languages}
+        languages={hub.languageStats}
+        recentCommits={hub.recentCommits}
         pullRequestCount={hub.pullRequestCount}
         commitCount={hub.commitCount}
       />

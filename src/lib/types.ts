@@ -25,6 +25,18 @@ export type HubStat = {
   label: string;
 };
 
+export type LanguageStat = {
+  name: string;
+  bytes: number;
+};
+
+export type OrbitCommit = {
+  id: string;
+  message: string;
+  repo: string;
+  url: string;
+};
+
 export type HubData = {
   pointers: Pointer[];
   destinations: Destination[];
@@ -32,6 +44,8 @@ export type HubData = {
   changelog: Pointer[];
   stats: HubStat[];
   languages: string[];
+  languageStats: LanguageStat[];
+  recentCommits: OrbitCommit[];
   pullRequestCount: number;
   commitCount: number;
   fetchedAt: string;
