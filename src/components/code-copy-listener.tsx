@@ -30,28 +30,56 @@ function markCopied(button: HTMLElement) {
   button.setAttribute("aria-label", "Copied");
   const label = button.querySelector(".copy-label");
   if (label) label.textContent = "Copied";
+  button.closest(".code-block")?.classList.add("is-copied");
   window.setTimeout(() => {
     button.classList.remove("is-copied");
     button.dataset.copied = "false";
     button.setAttribute("aria-label", "Copy code");
     if (label) label.textContent = "Copy";
-  }, 2000);
+    button.closest(".code-block")?.classList.remove("is-copied");
+  }, 2500);
+}
+
+declare global {
+  interface Window {
+    __tigerCopyCode?: (button: HTMLElement) => void;
+    __tigerCopyBound?: boolean;
+  }
+}
+
+function tigerCopyCode(button: HTMLElement) {
+  const root = button.closest(".code-block");
+  const text = (root?.querySelector("pre")?.textContent ?? "").replace(/\n$/, "");
+  copyText(text);
+  markCopied(button);
+}
+
+function onActivate(event: Event) {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  const button = target.closest(".code-block-copy");
+  if (button instanceof HTMLElement) tigerCopyCode(button);
+}
+
+if (typeof window !== "undefined") {
+  window.__tigerCopyCode = tigerCopyCode;
+  document.documentElement.classList.add("copy-listener-ready");
+  if (!window.__tigerCopyBound) {
+    window.__tigerCopyBound = true;
+    window.addEventListener("click", onActivate, true);
+  }
+}
+
+export function bindCodeCopyListener() {
+  window.__tigerCopyCode = tigerCopyCode;
+  document.documentElement.classList.add("copy-listener-ready");
+  if (!window.__tigerCopyBound) {
+    window.__tigerCopyBound = true;
+    window.addEventListener("click", onActivate, true);
+  }
 }
 
 export function CodeCopyListener() {
-  useEffect(() => {
-    function onClick(event: MouseEvent) {
-      const button = (event.target as HTMLElement | null)?.closest<HTMLElement>(".code-block-copy");
-      if (!button) return;
-      const root = button.closest(".code-block");
-      const text = (root?.querySelector("pre")?.textContent ?? "").replace(/\n$/, "");
-      copyText(text);
-      markCopied(button);
-    }
-
-    document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
-  }, []);
-
+  useEffect(() => bindCodeCopyListener(), []);
   return null;
 }
