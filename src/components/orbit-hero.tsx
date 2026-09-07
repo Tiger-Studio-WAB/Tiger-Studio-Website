@@ -124,6 +124,14 @@ function buildBoxes(
   }));
 }
 
+function initialTransform(index: number, tilt: number, boxWidth: number) {
+  const angle = index * GOLDEN_ANGLE - Math.PI / 2;
+  const radius = 110 + Math.sqrt(index + 1) * 26 + boxWidth * 0.1;
+  const x = Math.cos(angle) * radius;
+  const y = Math.sin(angle) * radius;
+  return `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${tilt}deg)`;
+}
+
 function layoutBoxes(nodes: HTMLElement[], inner: number, maxRadius: number) {
   const sizes = nodes.map((node) => ({
     w: node.offsetWidth,
@@ -237,22 +245,16 @@ export function OrbitHero({
           apply(0);
           if (reduce) return;
 
-          const tween = { t: 0 };
-          gsap.to(tween, {
-            t: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: rootRef.current,
-              start: "top top",
-              end: "bottom bottom",
-              scrub: 0.55,
-              invalidateOnRefresh: true,
-              onRefresh: () => {
-                placed = layoutBoxes(nodes, innerRadius(), maxRadius());
-                apply(tween.t);
-              },
-              onUpdate: () => apply(tween.t),
+          ScrollTrigger.create({
+            trigger: rootRef.current,
+            start: "top top",
+            end: "bottom bottom",
+            invalidateOnRefresh: true,
+            onRefresh: (self) => {
+              placed = layoutBoxes(nodes, innerRadius(), maxRadius());
+              apply(self.progress);
             },
+            onUpdate: (self) => apply(self.progress),
           });
         },
       );
@@ -263,7 +265,7 @@ export function OrbitHero({
   );
 
   return (
-    <section ref={rootRef} className="relative h-[170svh]">
+    <section ref={rootRef} className="relative h-[150svh]">
       <div className="hero-grid sticky top-0 min-h-[100svh] overflow-hidden text-white">
         <h1 className="sr-only">Tiger Studio</h1>
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-none items-center justify-center px-5 py-16">
@@ -282,6 +284,7 @@ export function OrbitHero({
           const style = {
             width,
             padding,
+            transform: initialTransform(index, tilt, width),
           };
           const inner = (
             <>
