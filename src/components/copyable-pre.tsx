@@ -42,22 +42,8 @@ export function CopyablePre({
     { scope: rootRef },
   );
 
-  async function onCopy() {
+  function onCopy() {
     const text = (rootRef.current?.querySelector("pre")?.textContent ?? "").replace(/\n$/, "");
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      const pre = rootRef.current?.querySelector("pre");
-      if (!pre) return;
-      const range = document.createRange();
-      range.selectNodeContents(pre);
-      const selection = window.getSelection();
-      selection?.removeAllRanges();
-      selection?.addRange(range);
-      document.execCommand("copy");
-      selection?.removeAllRanges();
-    }
-
     setCopied(true);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const button = rootRef.current?.querySelector(".code-block-copy");
@@ -76,7 +62,27 @@ export function CopyablePre({
       );
     }
     window.clearTimeout(timerRef.current);
-    timerRef.current = window.setTimeout(() => setCopied(false), 1600);
+    timerRef.current = window.setTimeout(() => setCopied(false), 2000);
+
+    void (async () => {
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+        throw new Error("clipboard unavailable");
+      } catch {
+        const pre = rootRef.current?.querySelector("pre");
+        if (!pre) return;
+        const range = document.createRange();
+        range.selectNodeContents(pre);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        document.execCommand("copy");
+        selection?.removeAllRanges();
+      }
+    })();
   }
 
   return (
@@ -86,6 +92,7 @@ export function CopyablePre({
         <button
           type="button"
           className="code-block-copy"
+          data-copied={copied ? "true" : "false"}
           onClick={onCopy}
           aria-label={copied ? "Copied" : "Copy code"}
         >

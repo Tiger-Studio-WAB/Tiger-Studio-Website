@@ -335,7 +335,8 @@ a.orbit-box {
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.code-block-copy:hover {
+.code-block-copy:hover,
+.code-block-copy[data-copied="true"] {
   background: var(--brand-yellow);
 }
 
