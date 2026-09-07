@@ -1,4 +1,4 @@
-import type { LanguageStat } from "@/lib/types";
+import type { LanguageStat, OrbitCommit } from "@/lib/types";
 
 export const STUDIO_ORG = process.env.GITHUB_ORG ?? "Tiger-Studio-WAB";
 const ORG = STUDIO_ORG;
@@ -291,6 +291,49 @@ export async function fetchStudioOrbit(repos: GitHubRepo[]): Promise<StudioOrbit
   ]);
 
   return { languages, pullRequestCount, commitCount };
+}
+
+type GitHubCommit = {
+  sha: string;
+  html_url: string;
+  commit: { message: string };
+};
+
+export async function fetchRecentStudioCommits(repos: GitHubRepo[]): Promise<OrbitCommit[]> {
+  const newest = [...repos]
+    .filter((repo) => repo.name !== ".github")
+    .sort((a, b) => b.pushed_at.localeCompare(a.pushed_at))
+    .slice(0, 5);
+
+  const groups = await Promise.all(
+    newest.map(async (repo) => {
+      try {
+        const commits = await github<GitHubCommit[]>(`/repos/${repo.full_name}/commits?per_page=2`);
+        return commits.map((commit) => ({
+          id: commit.sha,
+          message: commit.commit.message.split("\n")[0]?.trim() ?? "",
+          repo: repo.name,
+          url: commit.html_url,
+        }));
+      } catch {
+        return [];
+      }
+    }),
+  );
+
+  const seen = new Set<string>();
+  const items: OrbitCommit[] = [];
+  for (const commit of groups.flat()) {
+    if (!commit.message || seen.has(commit.id) || seen.has(commit.message)) continue;
+    if (/^initial commit$/i.test(commit.message) || /^merge (pull request|branch)\b/i.test(commit.message)) {
+      continue;
+    }
+    seen.add(commit.id);
+    seen.add(commit.message);
+    items.push(commit);
+    if (items.length >= 8) break;
+  }
+  return items;
 }
 
 export function repoShortName(fullName: string) {

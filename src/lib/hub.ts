@@ -5,6 +5,7 @@ import {
   SUPPORT_REPO,
   fetchStudioEvents,
   fetchStudioOrbit,
+  fetchRecentStudioCommits,
   fetchStudioRepos,
   repoShortName,
   type GitHubEvent,
@@ -236,6 +237,7 @@ function commitsFromEvents(events: GitHubEvent[]): OrbitCommit[] {
     for (const commit of commits) {
       const message = publicText(commit.message?.split("\n")[0] ?? "");
       if (!message) continue;
+      if (/^initial commit$/i.test(message) || /^merge (pull request|branch)\b/i.test(message)) continue;
       const id = commit.sha || `${event.id}-${message}`;
       if (seen.has(id) || seen.has(message)) continue;
       seen.add(id);
@@ -255,6 +257,29 @@ function commitsFromEvents(events: GitHubEvent[]): OrbitCommit[] {
   return items;
 }
 
+function sanitizeCommits(items: OrbitCommit[]): OrbitCommit[] {
+  const seen = new Set<string>();
+  const cleaned: OrbitCommit[] = [];
+  for (const item of items) {
+    const message = publicText(item.message);
+    const repo = publicText(item.repo) || item.repo;
+    if (!message) continue;
+    if (/^initial commit$/i.test(message) || /^merge (pull request|branch)\b/i.test(message)) continue;
+    if (seen.has(item.id) || seen.has(message)) continue;
+    seen.add(item.id);
+    seen.add(message);
+    cleaned.push({ ...item, message, repo });
+    if (cleaned.length >= 8) break;
+  }
+  return cleaned;
+}
+
+async function recentOrbitCommits(repos: GitHubRepo[], events: GitHubEvent[]): Promise<OrbitCommit[]> {
+  const fromEvents = sanitizeCommits(commitsFromEvents(events));
+  if (fromEvents.length) return fromEvents;
+  return sanitizeCommits(await fetchRecentStudioCommits(repos));
+}
+
 function uniqueByKey<T extends { slug: string; url: string }>(items: T[], key: (item: T) => string) {
   const seen = new Set<string>();
   return items.filter((item) => {
@@ -268,7 +293,10 @@ function uniqueByKey<T extends { slug: string; url: string }>(items: T[], key: (
 export const getHub = cache(async (): Promise<HubData> => {
   try {
     const [repos, events] = await Promise.all([fetchStudioRepos(), fetchStudioEvents()]);
-    const orbit = await fetchStudioOrbit(repos);
+    const [orbit, recentCommits] = await Promise.all([
+      fetchStudioOrbit(repos),
+      recentOrbitCommits(repos, events),
+    ]);
     const repoDestinations = repos.map((repo, index) => destinationFromRepo(repo, index));
     const destinations = sortDestinations(
       uniqueByKey([...pinnedGuideDestinations(), ...repoDestinations, ...toolDestinations], (item) =>
@@ -301,7 +329,7 @@ export const getHub = cache(async (): Promise<HubData> => {
       ],
       languages: orbit.languages.map((language) => language.name),
       languageStats: orbit.languages,
-      recentCommits: commitsFromEvents(events),
+      recentCommits,
       pullRequestCount: orbit.pullRequestCount,
       commitCount: orbit.commitCount,
       fetchedAt: new Date().toISOString(),

@@ -53,7 +53,7 @@ function logWeight(value: number) {
 
 function sizeFromImportance(t: number, min: number, max: number) {
   const clamped = Math.min(1, Math.max(0, t));
-  return min + clamped * (max - min);
+  return Math.round(min + clamped * (max - min));
 }
 
 function importanceFor(weight: number, weights: number[]) {
