@@ -14,7 +14,7 @@ const categoryColor: Record<IdeaCategory, string> = {
 
 export function IdeaCard({ idea, copy }: { idea: Idea; copy: UiCopy }) {
   return (
-    <article className="panel p-5">
+    <article className="panel lift-card p-5 hover:border-brand-red">
       <div className="mb-3 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
         <span className="inline-flex items-center gap-2 text-foreground">
           <span className={`swatch ${categoryColor[idea.category]}`} />

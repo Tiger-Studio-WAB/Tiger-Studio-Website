@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import { Noto_Sans_SC } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { CodeCopyListener } from "@/components/code-copy-listener";
 import { getProfile } from "@/lib/auth";
 import { getCopy } from "@/lib/locale";
 import { site } from "@/lib/site";
@@ -64,6 +65,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <a className="skip-link" href="#main">
           Skip To Main Content
         </a>
+        <CodeCopyListener />
         <SiteHeader copy={copy} locale={locale} profile={profile} />
         <main id="main" className="flex-1">
           {children}
