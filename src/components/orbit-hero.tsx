@@ -259,9 +259,10 @@ export function OrbitHero({
   );
 
   return (
-    <section ref={rootRef} className="hero-grid relative overflow-hidden text-white">
-      <h1 className="sr-only">Tiger Studio</h1>
-      <div className="relative mx-auto flex min-h-[100svh] w-full max-w-none items-center justify-center px-5 py-16">
+    <section ref={rootRef} className="relative min-h-[100svh]">
+      <div className="hero-grid relative min-h-[100svh] overflow-hidden text-white">
+        <h1 className="sr-only">Tiger Studio</h1>
+        <div className="relative mx-auto flex min-h-[100svh] w-full max-w-none items-center justify-center px-5 py-16">
         {boxes.map((box, index) => {
           const importance = importanceFor(box.weight, weights);
           const width =
@@ -335,6 +336,7 @@ export function OrbitHero({
           aria-label="Logo placeholder"
           className="relative z-20 aspect-square w-28 border-2 border-white bg-brand-red sm:w-36"
         />
+        </div>
       </div>
     </section>
   );
