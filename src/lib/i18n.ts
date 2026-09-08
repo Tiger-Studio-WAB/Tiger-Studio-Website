@@ -19,6 +19,8 @@ export type UiCopy = {
   canHelp: string;
   writeResponse: string;
   postResponse: string;
+  postingReply: string;
+  replyPosted: string;
   showingTranslation: string;
   showOriginal: string;
   translationUnavailable: string;
@@ -72,6 +74,8 @@ const en: UiCopy = {
   canHelp: "I can help",
   writeResponse: "Reply",
   postResponse: "Post reply",
+  postingReply: "Posting…",
+  replyPosted: "Reply posted.",
   showingTranslation: "Translation",
   showOriginal: "Original",
   translationUnavailable: "Translation is not set up yet.",
@@ -136,6 +140,8 @@ const zh: UiCopy = {
   canHelp: "我可以帮忙",
   writeResponse: "回复",
   postResponse: "发布回复",
+  postingReply: "发布中…",
+  replyPosted: "回复已发布。",
   showingTranslation: "译文",
   showOriginal: "原文",
   translationUnavailable: "翻译还没有开通。",

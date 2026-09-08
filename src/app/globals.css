@@ -147,7 +147,7 @@ a.orbit-box {
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .btn:disabled {
@@ -162,7 +162,6 @@ a.orbit-box {
 
 .btn-red:hover:not(:disabled) {
   background: #b81c12;
-  transform: translateY(-2px);
 }
 
 .btn-white {
@@ -173,7 +172,6 @@ a.orbit-box {
 .btn-white:hover:not(:disabled) {
   background: var(--brand-yellow);
   color: var(--black);
-  transform: translateY(-2px);
 }
 
 .field {
@@ -196,14 +194,14 @@ a.orbit-box {
 .lift-card {
   position: relative;
   z-index: 1;
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease, border-color 0.2s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .lift-card:hover,
 .lift-card:focus-visible {
   z-index: 4;
-  transform: translateY(-8px);
-  box-shadow: 0 18px 44px rgba(14, 32, 52, 0.14);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(14, 32, 52, 0.08);
 }
 
 .swatch {
@@ -345,20 +343,6 @@ a.orbit-box {
   background: var(--brand-yellow);
 }
 
-.code-block-copy[data-copied="true"],
-.code-block-copy.is-copied {
-  animation: copy-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes copy-pop {
-  from {
-    transform: scale(0.88);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
 .code-block-copy:focus-visible {
   outline: 2px solid var(--brand-blue);
   outline-offset: 2px;
@@ -421,10 +405,6 @@ a.orbit-box {
   .pointer-card,
   .destination-card {
     transition: none;
-  }
-
-  .code-block-copy[data-copied="true"] {
-    animation: none;
   }
 
   .panel:hover,
