@@ -39,6 +39,8 @@ export type UiCopy = {
   authFixTitle: string;
   authFixCallback: string;
   authFixRedirect: string;
+  authFixSiteUrlLabel: string;
+  authFixRedirectUrlLabel: string;
   authFixSql: string;
   authFixProvider: string;
   howPost: string;
@@ -91,7 +93,9 @@ const en: UiCopy = {
   authFixCallback:
     "In the GitHub OAuth App, Authorization callback URL must be the Supabase callback below — not this website.",
   authFixRedirect:
-    "In Supabase → Authentication → URL configuration, Site URL should be this site, and Redirect URLs should include this site's /auth/callback** address.",
+    "In Supabase → Authentication → URL configuration, paste the two values below. The ** at the end of Redirect URLs is a wildcard you type into that box — it is not a page on this site. Keep the asterisks.",
+  authFixSiteUrlLabel: "Site URL",
+  authFixRedirectUrlLabel: "Redirect URLs (paste exactly, including **)",
   authFixSql:
     "In Supabase Studio → SQL Editor, run both migration files. The second one allows GitHub accounts.",
   authFixProvider: "In Supabase → Authentication → Providers, enable GitHub and paste the Client ID and secret.",
@@ -153,7 +157,9 @@ const zh: UiCopy = {
   authFixCallback:
     "GitHub OAuth 应用的 Authorization callback URL 必须是下面的 Supabase 回调地址，不能填本站。",
   authFixRedirect:
-    "在 Supabase → Authentication → URL configuration 中，Site URL 应为本站，Redirect URLs 需包含本站的 /auth/callback**。",
+    "打开 Supabase → Authentication → URL configuration，把下面两个值分别填进去。Redirect URLs 末尾的 ** 是通配符，要原样输入，不是本站上的某个页面。",
+  authFixSiteUrlLabel: "Site URL",
+  authFixRedirectUrlLabel: "Redirect URLs（原样粘贴，包含 **）",
   authFixSql: "在 Supabase Studio → SQL Editor 中运行两份迁移。第二份才会允许 GitHub 账户。",
   authFixProvider: "在 Supabase → Authentication → Providers 中启用 GitHub，并填入 Client ID 和 secret。",
   howPost: "发布一个需要帮助的想法。",
