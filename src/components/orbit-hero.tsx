@@ -226,7 +226,7 @@ export function OrbitHero({
           let placed = layoutBoxes(nodes, innerRadius(), maxRadius());
 
           const apply = (progress: number) => {
-            const fly = 1 + progress * 2.2;
+            const fly = 1 + progress * 0.7;
             nodes.forEach((node, index) => {
               const point = placed[index];
               if (!point) return;
@@ -236,8 +236,8 @@ export function OrbitHero({
                 xPercent: -50,
                 yPercent: -50,
                 rotation: Number(node.dataset.tilt) || 0,
-                opacity: 1 - progress * 0.82,
-                scale: 1 + progress * 0.12,
+                opacity: 1 - progress * 0.4,
+                scale: 1 + progress * 0.04,
                 force3D: true,
               });
             });
@@ -255,13 +255,13 @@ export function OrbitHero({
               });
               gsap.set(node, { zIndex: 30 });
               if (!reduce && inner) {
-                gsap.to(inner, { scale: 1.1, duration: 0.28, ease: "power2.out", overwrite: "auto" });
+                gsap.to(inner, { scale: 1.03, duration: 0.18, ease: "power1.out", overwrite: "auto" });
               }
             });
             const leave = safe(() => {
               gsap.set(node, { zIndex: 16 });
               if (!reduce && inner) {
-                gsap.to(inner, { scale: 1, duration: 0.28, ease: "power2.out", overwrite: "auto" });
+                gsap.to(inner, { scale: 1, duration: 0.18, ease: "power1.out", overwrite: "auto" });
               }
             });
             node.addEventListener("pointerenter", enter);
@@ -282,24 +282,13 @@ export function OrbitHero({
             .map((node) => node.querySelector<HTMLElement>(".orbit-box-inner"))
             .filter((node): node is HTMLElement => Boolean(node));
           gsap.from(inners, {
-            scale: 0.78,
+            scale: 0.96,
             autoAlpha: 0,
-            duration: 0.7,
-            stagger: { each: 0.045, from: "center" },
-            ease: "back.out(1.4)",
+            duration: 0.35,
+            stagger: { each: 0.02, from: "center" },
+            ease: "power1.out",
             overwrite: "auto",
           });
-
-          const logo = rootRef.current?.querySelector(".orbit-logo");
-          if (logo) {
-            gsap.to(logo, {
-              scale: 1.045,
-              duration: 2.4,
-              yoyo: true,
-              repeat: -1,
-              ease: "sine.inOut",
-            });
-          }
 
           ScrollTrigger.create({
             trigger: rootRef.current,
@@ -323,7 +312,7 @@ export function OrbitHero({
   );
 
   return (
-    <section ref={rootRef} className="relative h-[150svh]">
+    <section ref={rootRef} className="relative h-[120svh]">
       <div className="hero-grid sticky top-0 min-h-[100svh] overflow-hidden text-white">
         <h1 className="sr-only">Tiger Studio</h1>
         <div className="relative isolate mx-auto flex min-h-[100svh] w-full max-w-none items-center justify-center px-5 py-16">

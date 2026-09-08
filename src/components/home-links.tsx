@@ -31,15 +31,15 @@ export function HomeLinks() {
 
           if (!reduce) {
             gsap.from(nodes, {
-              y: 28,
+              y: 10,
               autoAlpha: 0,
-              duration: 0.55,
-              stagger: 0.08,
-              ease: "power2.out",
+              duration: 0.32,
+              stagger: 0.04,
+              ease: "power1.out",
               clearProps: "all",
               scrollTrigger: {
                 trigger: rootRef.current,
-                start: "top 88%",
+                start: "top 90%",
               },
             });
           }

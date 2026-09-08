@@ -51,7 +51,15 @@ export async function createIdea(formData: FormData) {
   redirect(`/ideas/${data.id}`);
 }
 
-export async function createResponse(formData: FormData) {
+export type CreateResponseState = {
+  ok?: boolean;
+  error?: "validation" | "save";
+};
+
+export async function createResponse(
+  _prevState: CreateResponseState,
+  formData: FormData,
+): Promise<CreateResponseState> {
   const user = await requireSessionUser();
   const ideaId = String(formData.get("idea_id") ?? "");
   const body = String(formData.get("body") ?? "").trim();
@@ -59,7 +67,7 @@ export async function createResponse(formData: FormData) {
   const sourceLanguage = asLanguage(formData.get("source_language"));
 
   if (!ideaId || body.length < 2) {
-    redirect(`/ideas/${ideaId || ""}?error=validation`);
+    return { error: "validation" };
   }
 
   const supabase = await createClient();
@@ -72,9 +80,9 @@ export async function createResponse(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/ideas/${ideaId}?error=save`);
+    return { error: "save" };
   }
 
   revalidatePath(`/ideas/${ideaId}`);
-  redirect(`/ideas/${ideaId}`);
+  return { ok: true };
 }
