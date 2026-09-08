@@ -36,8 +36,10 @@ The Marketplace integration only syncs environment variables. Join still needs a
    - `supabase/migrations/20260904112922_init_proj_help.sql`
    - `supabase/migrations/20260904140000_allow_github_auth.sql`
 5. **Authentication → URL configuration**
-   - Site URL: your live Vercel URL, e.g. `https://tiger-studio-website.vercel.app`
-   - Redirect URLs (keep the `**` so query strings and preview URLs still match):
+   These are allowlist entries in the Supabase dashboard, not pages you visit.
+   - **Site URL:** the site origin only (no `/auth/callback`, no `**`):
+     `https://tiger-studio-website.vercel.app`
+   - **Redirect URLs:** paste these **as written**, including the two asterisks. `**` is a Supabase wildcard so query strings (`?code=...`) still match. The real page is `/auth/callback`; there is no `/auth/callback**` URL to find.
      - `https://tiger-studio-website.vercel.app/auth/callback**`
      - `http://localhost:3000/auth/callback**`
 6. **Authentication → Providers**

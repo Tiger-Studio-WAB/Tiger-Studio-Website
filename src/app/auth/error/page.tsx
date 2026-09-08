@@ -1,7 +1,12 @@
 import { headers } from "next/headers";
 import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
-import { oauthHint, supabaseAuthCallbackUrl } from "@/lib/auth-flow";
+import {
+  oauthHint,
+  supabaseAuthCallbackUrl,
+  supabaseRedirectAllowlistUrl,
+  supabaseSiteUrl,
+} from "@/lib/auth-flow";
 import { getCopy } from "@/lib/locale";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
 
@@ -51,7 +56,17 @@ export default async function AuthErrorPage({
             <FixStep
               active={hint === "redirect"}
               text={copy.authFixRedirect}
-              value={origin ? `${origin}/auth/callback**` : null}
+              values={
+                origin
+                  ? [
+                      { label: copy.authFixSiteUrlLabel, value: supabaseSiteUrl(origin) },
+                      {
+                        label: copy.authFixRedirectUrlLabel,
+                        value: supabaseRedirectAllowlistUrl(origin),
+                      },
+                    ]
+                  : undefined
+              }
             />
             <FixStep active={hint === "sql"} text={copy.authFixSql} />
             <FixStep active={hint === "provider"} text={copy.authFixProvider} />
@@ -69,17 +84,24 @@ function FixStep({
   active,
   text,
   value,
+  values,
 }: {
   active: boolean;
   text: string;
   value?: string | null;
+  values?: { label: string; value: string }[];
 }) {
+  const items = values ?? (value ? [{ label: "", value }] : []);
+
   return (
     <div className={`panel p-4 ${active ? "border-brand-red" : ""}`}>
       <p className="text-sm leading-7">{text}</p>
-      {value ? (
-        <p className="mt-2 break-all font-mono text-xs leading-6 text-brand-blue">{value}</p>
-      ) : null}
+      {items.map((item) => (
+        <div key={`${item.label}-${item.value}`} className="mt-3">
+          {item.label ? <p className="section-kicker">{item.label}</p> : null}
+          <p className="mt-1 break-all font-mono text-xs leading-6 text-brand-blue">{item.value}</p>
+        </div>
+      ))}
     </div>
   );
 }

@@ -23,6 +23,20 @@ export function supabaseAuthCallbackUrl(supabaseUrl: string) {
   return `${supabaseUrl.replace(/\/$/, "")}/auth/v1/callback`;
 }
 
+/** Site URL for Supabase Authentication → URL configuration (origin only). */
+export function supabaseSiteUrl(origin: string) {
+  return origin.replace(/\/$/, "");
+}
+
+/**
+ * Redirect URL allowlist entry for Supabase.
+ * The trailing `**` is a wildcard you type into the dashboard, not a page on this site.
+ * The real route is `/auth/callback`.
+ */
+export function supabaseRedirectAllowlistUrl(origin: string) {
+  return `${supabaseSiteUrl(origin)}/auth/callback**`;
+}
+
 export function oauthHint(detail: string | null | undefined) {
   const text = (detail ?? "").toLowerCase();
   if (
