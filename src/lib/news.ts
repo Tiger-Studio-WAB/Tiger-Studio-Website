@@ -1,7 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { cache } from "react";
-import { NEWS_REPO, STUDIO_ORG, fetchRepoFileText, fetchRepoGuideSources } from "@/lib/github";
+import { NEWS_ORG, NEWS_REPO, fetchNewsRepoSources, fetchRepoFileText } from "@/lib/github";
 import type { ContentLanguage } from "@/lib/help-types";
 import { pickLocalizedText, splitLocaleMarkdownPath } from "@/lib/locale-files";
 
@@ -84,7 +84,7 @@ function allowlistedAuthor(author: string) {
 function assetBase(source: "local" | "github", canonical: string) {
   const folder = canonical.replace(/\\/g, "/").replace(/\.md$/i, "");
   if (source === "github") {
-    return `https://raw.githubusercontent.com/${STUDIO_ORG}/${NEWS_REPO}/main/${folder}`;
+    return `https://raw.githubusercontent.com/${NEWS_ORG}/${NEWS_REPO}/main/${folder}`;
   }
   return `/api/news-media/${folder}`;
 }
@@ -144,8 +144,7 @@ function recordsFromFiles(files: SourceFile[]): NewsRecord[] {
   for (const file of files) {
     const { canonical, locale } = splitLocaleMarkdownPath(file.path);
     const inPosts = canonical.replace(/\\/g, "/");
-    const fileName = inPosts.split("/").pop() ?? "";
-    if (!inPosts.endsWith(".md") || /^readme\.md$/i.test(fileName)) continue;
+    if (!inPosts.startsWith("posts/") || !inPosts.endsWith(".md")) continue;
     const { data, body } = parseFrontmatter(file.text);
     const slug = slugFromCanonical(inPosts);
     const current = groups.get(inPosts) ?? { slug, canonical: inPosts, variants: {} };
@@ -188,8 +187,7 @@ async function loadNewsRecords(): Promise<NewsRecord[]> {
   const local = await walkLocalNews(LOCAL_NEWS);
   let remote: { path: string; text: string }[] = [];
   try {
-    const sources = await fetchRepoGuideSources(NEWS_REPO);
-    remote = sources.markdown;
+    remote = await fetchNewsRepoSources();
   } catch {
     remote = [];
   }
@@ -230,8 +228,8 @@ export function resolveNewsImage(src: string | undefined, imageBase: string) {
 
 export async function fetchNewsReadme(locale: ContentLanguage) {
   if (locale !== "en") {
-    const localized = await fetchRepoFileText(NEWS_REPO, `README.${locale}.md`);
+    const localized = await fetchRepoFileText(NEWS_REPO, `README.${locale}.md`, NEWS_ORG);
     if (localized) return localized;
   }
-  return fetchRepoFileText(NEWS_REPO, "README.md");
+  return fetchRepoFileText(NEWS_REPO, "README.md", NEWS_ORG);
 }

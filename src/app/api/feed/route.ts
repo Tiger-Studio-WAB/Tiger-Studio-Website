@@ -1,10 +1,11 @@
 import { getHub } from "@/lib/hub";
+import { listNewsPosts } from "@/lib/news";
 import { site } from "@/lib/site";
 
 export const revalidate = 120;
 
 export async function GET() {
-  const hub = await getHub();
+  const [hub, articles] = await Promise.all([getHub(), listNewsPosts("en")]);
   const body = {
     organization: site.name,
     tagline: site.tagline,
@@ -12,7 +13,17 @@ export async function GET() {
     ok: hub.ok,
     pointers: hub.pointers,
     destinations: hub.destinations,
-    news: hub.news,
+    news: articles.length
+      ? articles.map((post) => ({
+          slug: post.slug,
+          title: post.title,
+          excerpt: post.summary,
+          date: post.date,
+          url: `${site.url}${post.href}`,
+          source: post.source,
+          author: post.author,
+        }))
+      : hub.news,
     changelog: hub.changelog,
     stats: hub.stats,
     languages: hub.languages,

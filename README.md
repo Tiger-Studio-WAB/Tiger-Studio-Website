@@ -84,7 +84,7 @@ A starter tree lives in `content/docs/` on this site. Files in the GitHub `docs`
 
 **Help** (`/help`) is the community shell: resources, share a playtest, and leave feedback. `/docs`, `/support`, and `/ideas` stay as their own URLs and appear in the Help nav.
 
-**News** (`/news`) renders published Markdown from the GitHub `news` repo, with `content/news/` as a local fallback. `/changelog` redirects to `/news`.
+**News** (`/news`) renders published Markdown from [`Tiger-Studio-WAB/news`](https://github.com/Tiger-Studio-WAB/news) (`posts/` with `.zh.md` / `.de.md` siblings). `content/news/` is the local fallback if GitHub is empty or unreachable. Missing locale files fall back to English. `/changelog` redirects to `/news`. Org events are not studio news once articles load.
 
 **Support** (`/support`) is separate. It is for issues and help, not guides. Issue templates belong in the `support` repo.
 

@@ -4,6 +4,7 @@ export const STUDIO_ORG = process.env.GITHUB_ORG ?? "Tiger-Studio-WAB";
 const ORG = STUDIO_ORG;
 export const DOCS_REPO = "docs";
 export const SUPPORT_REPO = "support";
+export const NEWS_ORG = process.env.NEWS_ORG ?? "Tiger-Studio-WAB";
 export const NEWS_REPO = process.env.NEWS_REPO ?? "news";
 const PINNED_REPOS = [DOCS_REPO, SUPPORT_REPO];
 
@@ -113,11 +114,11 @@ export function markdownSlug(path: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-async function listRepoContents(repo: string, path = ""): Promise<GitHubContent[]> {
+async function listRepoContents(repo: string, path = "", org = ORG): Promise<GitHubContent[]> {
   const suffix = path ? `/${path}` : "";
   try {
     const data = await github<GitHubContent | GitHubContent[]>(
-      `/repos/${ORG}/${repo}/contents${suffix}`,
+      `/repos/${org}/${repo}/contents${suffix}`,
     );
     return Array.isArray(data) ? data : [data];
   } catch {
@@ -155,8 +156,12 @@ export async function fetchRepoMarkdownFiles(repo: string): Promise<RepoMarkdown
   });
 }
 
-export async function fetchRepoFileText(repo: string, path: string): Promise<string | null> {
-  const response = await githubResponse(`/repos/${ORG}/${repo}/contents/${path}`, {
+export async function fetchRepoFileText(
+  repo: string,
+  path: string,
+  org = ORG,
+): Promise<string | null> {
+  const response = await githubResponse(`/repos/${org}/${repo}/contents/${path}`, {
     Accept: "application/vnd.github.raw",
   });
   if (!response.ok) return null;
@@ -167,6 +172,28 @@ export type RepoGuideFile = {
   path: string;
   text: string;
 };
+
+export async function fetchNewsRepoSources(): Promise<RepoGuideFile[]> {
+  const markdown: RepoGuideFile[] = [];
+
+  async function walk(path = "posts") {
+    const items = await listRepoContents(NEWS_REPO, path, NEWS_ORG);
+    await Promise.all(
+      items.map(async (item) => {
+        if (item.type === "dir" && !item.name.startsWith(".")) {
+          await walk(item.path);
+          return;
+        }
+        if (item.type !== "file" || item.name.startsWith(".") || !/\.md$/i.test(item.name)) return;
+        const text = await fetchRepoFileText(NEWS_REPO, item.path, NEWS_ORG);
+        if (text) markdown.push({ path: item.path, text });
+      }),
+    );
+  }
+
+  await walk();
+  return markdown;
+}
 
 export async function fetchRepoGuideSources(repo: string): Promise<{
   markdown: RepoGuideFile[];

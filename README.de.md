@@ -86,7 +86,7 @@ Ein Starter-Baum liegt unter `content/docs/` auf dieser Website. Dateien im GitH
 
 **Hilfe** (`/help`) ist die Community-Hülle: Ressourcen, Playtest teilen, Feedback. `/docs`, `/support` und `/ideas` bleiben eigene URLs und stehen in der Hilfe-Navigation.
 
-**News** (`/news`) rendert veröffentlichte Markdown-Texte aus dem GitHub-`news`-Repo, mit `content/news/` als lokalem Fallback. `/changelog` leitet nach `/news` um.
+**News** (`/news`) rendert veröffentlichte Markdown-Texte aus [`Tiger-Studio-WAB/news`](https://github.com/Tiger-Studio-WAB/news) (`posts/` mit `.zh.md` / `.de.md`). `content/news/` ist der lokale Fallback, wenn GitHub leer oder nicht erreichbar ist. Fehlt die Locale-Datei, erscheint Englisch. `/changelog` leitet nach `/news` um. Org-Events sind keine Studio-News, sobald Artikel da sind.
 
 **Support** (`/support`) ist getrennt. Für Issues und Hilfe, nicht für Anleitungen. Issue-Vorlagen gehören ins `support`-Repo.
 

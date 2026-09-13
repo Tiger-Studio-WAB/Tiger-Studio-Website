@@ -84,7 +84,7 @@ Vercel 上的 `GITHUB_TOKEN` 是另一回事。那个令牌只用来读首页的
 
 **帮助**（`/help`）是社区外壳：资源、分享试玩、留下反馈。`/docs`、`/support` 和 `/ideas` 仍是独立地址，并出现在帮助导航里。
 
-**新闻**（`/news`）渲染 GitHub `news` 仓库里已发布的 Markdown，本地回退是 `content/news/`。`/changelog` 会转到 `/news`。
+**新闻**（`/news`）渲染 [`Tiger-Studio-WAB/news`](https://github.com/Tiger-Studio-WAB/news) 里 `posts/` 下已发布的 Markdown（`.zh.md` / `.de.md` 对照）。GitHub 为空或不可用时，回退到本站 `content/news/`。缺译文时显示英文。`/changelog` 会转到 `/news`。有文章之后，不再把组织事件当成新闻。
 
 **支持**（`/support`）是分开的。用来提问题和求助，不是写指南。工单模板放在 `support` 仓库。
 
