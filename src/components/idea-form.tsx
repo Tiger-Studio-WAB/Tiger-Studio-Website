@@ -15,13 +15,7 @@ export function IdeaForm({
     <form action={createIdea} className="space-y-5">
       {error ? (
         <p className="bg-brand-yellow/40 px-3 py-2 text-sm">
-          {error === "validation"
-            ? locale === "zh"
-              ? "标题和说明再写完整一点。"
-              : "Add a longer title and description."
-            : locale === "zh"
-              ? "没保存成功，请再试一次。"
-              : "Could not save this. Try again."}
+          {error === "validation" ? copy.formValidation : copy.formSaveError}
         </p>
       ) : null}
 
@@ -54,8 +48,9 @@ export function IdeaForm({
         <label className="block space-y-2">
           <span className="text-sm font-semibold">{copy.language}</span>
           <select name="source_language" defaultValue={locale} className="field">
-            <option value="en">English</option>
-            <option value="zh">中文</option>
+            <option value="en">{copy.languageEn}</option>
+            <option value="zh">{copy.languageZh}</option>
+            <option value="de">{copy.languageDe}</option>
           </select>
         </label>
       </div>

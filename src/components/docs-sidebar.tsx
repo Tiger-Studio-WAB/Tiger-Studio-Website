@@ -1,21 +1,24 @@
 import Link from "next/link";
 import type { DocsTree } from "@/lib/docs";
+import type { UiCopy } from "@/lib/i18n";
 
 export function DocsSidebar({
   tree,
   currentHref,
+  copy,
 }: {
   tree: DocsTree;
   currentHref: string;
+  copy: UiCopy;
 }) {
   return (
-    <nav aria-label="Documentation" className="text-sm">
-      <p className="section-kicker">Docs</p>
+    <nav aria-label={copy.docs} className="text-sm">
+      <p className="section-kicker">{copy.docs}</p>
       <Link
         href="/docs"
         className={`mt-3 block font-semibold ${currentHref === "/docs" ? "text-brand-red" : "hover:text-brand-red"}`}
       >
-        Overview
+        {copy.docsOverview}
       </Link>
       <div className="mt-6 space-y-5">
         {tree.sections.map((section) => (
@@ -54,9 +57,13 @@ export function DocsSidebar({
         ))}
       </div>
       <p className="mt-8 text-xs leading-6 text-muted-foreground">
-        Need help?{" "}
+        {copy.docsNeedHelp}{" "}
+        <Link href="/help" className="font-semibold text-brand-red hover:underline">
+          {copy.help}
+        </Link>
+        {" · "}
         <Link href="/support" className="font-semibold text-brand-red hover:underline">
-          Support
+          {copy.support}
         </Link>
       </p>
     </nav>

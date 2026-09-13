@@ -1,6 +1,6 @@
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
-import type { Idea, ResponsePost } from "@/lib/help-types";
+import type { Badge, Idea, PlaytestShare, ProductFeedback, ProfileBadge, ResponsePost } from "@/lib/help-types";
 
 export async function listIdeas(options?: {
   authorId?: string;
@@ -73,4 +73,92 @@ export async function listMyResponses(authorId: string): Promise<ResponsePost[]>
 
   if (error || !data) return [];
   return data as ResponsePost[];
+}
+
+async function badgesByAuthors(authorIds: string[]): Promise<Map<string, Badge[]>> {
+  const map = new Map<string, Badge[]>();
+  if (!isSupabaseConfigured() || authorIds.length === 0) return map;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profile_badges")
+    .select("profile_id, badges(id, slug, name, description)")
+    .in("profile_id", authorIds);
+
+  if (error || !data) return map;
+
+  for (const row of data) {
+    const badge = (row as { profile_id: string; badges?: Badge | Badge[] | null }).badges;
+    const item = Array.isArray(badge) ? badge[0] : badge;
+    if (!item) continue;
+    const list = map.get(row.profile_id) ?? [];
+    list.push(item);
+    map.set(row.profile_id, list);
+  }
+  return map;
+}
+
+export async function listPlaytestShares(): Promise<PlaytestShare[]> {
+  if (!isSupabaseConfigured()) return [];
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("playtest_shares")
+    .select("*, profiles(*)")
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  const badges = await badgesByAuthors(data.map((row) => row.author_id));
+  return data.map((row) => ({
+    ...(row as PlaytestShare),
+    badges: badges.get(row.author_id) ?? [],
+  }));
+}
+
+export async function listProductFeedback(): Promise<ProductFeedback[]> {
+  if (!isSupabaseConfigured()) return [];
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("product_feedback")
+    .select("*, profiles(*)")
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  const badges = await badgesByAuthors(data.map((row) => row.author_id));
+  return data.map((row) => ({
+    ...(row as ProductFeedback),
+    badges: badges.get(row.author_id) ?? [],
+  }));
+}
+
+export async function listMyBadges(profileId: string): Promise<ProfileBadge[]> {
+  if (!isSupabaseConfigured()) return [];
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profile_badges")
+    .select("awarded_at, badges(id, slug, name, description)")
+    .eq("profile_id", profileId)
+    .order("awarded_at", { ascending: false });
+
+  if (error || !data) return [];
+  return data.flatMap((row) => {
+    const badge = (row as { awarded_at: string; badges?: Badge | Badge[] | null }).badges;
+    const item = Array.isArray(badge) ? badge[0] : badge;
+    return item ? [{ badge: item, awarded_at: row.awarded_at }] : [];
+  });
+}
+
+export async function awardBadge(profileId: string, slug: string) {
+  if (!isSupabaseConfigured() || slug === "studio_member") return;
+
+  const supabase = await createClient();
+  const { data: badge } = await supabase.from("badges").select("id").eq("slug", slug).maybeSingle();
+  if (!badge) return;
+
+  await supabase.from("profile_badges").upsert(
+    { profile_id: profileId, badge_id: badge.id },
+    { onConflict: "profile_id,badge_id" },
+  );
 }

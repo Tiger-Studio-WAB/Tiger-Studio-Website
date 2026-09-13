@@ -1,6 +1,7 @@
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { resolveDocHref } from "@/lib/docs";
+import { resolveNewsImage } from "@/lib/news";
 
 function languageFromPreNode(node: unknown) {
   if (!node || typeof node !== "object" || !("children" in node)) return undefined;
@@ -27,7 +28,7 @@ function MarkdownPre({
     <div className="code-block">
       <div className="code-block-bar">
         <span className="code-block-lang">{languageFromPreNode(node) || "\u00a0"}</span>
-        <button type="button" className="code-block-copy" data-copied="false" aria-label="Copy code">
+        <button type="button" className="code-block-copy" data-copied="false" aria-label="Copy">
           <svg
             className="copy-icon"
             viewBox="0 0 24 24"
@@ -62,9 +63,11 @@ function MarkdownPre({
 export function MarkdownDoc({
   source,
   currentSlug = [],
+  imageBase,
 }: {
   source: string;
   currentSlug?: string[];
+  imageBase?: string;
 }) {
   return (
     <div className="prose-docs">
@@ -83,6 +86,13 @@ export function MarkdownDoc({
               >
                 {children}
               </a>
+            );
+          },
+          img: ({ src, alt }) => {
+            const raw = typeof src === "string" ? src : undefined;
+            return (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={imageBase ? resolveNewsImage(raw, imageBase) : raw} alt={alt ?? ""} />
             );
           },
         }}

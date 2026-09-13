@@ -1,10 +1,11 @@
 import { HomeLinks } from "@/components/home-links";
 import { OrbitHero } from "@/components/orbit-hero";
 import { getHub } from "@/lib/hub";
+import { getCopy } from "@/lib/locale";
 import { site } from "@/lib/site";
 
 export default async function HomePage() {
-  const hub = await getHub();
+  const [hub, { copy }] = await Promise.all([getHub(), getCopy()]);
 
   return (
     <>
@@ -14,8 +15,16 @@ export default async function HomePage() {
         recentCommits={hub.recentCommits}
         pullRequestCount={hub.pullRequestCount}
         commitCount={hub.commitCount}
+        copy={copy}
       />
-      <HomeLinks />
+      <HomeLinks
+        links={[
+          { href: "/products", title: copy.products, body: copy.homeProductsBody },
+          { href: "/about", title: copy.about, body: copy.homeAboutBody },
+          { href: "/join", title: copy.join, body: copy.homeJoinBody },
+          { href: "/help", title: copy.help, body: copy.homeHelpBody },
+        ]}
+      />
     </>
   );
 }

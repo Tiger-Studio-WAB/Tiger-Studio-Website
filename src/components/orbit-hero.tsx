@@ -4,6 +4,7 @@ import { useMemo, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { fill, type UiCopy } from "@/lib/i18n";
 import type { LanguageStat, OrbitCommit } from "@/lib/types";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -40,11 +41,11 @@ function formatCount(value: number) {
   );
 }
 
-function formatShare(bytes: number, total: number) {
+function formatShare(bytes: number, total: number, copy: UiCopy) {
   if (total <= 0) return undefined;
   const share = (bytes / total) * 100;
-  if (share < 1) return "<1% of code";
-  return `${Math.round(share)}% of code`;
+  if (share < 1) return copy.orbitCodeShareTiny;
+  return fill(copy.orbitCodeShare, { percent: Math.round(share) });
 }
 
 function logWeight(value: number) {
@@ -69,6 +70,7 @@ function buildBoxes(
   recentCommits: OrbitCommit[],
   pullRequestCount: number,
   commitCount: number,
+  copy: UiCopy,
 ): OrbitBox[] {
   const languageItems = languages.slice(0, LANGUAGE_LIMIT);
   const commitItems = recentCommits.slice(0, COMMIT_LIMIT);
@@ -79,36 +81,36 @@ function buildBoxes(
     {
       id: "stat-commits",
       kind: "stat",
-      kicker: "Studio",
-      title: `${formatCount(commitCount)} commits`,
-      meta: "Across public repos",
-      href: "/changelog",
+      kicker: copy.orbitStudio,
+      title: fill(copy.orbitCommits, { count: formatCount(commitCount) }),
+      meta: copy.orbitCommitsMeta,
+      href: "/news",
       weight: peakLanguage * 1.15,
       priority: "high",
     },
     {
       id: "stat-prs",
       kind: "stat",
-      kicker: "Studio",
-      title: `${formatCount(pullRequestCount)} pull requests`,
-      meta: "Opened in the org",
-      href: "/changelog",
+      kicker: copy.orbitStudio,
+      title: fill(copy.orbitPullRequests, { count: formatCount(pullRequestCount) }),
+      meta: copy.orbitPrsMeta,
+      href: "/news",
       weight: peakLanguage * 0.92,
       priority: "high",
     },
     ...languageItems.map((language) => ({
       id: `lang-${language.name}`,
       kind: "language" as const,
-      kicker: "Language",
+      kicker: copy.orbitLanguage,
       title: language.name,
-      meta: formatShare(language.bytes, totalBytes),
+      meta: formatShare(language.bytes, totalBytes, copy),
       weight: language.bytes,
       priority: "high" as const,
     })),
     ...commitItems.map((commit, index) => ({
       id: `commit-${commit.id}`,
       kind: "commit" as const,
-      kicker: "Commit",
+      kicker: copy.orbitCommit,
       title: commit.message.length > 88 ? `${commit.message.slice(0, 85)}…` : commit.message,
       meta: commit.repo,
       href: commit.url,
@@ -180,17 +182,19 @@ export function OrbitHero({
   recentCommits,
   pullRequestCount,
   commitCount,
+  copy,
 }: {
   languages: LanguageStat[];
   recentCommits: OrbitCommit[];
   pullRequestCount: number;
   commitCount: number;
+  copy: UiCopy;
 }) {
   const rootRef = useRef<HTMLElement | null>(null);
 
   const boxes = useMemo(
-    () => buildBoxes(languages, recentCommits, pullRequestCount, commitCount),
-    [languages, recentCommits, pullRequestCount, commitCount],
+    () => buildBoxes(languages, recentCommits, pullRequestCount, commitCount, copy),
+    [languages, recentCommits, pullRequestCount, commitCount, copy],
   );
   const weights = useMemo(() => boxes.map((box) => box.weight), [boxes]);
 

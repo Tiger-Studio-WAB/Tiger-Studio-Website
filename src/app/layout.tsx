@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
 import { Geist } from "next/font/google";
 import { Noto_Sans_SC } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { CodeCopyListener } from "@/components/code-copy-listener";
 import { getProfile } from "@/lib/auth";
+import { htmlLang } from "@/lib/i18n";
 import { getCopy } from "@/lib/locale";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -53,24 +55,24 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
   const [{ locale, copy }, profile] = await Promise.all([getCopy(), getProfile()]);
 
   return (
     <html
-      lang={locale === "zh" ? "zh-CN" : "en"}
+      lang={htmlLang(locale)}
       className={`${geistSans.variable} ${notoSansSc.variable} h-full`}
     >
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         <a className="skip-link" href="#main">
-          Skip To Main Content
+          {copy.skipToMain}
         </a>
         <CodeCopyListener />
         <SiteHeader copy={copy} locale={locale} profile={profile} />
         <main id="main" className="flex-1">
           {children}
         </main>
-        <SiteFooter copy={copy} />
+        <SiteFooter copy={copy} locale={locale} />
       </body>
     </html>
   );

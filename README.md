@@ -2,14 +2,19 @@
 
 Public website for **Tiger Studio**, a student passion club.
 
-The hub is: home, products, about, join, and docs. News and changelogs remain pointers to GitHub. Join hosts **Proj.Help** — post an idea, get replies, translate English/Chinese — behind GitHub or Microsoft sign-in.
+The hub is home, products, about, join, docs, and **Help**. Help is a site inside the site: resources, playtest share, and feedback. News is studio-written Markdown. Join still hosts **Proj.Help** — ideas, replies, and translation — behind GitHub or Microsoft sign-in.
+
+The UI ships in **English**, **Chinese**, and **German**. Missing handbook or news translations fall back to English.
+
+Translations: [README.zh.md](README.zh.md) · [README.de.md](README.de.md)
 
 ## Stack
 
 - Next.js App Router on Vercel
 - TypeScript and Tailwind CSS
-- Live GitHub org data (repos, languages, pull requests, commits, events)
-- Optional Supabase + GitHub or Microsoft sign-in for the ideas board
+- Live GitHub org data (repos, languages, pull requests, commits)
+- Markdown docs from the `docs` repo, news from the `news` repo or `content/news/`
+- Optional Supabase + GitHub or Microsoft sign-in for ideas, share, feedback, and badges
 
 ## Local development
 
@@ -20,7 +25,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Copy `.env.example` to `.env.local`. `GITHUB_TOKEN` raises GitHub API rate limits for the public hub. `GITHUB_ORG` defaults to `Tiger-Studio-WAB`.
+Copy `.env.example` to `.env.local`. `GITHUB_TOKEN` raises GitHub API rate limits for the public hub. `GITHUB_ORG` defaults to `Tiger-Studio-WAB`. `NEWS_REPO` defaults to `news`. Until that GitHub repo exists, local files in `content/news/` are enough.
 
 ## After connecting Supabase on Vercel
 
@@ -35,6 +40,7 @@ The Marketplace integration only syncs environment variables. Join still needs a
 4. **Run the schema** in Studio’s **SQL Editor** (not Vercel Query). Paste each of these files in full and Run:
    - `supabase/migrations/20260904112922_init_proj_help.sql`
    - `supabase/migrations/20260904140000_allow_github_auth.sql`
+   - `supabase/migrations/20260913150000_hub_help_news.sql` (German, share, feedback, badges)
 5. **Authentication → URL configuration**
    These are allowlist entries in the Supabase dashboard, not pages you visit.
    - **Site URL:** the site origin only (no `/auth/callback`, no `**`):
@@ -68,13 +74,17 @@ Microsoft/Azure still needs an Entra app registration. If Azure portal is blocke
 
 `GITHUB_TOKEN` on Vercel is separate. That token is only for reading public org stats on the home page. It is not used for Join.
 
-## Docs and support
+## Docs, Help, and news
 
 The public [`docs`](https://github.com/Tiger-Studio-WAB/docs) and [`support`](https://github.com/Tiger-Studio-WAB/support) repositories are wired into the hub.
 
-**Docs** (`/docs`) is a developer handbook: left sidebar, one page per Markdown file, one sidebar section per folder. That matches how Meta and Microsoft Fabric organize docs. A starter tree lives in `content/docs/` on this site. Files in the GitHub `docs` repo override the starter (except the default GitHub README stub).
+**Docs** (`/docs`) is a developer handbook: left sidebar, one English page per Markdown file, one sidebar section per folder. Translations sit beside the source as `file.zh.md` and `file.de.md`. They are locale variants, not extra nav entries. If a locale file is missing, the English page is shown.
 
-To add a section: create a folder in the `docs` repo, add `index.md`, and optionally `_category.json`. See `content/docs/how-to-format.md`.
+A starter tree lives in `content/docs/` on this site. Files in the GitHub `docs` repo override the starter (except the default GitHub README stub).
+
+**Help** (`/help`) is the community shell: resources, share a playtest, and leave feedback. `/docs`, `/support`, and `/ideas` stay as their own URLs and appear in the Help nav.
+
+**News** (`/news`) renders published Markdown from the GitHub `news` repo, with `content/news/` as a local fallback. `/changelog` redirects to `/news`.
 
 **Support** (`/support`) is separate. It is for issues and help, not guides. Issue templates belong in the `support` repo.
 

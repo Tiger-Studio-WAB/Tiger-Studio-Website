@@ -4,6 +4,7 @@ export const STUDIO_ORG = process.env.GITHUB_ORG ?? "Tiger-Studio-WAB";
 const ORG = STUDIO_ORG;
 export const DOCS_REPO = "docs";
 export const SUPPORT_REPO = "support";
+export const NEWS_REPO = process.env.NEWS_REPO ?? "news";
 const PINNED_REPOS = [DOCS_REPO, SUPPORT_REPO];
 
 type GitHubRepo = {

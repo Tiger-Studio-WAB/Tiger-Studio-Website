@@ -8,14 +8,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const LINKS = [
-  { href: "/products", title: "Products", body: "Public projects the studio ships." },
-  { href: "/about", title: "About", body: "What Tiger Studio is, and how the hub works." },
-  { href: "/join", title: "Join", body: "Post ideas, reply, and ship with the club." },
-  { href: "/docs", title: "Docs", body: "Handbook from folders and Markdown. Support is a separate page." },
-];
-
-export function HomeLinks() {
+export function HomeLinks({
+  links,
+}: {
+  links: { href: string; title: string; body: string }[];
+}) {
   const rootRef = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -77,7 +74,7 @@ export function HomeLinks() {
       ref={rootRef}
       className="home-links isolate mx-auto grid w-full max-w-6xl gap-4 px-5 py-12 sm:grid-cols-2 lg:grid-cols-4"
     >
-      {LINKS.map((link) => (
+      {links.map((link) => (
         <Link key={link.href} href={link.href} className="panel lift-card p-5 hover:border-brand-red">
           <h2 className="text-xl font-bold italic">{link.title}</h2>
           <span className="rule-yellow mt-3 w-16" />

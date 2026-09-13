@@ -1,41 +1,42 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
 import { PageShell } from "@/components/page-shell";
-import { site } from "@/lib/site";
+import { getCopy } from "@/lib/locale";
 
-export const metadata: Metadata = {
-  title: "About",
-  description:
-    "Tiger Studio is a student passion club. This website is the public hub for products, ideas, and pointers out to the sites that own the work.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { copy } = await getCopy();
+  return { title: copy.about, description: copy.tagline };
+}
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { copy } = await getCopy();
+
   return (
     <>
-      <PageHero kicker="About" title="A studio with a public doorway" lede={site.tagline} />
+      <PageHero kicker={copy.aboutKicker} title={copy.aboutTitle} lede={copy.tagline} />
       <PageShell>
         <article className="prose-studio max-w-2xl text-lg leading-relaxed">
-          <p>
-            Tiger Studio is a student passion club. We make, publish, and ship work across several
-            homes on the web instead of a single feed.
-          </p>
-          <p>
-            This website is the club&apos;s front door. Products live on GitHub and other destinations.
-            Join is the ideas board — post something you want help with, and people can reply.
-          </p>
-          <h2 className="mt-12 text-3xl font-bold italic">How the hub is organized</h2>
+          <p>{copy.aboutP1}</p>
+          <p>{copy.aboutP2}</p>
+          <h2 className="mt-12 text-3xl font-bold italic">{copy.aboutHowTitle}</h2>
           <ul className="mt-4 list-disc space-y-2 pl-5 text-base">
             <li>
-              <strong>Products</strong> lists public repositories and studio tools.
+              <strong>{copy.products}</strong> {copy.aboutProducts}
             </li>
             <li>
-              <strong>Join</strong> is Proj.Help: ideas, replies, and English/Chinese translation.
+              <strong>{copy.join}</strong> {copy.aboutJoin}
             </li>
             <li>
-              <strong>Docs</strong> is the handbook: folders and Markdown, with a sidebar like other developer docs.
+              <strong>{copy.docs}</strong> {copy.aboutDocs}
             </li>
             <li>
-              <strong>Support</strong> is separate — issues and help, not guides.
+              <strong>{copy.help}</strong> {copy.aboutHelp}
+            </li>
+            <li>
+              <strong>{copy.support}</strong> {copy.aboutSupport}
+            </li>
+            <li>
+              <strong>{copy.news}</strong> {copy.aboutNews}
             </li>
           </ul>
         </article>

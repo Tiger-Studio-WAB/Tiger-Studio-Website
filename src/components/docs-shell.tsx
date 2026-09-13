@@ -3,18 +3,21 @@ import { DocsSidebar } from "@/components/docs-sidebar";
 import { MarkdownDoc } from "@/components/markdown-doc";
 import type { DocPage, DocsTree } from "@/lib/docs";
 import { neighbors } from "@/lib/docs";
+import { fill, type UiCopy } from "@/lib/i18n";
 
 export function DocsShell({
   tree,
   page,
   landing,
+  copy,
 }: {
   tree: DocsTree;
   page: DocPage;
   landing?: boolean;
+  copy: UiCopy;
 }) {
   const crumbs = [
-    { href: "/docs", label: "Docs" },
+    { href: "/docs", label: copy.docs },
     ...page.slug.map((part, index) => ({
       href: `/docs/${page.slug.slice(0, index + 1).join("/")}`,
       label: part
@@ -27,7 +30,9 @@ export function DocsShell({
     ? tree.sections.map((section) => ({
         href: section.href ?? section.pages[0]?.href,
         label: section.label,
-        body: section.pages[0]?.description ?? `${section.pages.length} page${section.pages.length === 1 ? "" : "s"}`,
+        body:
+          section.pages[0]?.description ??
+          fill(copy.docsPages, { count: section.pages.length }),
       }))
     : [];
 
@@ -35,13 +40,13 @@ export function DocsShell({
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 py-10 lg:flex-row">
       <aside className="lg:w-56 lg:shrink-0">
         <details className="lg:hidden">
-          <summary className="cursor-pointer text-sm font-semibold">On this site</summary>
+          <summary className="cursor-pointer text-sm font-semibold">{copy.docsOnThisSite}</summary>
           <div className="mt-4">
-            <DocsSidebar tree={tree} currentHref={page.href} />
+            <DocsSidebar tree={tree} currentHref={page.href} copy={copy} />
           </div>
         </details>
         <div className="hidden lg:block">
-          <DocsSidebar tree={tree} currentHref={page.href} />
+          <DocsSidebar tree={tree} currentHref={page.href} copy={copy} />
         </div>
       </aside>
       <div className="min-w-0 flex-1">
@@ -55,6 +60,9 @@ export function DocsShell({
             </span>
           ))}
         </p>
+        {page.usedFallback ? (
+          <p className="mt-3 text-sm text-muted-foreground">{copy.newsFallbackNote}</p>
+        ) : null}
         <article className="panel mt-4 p-6 md:p-8">
           <MarkdownDoc source={page.body} currentSlug={page.slug} />
           {landing && sections.length ? (
@@ -85,7 +93,7 @@ export function DocsShell({
           ) : null}
         </div>
         <p className="mt-8 text-xs text-muted-foreground">
-          Source:{" "}
+          {copy.docsSource}:{" "}
           <a
             href={`${tree.githubUrl}/blob/main/${page.path}`}
             target="_blank"
@@ -94,7 +102,7 @@ export function DocsShell({
           >
             {page.path}
           </a>
-          {page.source === "local" ? " (starter copy on this site until the docs repo has this file)" : ""}
+          {page.source === "local" ? copy.docsLocalNote : ""}
         </p>
       </div>
     </div>

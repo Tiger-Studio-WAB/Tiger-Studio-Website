@@ -9,10 +9,10 @@ import { getCopy } from "@/lib/locale";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Join",
-  description: "Join Tiger Studio. Post ideas, reply if you can help, and ship on GitHub.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { copy } = await getCopy();
+  return { title: copy.join, description: copy.joinLede };
+}
 
 export default async function JoinPage() {
   const [{ copy }, user] = await Promise.all([getCopy(), getSessionUser()]);
@@ -20,28 +20,21 @@ export default async function JoinPage() {
 
   return (
     <>
-      <PageHero
-        kicker="Join"
-        title="Post an idea. Ask for help."
-        lede="Proj.Help lives on this site now. Sign in with GitHub or Microsoft, then publish an idea or reply to someone else's."
-      />
+      <PageHero kicker={copy.joinKicker} title={copy.joinTitle} lede={copy.joinLede} />
       <PageShell>
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-6">
             <HowRow color="bg-brand-red" text={copy.howPost} />
             <HowRow color="bg-brand-blue" text={copy.howReply} />
             <HowRow color="bg-brand-yellow" text={copy.howTranslate} />
-            <p className="text-sm leading-7 text-muted-foreground">
-              Club work still happens on GitHub. The ideas board is for asking, matching, and
-              translating. Repositories stay the record of what shipped.
-            </p>
+            <p className="text-sm leading-7 text-muted-foreground">{copy.joinGithubNote}</p>
             <a
               href={site.links.github}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-semibold text-brand-red hover:underline"
             >
-              Open GitHub →
+              {copy.joinOpenGithub}
             </a>
           </div>
           <aside className="panel p-6">

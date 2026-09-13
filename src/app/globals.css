@@ -23,6 +23,12 @@
   --accent: var(--brand-yellow);
   --border: #d9dcdf;
   --danger: #d72316;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.85rem;
+  --radius-lg: 1.35rem;
+  --shadow-card: 0 10px 28px rgba(14, 32, 52, 0.08);
+  --shadow-card-hover: 0 16px 36px rgba(14, 32, 52, 0.12);
 }
 
 @theme inline {
@@ -102,6 +108,7 @@ a {
 
 .orbit-box {
   z-index: 10;
+  border-radius: var(--radius-lg);
   will-change: transform;
   transition: box-shadow 0.25s ease;
 }
@@ -141,13 +148,14 @@ a.orbit-box {
   justify-content: center;
   gap: 0.6rem;
   min-height: 2.75rem;
-  padding: 0.6rem 1.15rem;
+  padding: 0.7rem 1.2rem;
   border: 0;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .btn:disabled {
@@ -177,8 +185,9 @@ a.orbit-box {
 .field {
   width: 100%;
   border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   background: #fff;
-  padding: 0.7rem 0.8rem;
+  padding: 0.75rem 0.9rem;
   outline: none;
 }
 
@@ -188,7 +197,9 @@ a.orbit-box {
 
 .panel {
   border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   background: #fff;
+  box-shadow: var(--shadow-card);
 }
 
 .lift-card {
@@ -201,7 +212,7 @@ a.orbit-box {
 .lift-card:focus-visible {
   z-index: 4;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(14, 32, 52, 0.08);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .swatch {
@@ -279,6 +290,7 @@ a.orbit-box {
 
 .prose-docs code {
   background: var(--fog);
+  border-radius: var(--radius-sm);
   padding: 0.1rem 0.35rem;
   font-size: 0.85em;
 }
@@ -286,6 +298,7 @@ a.orbit-box {
 .prose-docs pre {
   margin-top: 1rem;
   overflow: auto;
+  border-radius: var(--radius-md);
   background: var(--fog);
   padding: 1rem;
 }
@@ -298,6 +311,8 @@ a.orbit-box {
 .code-block {
   position: relative;
   margin-top: 1rem;
+  overflow: hidden;
+  border-radius: var(--radius-md);
   background: var(--fog);
 }
 
@@ -325,6 +340,7 @@ a.orbit-box {
   min-height: 1.85rem;
   padding: 0.2rem 0.55rem;
   border: 0;
+  border-radius: var(--radius-sm);
   background: #fff;
   color: var(--ink);
   font-size: 0.75rem;
@@ -394,6 +410,58 @@ a.orbit-box {
 
 .site-nav button:hover {
   transform: none;
+}
+
+.help-shell {
+  background: var(--fog);
+}
+
+.help-nav {
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.badge-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.7rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: var(--brand-yellow);
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.lang-picker {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-sm);
+}
+
+.lang-picker button {
+  min-height: 1.85rem;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.lang-picker button[aria-pressed="true"] {
+  background: #fff;
+  color: var(--brand-red);
+}
+
+.pointer-card,
+.destination-card {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.orbit-logo {
+  border-radius: var(--radius-lg);
 }
 
 @media (prefers-reduced-motion: reduce) {
