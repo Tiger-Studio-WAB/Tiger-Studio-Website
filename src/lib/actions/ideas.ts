@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireSessionUser } from "@/lib/auth";
+import { awardBadge } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import { IDEA_CATEGORIES, type ContentLanguage, type IdeaCategory } from "@/lib/help-types";
 
@@ -14,7 +15,8 @@ function asCategory(value: FormDataEntryValue | null): IdeaCategory {
 }
 
 function asLanguage(value: FormDataEntryValue | null): ContentLanguage {
-  return value === "zh" ? "zh" : "en";
+  const raw = String(value ?? "en");
+  return raw === "zh" || raw === "de" ? raw : "en";
 }
 
 export async function createIdea(formData: FormData) {
@@ -83,6 +85,11 @@ export async function createResponse(
     return { error: "save" };
   }
 
+  if (canHelp) {
+    await awardBadge(user.id, "helpful_reply");
+  }
+
   revalidatePath(`/ideas/${ideaId}`);
+  revalidatePath("/me");
   return { ok: true };
 }

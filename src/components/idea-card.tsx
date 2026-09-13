@@ -28,7 +28,7 @@ export function IdeaCard({ idea, copy }: { idea: Idea; copy: UiCopy }) {
       <h2 className="text-xl font-bold">{idea.title}</h2>
       <p className="mt-2 line-clamp-3 text-sm leading-7 text-muted-foreground">{idea.body}</p>
       <div className="mt-4 flex items-center justify-between gap-3">
-        <p className="text-sm">{idea.profiles?.display_name ?? "Member"}</p>
+        <p className="text-sm">{idea.profiles?.display_name ?? copy.member}</p>
         <Link href={`/ideas/${idea.id}`} className="text-sm font-semibold text-brand-red hover:underline">
           {copy.readMore}
         </Link>

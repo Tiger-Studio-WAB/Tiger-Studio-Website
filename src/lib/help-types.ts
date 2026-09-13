@@ -8,8 +8,10 @@ export const IDEA_CATEGORIES = [
   "other",
 ] as const;
 
+export const CONTENT_LANGUAGES = ["en", "zh", "de"] as const;
+
 export type IdeaCategory = (typeof IDEA_CATEGORIES)[number];
-export type ContentLanguage = "en" | "zh";
+export type ContentLanguage = (typeof CONTENT_LANGUAGES)[number];
 
 export type Profile = {
   id: string;
@@ -17,6 +19,18 @@ export type Profile = {
   display_name: string;
   avatar_url: string | null;
   created_at: string;
+};
+
+export type Badge = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+};
+
+export type ProfileBadge = {
+  badge: Badge;
+  awarded_at: string;
 };
 
 export type Idea = {
@@ -52,4 +66,29 @@ export type ContentTranslation = {
   title: string | null;
   body: string;
   help_needed: string | null;
+};
+
+export type PlaytestShare = {
+  id: string;
+  author_id: string;
+  title: string;
+  what_to_try: string;
+  link: string | null;
+  notes: string | null;
+  is_anonymous: boolean;
+  created_at: string;
+  profiles?: Profile | null;
+  badges?: Badge[];
+};
+
+export type ProductFeedback = {
+  id: string;
+  author_id: string;
+  share_id: string | null;
+  target: string;
+  body: string;
+  is_anonymous: boolean;
+  created_at: string;
+  profiles?: Profile | null;
+  badges?: Badge[];
 };

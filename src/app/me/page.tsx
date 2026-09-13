@@ -1,16 +1,18 @@
 import Link from "next/link";
+import { BadgeRow } from "@/components/badge-row";
 import { IdeaCard } from "@/components/idea-card";
 import { PageShell } from "@/components/page-shell";
 import { requireSessionUser } from "@/lib/auth";
-import { listIdeas, listMyResponses } from "@/lib/data";
+import { listIdeas, listMyBadges, listMyResponses } from "@/lib/data";
 import { getCopy } from "@/lib/locale";
 
 export default async function MePage() {
   const user = await requireSessionUser();
   const { copy } = await getCopy();
-  const [ideas, responses] = await Promise.all([
+  const [ideas, responses, badges] = await Promise.all([
     listIdeas({ authorId: user.id }),
     listMyResponses(user.id),
+    listMyBadges(user.id),
   ]);
 
   return (
@@ -20,6 +22,15 @@ export default async function MePage() {
       <p className="mt-4 text-sm text-muted-foreground">
         {copy.signedInAs} {user.email}
       </p>
+
+      <section className="mt-8">
+        <h2 className="text-xl font-bold">{copy.badgesTitle}</h2>
+        {badges.length === 0 ? (
+          <p className="mt-3 text-sm text-muted-foreground">{copy.noBadges}</p>
+        ) : (
+          <BadgeRow badges={badges.map((item) => item.badge)} copy={copy} />
+        )}
+      </section>
 
       <section className="mt-10 space-y-4">
         <div className="flex items-center justify-between">

@@ -4,32 +4,33 @@ import { MarkdownDoc } from "@/components/markdown-doc";
 import { PageHero } from "@/components/page-hero";
 import { PageShell } from "@/components/page-shell";
 import { getSupportPage } from "@/lib/docs";
+import { getCopy } from "@/lib/locale";
 
-export const metadata: Metadata = {
-  title: "Support",
-  description: "Get help with Tiger Studio accounts, the ideas board, and the public hub.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { copy } = await getCopy();
+  return { title: copy.support, description: copy.supportLede };
+}
 
 export default async function SupportPage() {
-  const support = await getSupportPage();
+  const { locale, copy } = await getCopy();
+  const support = await getSupportPage(locale);
 
   return (
     <>
-      <PageHero
-        kicker="Support"
-        title="Get help"
-        lede="Support is for problems and questions. Guides and how-tos live in Docs."
-      />
+      <PageHero kicker={copy.supportKicker} title={copy.supportTitle} lede={copy.supportLede} />
       <PageShell>
         <div className="grid gap-6 lg:grid-cols-3">
           <article className="panel p-6 lg:col-span-2">
-            <h2 className="text-2xl font-bold italic">What to use this for</h2>
+            <h2 className="text-2xl font-bold italic">{copy.supportWhatTitle}</h2>
             <span className="rule-yellow mt-3" />
             <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-7 text-muted-foreground">
-              <li>Sign-in did not finish (GitHub or Microsoft)</li>
-              <li>A page on this site is broken or missing</li>
-              <li>You need a human from the club</li>
+              <li>{copy.supportBulletSignin}</li>
+              <li>{copy.supportBulletBroken}</li>
+              <li>{copy.supportBulletHuman}</li>
             </ul>
+            {support.usedFallback ? (
+              <p className="mt-6 text-sm text-muted-foreground">{copy.newsFallbackNote}</p>
+            ) : null}
             {support.body ? (
               <div className="mt-8">
                 <MarkdownDoc source={support.body} />
@@ -37,7 +38,7 @@ export default async function SupportPage() {
             ) : null}
             <div className="mt-8 flex flex-wrap gap-3">
               <a href={support.issuesUrl} target="_blank" rel="noopener noreferrer" className="btn btn-red">
-                Open a support issue
+                {copy.supportOpenIssue}
               </a>
               <a
                 href={support.issuesListUrl}
@@ -45,42 +46,38 @@ export default async function SupportPage() {
                 rel="noopener noreferrer"
                 className="btn btn-white border border-brand-red"
               >
-                Open issues
+                {copy.supportOpenIssues}
               </a>
             </div>
           </article>
           <aside className="space-y-4">
             <div className="panel p-5">
-              <p className="section-kicker">Docs</p>
-              <h2 className="mt-2 text-lg font-bold italic">Looking up how something works?</h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Product guides and writing rules are in the handbook, not here.
-              </p>
+              <p className="section-kicker">{copy.docs}</p>
+              <h2 className="mt-2 text-lg font-bold italic">{copy.supportDocsTitle}</h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.supportDocsBody}</p>
               <Link href="/docs" className="mt-4 inline-block text-sm font-semibold text-brand-red hover:underline">
-                Open docs →
+                {copy.supportOpenDocs}
               </Link>
             </div>
             <div className="panel p-5">
-              <p className="section-kicker">Join</p>
-              <h2 className="mt-2 text-lg font-bold italic">Ideas board</h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Post an idea or reply after you sign in.
-              </p>
+              <p className="section-kicker">{copy.join}</p>
+              <h2 className="mt-2 text-lg font-bold italic">{copy.supportJoinTitle}</h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy.supportJoinBody}</p>
               <Link href="/join" className="mt-4 inline-block text-sm font-semibold text-brand-red hover:underline">
-                Open Join →
+                {copy.supportOpenJoin}
               </Link>
             </div>
             <div className="panel p-5">
-              <p className="section-kicker">Source</p>
+              <p className="section-kicker">{copy.docsSource}</p>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Issue templates live in the{" "}
+                {copy.supportSource}{" "}
                 <a
                   href={support.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-semibold text-brand-red hover:underline"
                 >
-                  support repository
+                  {copy.supportRepo}
                 </a>
                 .
               </p>

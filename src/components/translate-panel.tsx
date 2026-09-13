@@ -13,6 +13,7 @@ type Props = {
   originalBody: string;
   originalHelpNeeded?: string | null;
   copy: UiCopy;
+  uiLocale?: ContentLanguage;
 };
 
 export function TranslatePanel({
@@ -23,8 +24,10 @@ export function TranslatePanel({
   originalBody,
   originalHelpNeeded,
   copy,
+  uiLocale,
 }: Props) {
-  const targetLanguage: ContentLanguage = sourceLanguage === "en" ? "zh" : "en";
+  const targetLanguage: ContentLanguage =
+    uiLocale && uiLocale !== sourceLanguage ? uiLocale : sourceLanguage === "en" ? "zh" : "en";
   const [translated, setTranslated] = useState<Extract<TranslateResult, { ok: true }> | null>(
     null,
   );
@@ -82,8 +85,10 @@ export function TranslatePanel({
             : showTranslation
               ? copy.showOriginal
               : targetLanguage === "zh"
-                ? "中文"
-                : "English"}
+                ? copy.languageZh
+                : targetLanguage === "de"
+                  ? copy.languageDe
+                  : copy.languageEn}
         </button>
         {showTranslation ? (
           <span className="text-sm text-muted-foreground">{copy.showingTranslation}</span>

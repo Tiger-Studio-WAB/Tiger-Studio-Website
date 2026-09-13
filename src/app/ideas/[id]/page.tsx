@@ -39,6 +39,7 @@ export default async function IdeaDetailPage({
             originalBody={idea.body}
             originalHelpNeeded={idea.help_needed}
             copy={copy}
+            uiLocale={locale}
           />
         </article>
 
@@ -66,6 +67,7 @@ export default async function IdeaDetailPage({
                     sourceLanguage={response.source_language}
                     originalBody={response.body}
                     copy={copy}
+                    uiLocale={locale}
                   />
                 </article>
               ))}

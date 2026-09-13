@@ -9,12 +9,23 @@ import {
   fetchRepoGuideSources,
   STUDIO_ORG,
 } from "@/lib/github";
+import type { ContentLanguage } from "@/lib/help-types";
+import { pickLocalizedText, splitLocaleMarkdownPath, stripLocaleMarkdownSuffix } from "@/lib/locale-files";
 
 export type DocFrontmatter = {
   title?: string;
   description?: string;
   order?: number;
   sidebar_label?: string;
+};
+
+export type LocalizedDoc = {
+  title: string;
+  description?: string;
+  sidebarLabel: string;
+  body: string;
+  path: string;
+  source: "local" | "github";
 };
 
 export type DocPage = {
@@ -29,6 +40,9 @@ export type DocPage = {
   isIndex: boolean;
   body: string;
   source: "local" | "github";
+  translations: Partial<Record<ContentLanguage, LocalizedDoc>>;
+  locale: ContentLanguage;
+  usedFallback: boolean;
 };
 
 export type DocSection = {
@@ -116,29 +130,45 @@ function hrefFromSlug(slug: string[]) {
 
 function isStubMarkdown(filePath: string, text: string) {
   const name = filePath.split("/").pop() ?? "";
-  if (!/^readme\.md$/i.test(name) && !/^index\.md$/i.test(name)) return false;
+  if (!/^readme(\.(zh|de))?\.md$/i.test(name) && !/^index(\.(zh|de))?\.md$/i.test(name)) return false;
   const body = text.replace(/^---[\s\S]*?---/, "").trim();
   return /^(#\s*)?(docs|support)\s*(\r?\n+(docs repository|support repo))?$/i.test(body);
 }
 
-function pageFromSource(filePath: string, text: string, source: SourceFile["source"]): DocPage {
+function localizedFromSource(filePath: string, text: string, source: SourceFile["source"], fallback: string): LocalizedDoc {
   const { data, body } = parseFrontmatter(text);
-  const { slug, isIndex, fileOrder } = slugPartsFromPath(filePath);
-  const fallback =
-    isIndex && slug.length ? humanize(slug[slug.length - 1]!) : humanize(slug[slug.length - 1] ?? "Docs");
   const title = data.title || titleFromMarkdown(body, fallback);
   return {
-    slug,
-    href: hrefFromSlug(slug),
-    path: filePath.replace(/\\/g, "/"),
     title,
     description: data.description,
     sidebarLabel: data.sidebar_label || title,
+    body,
+    path: filePath.replace(/\\/g, "/"),
+    source,
+  };
+}
+
+function pageFromEnglish(file: SourceFile, translations: Partial<Record<ContentLanguage, LocalizedDoc>>): DocPage {
+  const { slug, isIndex, fileOrder } = slugPartsFromPath(file.path);
+  const fallback =
+    isIndex && slug.length ? humanize(slug[slug.length - 1]!) : humanize(slug[slug.length - 1] ?? "Docs");
+  const english = translations.en ?? localizedFromSource(file.path, file.text, file.source, fallback);
+  const { data } = parseFrontmatter(file.text);
+  return {
+    slug,
+    href: hrefFromSlug(slug),
+    path: english.path,
+    title: english.title,
+    description: english.description,
+    sidebarLabel: english.sidebarLabel,
     order: data.order ?? fileOrder ?? (isIndex ? 0 : 50),
     section: slug.slice(0, Math.max(0, slug.length - (isIndex ? 0 : 1))),
     isIndex,
-    body,
-    source,
+    body: english.body,
+    source: english.source,
+    translations,
+    locale: "en",
+    usedFallback: false,
   };
 }
 
@@ -188,14 +218,41 @@ async function walkLocalDocs(
   return { markdown, categories };
 }
 
+function groupLocaleSources(markdown: SourceFile[]) {
+  const groups = new Map<string, Partial<Record<ContentLanguage, SourceFile>>>();
+  for (const file of markdown) {
+    const { canonical, locale } = splitLocaleMarkdownPath(file.path);
+    const current = groups.get(canonical) ?? {};
+    current[locale] = { ...file, path: file.path.replace(/\\/g, "/") };
+    groups.set(canonical, current);
+  }
+  return groups;
+}
+
+function pagesFromGroupedSources(markdown: SourceFile[]): DocPage[] {
+  const pages: DocPage[] = [];
+  for (const [canonical, variants] of groupLocaleSources(markdown)) {
+    const english = variants.en;
+    if (!english) continue;
+
+    const { slug, isIndex } = slugPartsFromPath(canonical);
+    const fallback =
+      isIndex && slug.length ? humanize(slug[slug.length - 1]!) : humanize(slug[slug.length - 1] ?? "Docs");
+    const translations: Partial<Record<ContentLanguage, LocalizedDoc>> = {};
+    for (const [locale, file] of Object.entries(variants) as [ContentLanguage, SourceFile][]) {
+      translations[locale] = localizedFromSource(file.path, file.text, file.source, fallback);
+    }
+    pages.push(pageFromEnglish({ ...english, path: canonical }, translations));
+  }
+  return pages.sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+}
+
 function buildTree(
   markdown: SourceFile[],
   categories: { path: string; text: string }[],
   githubUrl: string,
 ): DocsTree {
-  const pages = markdown
-    .map((file) => pageFromSource(file.path, file.text, file.source))
-    .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+  const pages = pagesFromGroupedSources(markdown);
 
   const categoryByDir = new Map<string, CategoryMeta>();
   for (const file of categories) {
@@ -300,10 +357,42 @@ async function loadDocsTree(): Promise<DocsTree> {
 
 export const getDocsTree = cache(loadDocsTree);
 
-export async function getDocPage(slug: string[]) {
+export function localizePage(page: DocPage, locale: ContentLanguage): DocPage {
+  const picked = pickLocalizedText(page.translations, locale);
+  const next = picked.value;
+  if (!next) return { ...page, locale, usedFallback: locale !== "en" };
+  return {
+    ...page,
+    title: next.title,
+    description: next.description,
+    sidebarLabel: next.sidebarLabel,
+    body: next.body,
+    path: next.path,
+    source: next.source,
+    locale: picked.locale,
+    usedFallback: picked.usedFallback,
+  };
+}
+
+export function localizeTree(tree: DocsTree, locale: ContentLanguage): DocsTree {
+  const pages = tree.pages.map((page) => localizePage(page, locale));
+  const byHref = new Map(pages.map((page) => [page.href, page]));
+  return {
+    ...tree,
+    pages,
+    home: tree.home ? localizePage(tree.home, locale) : null,
+    sections: tree.sections.map((section) => ({
+      ...section,
+      pages: section.pages.map((page) => byHref.get(page.href) ?? localizePage(page, locale)),
+    })),
+  };
+}
+
+export async function getDocPage(slug: string[], locale: ContentLanguage = "en") {
   const tree = await getDocsTree();
   const key = slug.join("/");
-  return tree.pages.find((page) => page.slug.join("/") === key) ?? null;
+  const page = tree.pages.find((item) => item.slug.join("/") === key) ?? null;
+  return page ? localizePage(page, locale) : null;
 }
 
 export function neighbors(tree: DocsTree, page: DocPage) {
@@ -318,16 +407,21 @@ export function neighbors(tree: DocsTree, page: DocPage) {
   };
 }
 
-export async function getSupportPage() {
+export async function getSupportPage(locale: ContentLanguage = "en") {
   const repo = await fetchNamedRepo(SUPPORT_REPO);
-  const readme = await fetchRepoFileText(SUPPORT_REPO, "README.md");
-  const stub = !readme || isStubMarkdown("README.md", readme);
+  const requestedPath = locale === "en" ? "README.md" : `README.${locale}.md`;
+  const localized = locale === "en" ? null : await fetchRepoFileText(SUPPORT_REPO, requestedPath);
+  const readme = localized ?? (await fetchRepoFileText(SUPPORT_REPO, "README.md"));
+  const usedPath = localized ? requestedPath : "README.md";
+  const stub = !readme || isStubMarkdown(usedPath, readme);
   return {
     repo,
     githubUrl: `https://github.com/${STUDIO_ORG}/${SUPPORT_REPO}`,
     issuesUrl: `https://github.com/${STUDIO_ORG}/${SUPPORT_REPO}/issues/new`,
     issuesListUrl: `https://github.com/${STUDIO_ORG}/${SUPPORT_REPO}/issues`,
     body: stub ? null : readme,
+    path: usedPath,
+    usedFallback: Boolean(readme && locale !== "en" && !localized),
   };
 }
 
@@ -344,7 +438,7 @@ export function resolveDocHref(href: string | undefined, current: string[]) {
     return href;
   }
   const [file, hash] = href.split("#");
-  const cleaned = (file ?? "").replace(/\.md$/i, "");
+  const cleaned = stripLocaleMarkdownSuffix((file ?? "").replace(/\.md$/i, ""));
   const base = current.slice(0, current.length ? current.length - 1 : 0);
   const parts = [...base];
   for (const part of cleaned.split("/")) {

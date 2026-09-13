@@ -71,7 +71,12 @@ export async function translateContent(input: {
     sourceBody = data.body;
   }
 
-  const targetName = input.targetLanguage === "zh" ? "Simplified Chinese" : "English";
+  const targetName =
+    input.targetLanguage === "zh"
+      ? "Simplified Chinese"
+      : input.targetLanguage === "de"
+        ? "German"
+        : "English";
 
   try {
     if (input.entityType === "idea") {

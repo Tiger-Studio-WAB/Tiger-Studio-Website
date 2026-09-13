@@ -34,13 +34,9 @@ export function ResponseForm({
 
   const errorMessage =
     state.error === "validation"
-      ? locale === "zh"
-        ? "回复再写完整一点。"
-        : "Write a little more before posting."
+      ? copy.replyValidation
       : state.error === "save"
-        ? locale === "zh"
-          ? "没保存成功，请再试一次。"
-          : "Could not save this. Try again."
+        ? copy.formSaveError
         : null;
 
   return (

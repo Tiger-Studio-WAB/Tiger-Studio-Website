@@ -2,24 +2,36 @@
 
 import { useRouter } from "next/navigation";
 import { setLocale } from "@/lib/actions/locale";
+import { LOCALES } from "@/lib/i18n";
 import type { ContentLanguage } from "@/lib/help-types";
+
+const LABELS: Record<ContentLanguage, string> = {
+  en: "EN",
+  zh: "中文",
+  de: "DE",
+};
 
 export function LanguageToggle({ locale }: { locale: ContentLanguage }) {
   const router = useRouter();
 
-  async function toggle() {
-    await setLocale(locale === "en" ? "zh" : "en");
+  async function choose(next: ContentLanguage) {
+    if (next === locale) return;
+    await setLocale(next);
     router.refresh();
   }
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      className="border border-white/40 px-2.5 py-1 text-xs font-semibold text-white hover:bg-white hover:text-brand-red"
-      aria-label="Switch language"
-    >
-      {locale === "en" ? "中文" : "EN"}
-    </button>
+    <div className="lang-picker" role="group" aria-label="Language">
+      {LOCALES.map((item) => (
+        <button
+          key={item}
+          type="button"
+          aria-pressed={item === locale}
+          onClick={() => choose(item)}
+        >
+          {LABELS[item]}
+        </button>
+      ))}
+    </div>
   );
 }
