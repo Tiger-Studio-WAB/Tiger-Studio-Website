@@ -10,6 +10,7 @@ import { listPlaytestShares } from "@/lib/data";
 import { authorLabel } from "@/lib/display-name";
 import { getCopy } from "@/lib/locale";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { safeHttpUrl } from "@/lib/urls";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { copy } = await getCopy();
@@ -33,7 +34,7 @@ export default async function HelpSharePage({
           <div className="panel p-6">
             {user ? (
               <>
-                {ok ? <p className="mb-4 text-sm text-muted-foreground">{copy.replyPosted}</p> : null}
+                {ok ? <p className="mb-4 text-sm text-muted-foreground">{copy.sharePosted}</p> : null}
                 <ShareForm copy={copy} error={error} />
               </>
             ) : (
@@ -46,26 +47,30 @@ export default async function HelpSharePage({
             )}
           </div>
           <aside className="space-y-4">
-            {shares.map((share) => (
-              <article key={share.id} className="panel p-5">
-                <h2 className="text-lg font-bold italic">{share.title}</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {authorLabel(copy, { isAnonymous: share.is_anonymous, profile: share.profiles })}
-                </p>
-                <BadgeRow badges={share.badges} copy={copy} />
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">{share.what_to_try}</p>
-                {share.link ? (
-                  <a
-                    href={share.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 inline-block text-sm font-semibold text-brand-red hover:underline"
-                  >
-                    {share.link}
-                  </a>
-                ) : null}
-              </article>
-            ))}
+            {shares.map((share) => {
+              const safeLink = safeHttpUrl(share.link);
+              return (
+                <article key={share.id} className="panel p-5">
+                  <h2 className="text-lg font-bold italic">{share.title}</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {authorLabel(copy, { isAnonymous: share.is_anonymous, profile: share.profiles })}
+                  </p>
+                  <BadgeRow badges={share.badges} copy={copy} />
+                  <p className="mt-3 text-sm leading-7 text-muted-foreground">{share.what_to_try}</p>
+                  {share.notes ? <p className="mt-2 text-sm leading-7 text-muted-foreground">{share.notes}</p> : null}
+                  {safeLink ? (
+                    <a
+                      href={safeLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-block text-sm font-semibold text-brand-red hover:underline"
+                    >
+                      {safeLink}
+                    </a>
+                  ) : null}
+                </article>
+              );
+            })}
           </aside>
         </div>
       </PageShell>

@@ -36,6 +36,9 @@ export default async function HelpHomePage() {
                     </p>
                     <BadgeRow badges={share.badges} copy={copy} />
                     <p className="mt-2 line-clamp-3 text-sm leading-7 text-muted-foreground">{share.what_to_try}</p>
+                    {share.notes ? (
+                      <p className="mt-1 line-clamp-2 text-sm leading-7 text-muted-foreground">{share.notes}</p>
+                    ) : null}
                   </div>
                 ))
               )}

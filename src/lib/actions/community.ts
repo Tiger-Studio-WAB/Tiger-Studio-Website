@@ -5,16 +5,18 @@ import { redirect } from "next/navigation";
 import { requireSessionUser } from "@/lib/auth";
 import { awardBadge } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
+import { safeHttpUrl } from "@/lib/urls";
 
 export async function createPlaytestShare(formData: FormData) {
   const user = await requireSessionUser();
   const title = String(formData.get("title") ?? "").trim();
   const whatToTry = String(formData.get("what_to_try") ?? "").trim();
-  const link = String(formData.get("link") ?? "").trim();
+  const rawLink = String(formData.get("link") ?? "").trim();
   const notes = String(formData.get("notes") ?? "").trim();
   const isAnonymous = formData.get("is_anonymous") === "on";
+  const link = rawLink ? safeHttpUrl(rawLink) : null;
 
-  if (title.length < 3 || whatToTry.length < 10) {
+  if (title.length < 3 || whatToTry.length < 10 || (rawLink && !link)) {
     redirect("/help/share?error=validation");
   }
 
@@ -23,7 +25,7 @@ export async function createPlaytestShare(formData: FormData) {
     author_id: user.id,
     title,
     what_to_try: whatToTry,
-    link: link || null,
+    link,
     notes: notes || null,
     is_anonymous: isAnonymous,
   });

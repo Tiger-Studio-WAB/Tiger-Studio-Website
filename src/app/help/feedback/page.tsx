@@ -38,7 +38,7 @@ export default async function HelpFeedbackPage({
           <div className="panel p-6">
             {user ? (
               <>
-                {ok ? <p className="mb-4 text-sm text-muted-foreground">{copy.replyPosted}</p> : null}
+                {ok ? <p className="mb-4 text-sm text-muted-foreground">{copy.feedbackPosted}</p> : null}
                 <FeedbackForm copy={copy} shares={shares} error={error} />
               </>
             ) : (

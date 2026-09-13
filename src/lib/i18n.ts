@@ -176,6 +176,7 @@ export type UiCopy = {
   shareAnonymous: string;
   shareSubmit: string;
   shareNeedSignIn: string;
+  sharePosted: string;
   feedbackKicker: string;
   feedbackTitle: string;
   feedbackLede: string;
@@ -185,6 +186,7 @@ export type UiCopy = {
   feedbackAnonymous: string;
   feedbackSubmit: string;
   feedbackNeedSignIn: string;
+  feedbackPosted: string;
   badgesTitle: string;
   badgeFirstFeedback: string;
   badgeFirstPlaytest: string;
@@ -389,6 +391,7 @@ const en: UiCopy = {
   shareAnonymous: "Hide my name (badges still show)",
   shareSubmit: "Share playtest",
   shareNeedSignIn: "Sign in to share a build.",
+  sharePosted: "Playtest shared.",
   feedbackKicker: "Feedback",
   feedbackTitle: "Tell someone what you found",
   feedbackLede:
@@ -399,6 +402,7 @@ const en: UiCopy = {
   feedbackAnonymous: "Hide my name (badges still show)",
   feedbackSubmit: "Post feedback",
   feedbackNeedSignIn: "Sign in to leave feedback.",
+  feedbackPosted: "Feedback posted.",
   badgesTitle: "Badges",
   badgeFirstFeedback: "First feedback",
   badgeFirstPlaytest: "First playtest",
@@ -602,6 +606,7 @@ const zh: UiCopy = {
   shareAnonymous: "隐藏我的名字（徽章仍显示）",
   shareSubmit: "发布试玩",
   shareNeedSignIn: "登录后才能分享作品。",
+  sharePosted: "试玩已分享。",
   feedbackKicker: "反馈",
   feedbackTitle: "告诉对方你发现了什么",
   feedbackLede: "反馈需要登录，这样才能发徽章并减少垃圾内容。匿名只隐藏名字，不隐藏徽章。",
@@ -611,6 +616,7 @@ const zh: UiCopy = {
   feedbackAnonymous: "隐藏我的名字（徽章仍显示）",
   feedbackSubmit: "发布反馈",
   feedbackNeedSignIn: "登录后才能留下反馈。",
+  feedbackPosted: "反馈已发布。",
   badgesTitle: "徽章",
   badgeFirstFeedback: "第一次反馈",
   badgeFirstPlaytest: "第一次试玩分享",
@@ -823,6 +829,7 @@ const de: UiCopy = {
   shareAnonymous: "Meinen Namen verstecken (Abzeichen bleiben)",
   shareSubmit: "Playtest teilen",
   shareNeedSignIn: "Melde dich an, um einen Build zu teilen.",
+  sharePosted: "Playtest ist geteilt.",
   feedbackKicker: "Feedback",
   feedbackTitle: "Sag, was du gefunden hast",
   feedbackLede:
@@ -833,6 +840,7 @@ const de: UiCopy = {
   feedbackAnonymous: "Meinen Namen verstecken (Abzeichen bleiben)",
   feedbackSubmit: "Feedback posten",
   feedbackNeedSignIn: "Melde dich an, um Feedback zu lassen.",
+  feedbackPosted: "Feedback ist da.",
   badgesTitle: "Abzeichen",
   badgeFirstFeedback: "Erstes Feedback",
   badgeFirstPlaytest: "Erster Playtest",

@@ -300,7 +300,7 @@ function buildTree(
       ...section,
       pages: [...section.pages].sort((a, b) => {
         if (a.isIndex && a.slug.length === 1) return -1;
-        if (b.isIndex && a.slug.length === 1) return 1;
+        if (b.isIndex && b.slug.length === 1) return 1;
         return a.order - b.order || a.title.localeCompare(b.title);
       }),
     }))
