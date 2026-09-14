@@ -66,7 +66,7 @@ export function HomeStory({
         {
           src: "/home/godot-icon.svg",
           contain: true,
-          alt: "Project 1",
+          alt: products[0]?.name || copy.productsPublic,
           body: copy.homeProductsBody,
           bullets: products.slice(0, 4).map((item) => ({
             title: item.name,
