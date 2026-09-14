@@ -370,22 +370,42 @@ async function loadDocsTree(): Promise<DocsTree> {
 
 export const getDocsTree = cache(loadDocsTree);
 
+function localizeHomeHeading(page: DocPage, locale: ContentLanguage): DocPage {
+  if (page.slug.length !== 0) return page;
+  const titles: Partial<Record<ContentLanguage, string>> = {
+    de: "Tiger Studio Dokumente",
+    zh: "Tiger Studio 文档",
+  };
+  const nextTitle = titles[locale];
+  if (!nextTitle) return page;
+  if (!/Tiger Studio Docs/i.test(`${page.title}\n${page.body}`)) return page;
+  return {
+    ...page,
+    title: nextTitle,
+    sidebarLabel: nextTitle,
+    body: page.body.replace(/^#\s+.+$/m, `# ${nextTitle}`),
+  };
+}
+
 export function localizePage(page: DocPage, locale: ContentLanguage): DocPage {
   const picked = pickLocalizedText(page.translations, locale);
   const next = picked.value;
-  if (!next) return { ...page, locale, usedFallback: locale !== "en" };
-  return {
-    ...page,
-    title: next.title,
-    description: next.description,
-    sidebarLabel: next.sidebarLabel,
-    body: next.body,
-    path: next.path,
-    source: next.source,
-    imageBase: next.imageBase,
-    locale: picked.locale,
-    usedFallback: picked.usedFallback,
-  };
+  if (!next) return localizeHomeHeading({ ...page, locale, usedFallback: locale !== "en" }, locale);
+  return localizeHomeHeading(
+    {
+      ...page,
+      title: next.title,
+      description: next.description,
+      sidebarLabel: next.sidebarLabel,
+      body: next.body,
+      path: next.path,
+      source: next.source,
+      imageBase: next.imageBase,
+      locale: picked.locale,
+      usedFallback: picked.usedFallback,
+    },
+    locale,
+  );
 }
 
 export function localizeTree(tree: DocsTree, locale: ContentLanguage): DocsTree {

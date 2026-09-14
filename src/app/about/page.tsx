@@ -33,7 +33,7 @@ export default async function AboutPage() {
               <strong>{copy.help}</strong> {copy.aboutHelp}
             </li>
             <li>
-              <strong>{copy.support}</strong> {copy.aboutSupport}
+              <strong>{copy.supportShort}</strong> {copy.aboutSupport}
             </li>
             <li>
               <strong>{copy.news}</strong> {copy.aboutNews}

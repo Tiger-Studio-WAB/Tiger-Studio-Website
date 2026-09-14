@@ -198,12 +198,24 @@ async function loadNewsRecords(): Promise<NewsRecord[]> {
 
 const getNewsRecords = cache(loadNewsRecords);
 
+function isLocalLaunchNote(post: NewsPost) {
+  if (post.source !== "local") return false;
+  return /welcome|starts-here|studio-news-starts/i.test(`${post.slug} ${post.title}`);
+}
+
+function preferRepoLaunchNotes(posts: NewsPost[]) {
+  if (!posts.some((post) => post.source === "github")) return posts;
+  return posts.filter((post) => !isLocalLaunchNote(post));
+}
+
 export async function listNewsPosts(locale: ContentLanguage): Promise<NewsPost[]> {
   const records = await getNewsRecords();
-  return records
-    .map((record) => postFromRecord(record, locale))
-    .filter((post): post is NewsPost => Boolean(post))
-    .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+  return preferRepoLaunchNotes(
+    records
+      .map((record) => postFromRecord(record, locale))
+      .filter((post): post is NewsPost => Boolean(post))
+      .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title)),
+  );
 }
 
 export async function getNewsPost(slug: string, locale: ContentLanguage): Promise<NewsPost | null> {

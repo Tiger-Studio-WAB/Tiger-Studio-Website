@@ -55,6 +55,7 @@ export type UiCopy = {
   join: string;
   docs: string;
   support: string;
+  supportShort: string;
   help: string;
   news: string;
   changelog: string;
@@ -184,6 +185,7 @@ export type UiCopy = {
   resourcesHandbook: string;
   resourcesHandbookBody: string;
   resourcesSupportBody: string;
+  resourcesGithubBody: string;
   resourcesIdeasBody: string;
   resourcesNewsBody: string;
   shareKicker: string;
@@ -279,6 +281,7 @@ const en: UiCopy = {
   join: "Join",
   docs: "Docs",
   support: "Support",
+  supportShort: "Support",
   help: "Help",
   news: "News",
   changelog: "Changelog",
@@ -396,7 +399,7 @@ const en: UiCopy = {
   helpKickerBadges: "Badges",
   helpRecentShares: "Playtests to try",
   helpRecentFeedback: "Recent notes",
-  helpEmptyShares: "No playtests yet. Share a build after you sign in — or this list stays empty until the Help SQL is running.",
+  helpEmptyShares: "No playtests yet. Share a build after you sign in.",
   helpEmptyFeedback: "Open a playtest to write a note.",
   helpOpenResources: "Open resources →",
   helpOpenShare: "Share a build →",
@@ -408,16 +411,17 @@ const en: UiCopy = {
   shareNotFoundBody:
     "It may have been removed, or the share tables are not set up yet. You can still browse resources and docs.",
   shareEmptyTitle: "No playtests yet",
-  shareEmptyBody: "Share a build first. Then others can open it and reply here. If this list stays empty, the Help SQL may still be unrun.",
+  shareEmptyBody: "Share a build first. Then others can open it and reply here.",
   shareFeedbackTitle: "Feedback on this playtest",
   shareFeedbackEmpty: "No feedback on this playtest yet.",
   shareFirstHint: "Share a build first. Other people leave feedback on that playtest, not on a separate tab.",
   resourcesKicker: "Resources",
-  resourcesTitle: "Guides, support, and the board",
+  resourcesTitle: "Handbook, support, and the board",
   resourcesLede: "Handbook pages, the support desk, ideas, and studio news — still the same login.",
   resourcesHandbook: "Handbook",
   resourcesHandbookBody: "How the hub, Git, Godot, and TypeScript work.",
   resourcesSupportBody: "Broken pages, sign-in trouble, or a human from the club.",
+  resourcesGithubBody: "Public repos and club work live here.",
   resourcesIdeasBody: "Ask for help on a project idea after you sign in.",
   resourcesNewsBody: "Studio-written posts, with English if a translation is missing.",
   shareKicker: "Share",
@@ -522,6 +526,7 @@ const zh: UiCopy = {
   join: "加入",
   docs: "文档",
   support: "支持",
+  supportShort: "支持",
   help: "帮助",
   news: "新闻",
   changelog: "更新记录",
@@ -632,7 +637,7 @@ const zh: UiCopy = {
   helpKickerBadges: "徽章",
   helpRecentShares: "可以试玩的作品",
   helpRecentFeedback: "最近的笔记",
-  helpEmptyShares: "还没有试玩。登录后可以分享；如果 Help SQL 还没跑，这里会一直是空的。",
+  helpEmptyShares: "还没有试玩。登录后可以分享。",
   helpEmptyFeedback: "打开一个试玩再写笔记。",
   helpOpenResources: "打开资源 →",
   helpOpenShare: "分享作品 →",
@@ -643,7 +648,7 @@ const zh: UiCopy = {
   shareNotFoundTitle: "这个试玩不在这里",
   shareNotFoundBody: "它可能已删除，或分享表还没有建好。你仍然可以看资源和文档。",
   shareEmptyTitle: "还没有试玩",
-  shareEmptyBody: "先分享一个作品，别人才能打开并在这里回复。如果这里一直是空的，可能是 Help SQL 还没跑。",
+  shareEmptyBody: "先分享一个作品，别人才能打开并在这里回复。",
   shareFeedbackTitle: "对这次试玩的反馈",
   shareFeedbackEmpty: "这次试玩还没有反馈。",
   shareFirstHint: "先分享作品。反馈写在那次试玩上，不是单独的标签页。",
@@ -653,6 +658,7 @@ const zh: UiCopy = {
   resourcesHandbook: "手册",
   resourcesHandbookBody: "这个站点、Git、Godot 和 TypeScript 怎么用。",
   resourcesSupportBody: "页面坏了、登录出问题，或需要社团里的人。",
+  resourcesGithubBody: "公开仓库和社团工作都在这里。",
   resourcesIdeasBody: "登录后，为项目想法请求帮助。",
   resourcesNewsBody: "社团自己写的文章；缺译文时显示英文。",
   shareKicker: "分享",
@@ -756,6 +762,7 @@ const de: UiCopy = {
   join: "Mitmachen",
   docs: "Dokumente",
   support: "Support-Seite",
+  supportShort: "Support",
   help: "Hilfe",
   news: "Nachrichten",
   changelog: "Changelog",
@@ -775,7 +782,7 @@ const de: UiCopy = {
   homeProductsBody: "Öffentliche Projekte des Studios.",
   homeAboutBody: "Was Tiger Studio ist und wie der Hub funktioniert.",
   homeJoinBody: "Ideen posten, antworten und mit dem Club shippen.",
-  homeHelpBody: "Playtests, Feedback, Docs und Support an einem Ort.",
+  homeHelpBody: "Playtests, Notizen, Dokumente und Support an einem Ort.",
   productsKicker: "Produkte",
   productsTitle: "Was das Studio veröffentlicht",
   productsLede: "Öffentliche Repos, das Ideenboard und die Websites, auf die die Projekte zeigen.",
@@ -796,10 +803,10 @@ const de: UiCopy = {
   aboutHowTitle: "So ist der Hub aufgebaut",
   aboutProducts: "Produkte listet öffentliche Repos und Studio-Tools.",
   aboutJoin: "Mitmachen ist Proj.Help: Ideen, Antworten und Übersetzung.",
-  aboutDocs: "Docs ist das Handbuch: Ordner und Markdown, mit einer Sidebar wie andere Entwickler-Docs.",
-  aboutSupport: "Support ist getrennt — Issues und Hilfe, keine Anleitungen.",
+  aboutDocs: "Das Handbuch: Ordner und Markdown, mit einer Sidebar wie andere Entwickler-Handbücher.",
+  aboutSupport: "Hier geht es um Issues und Hilfe, nicht um Anleitungen.",
   aboutHelp: "Hilfe ist eine Seite in der Seite: Build teilen, Feedback zu diesem Playtest geben, Ressourcen finden.",
-  aboutNews: "News sind vom Studio geschriebene Markdown-Texte, kein roher GitHub-Event-Feed.",
+  aboutNews: "Vom Studio geschriebene Markdown-Texte, kein roher GitHub-Event-Feed.",
   joinKicker: "Mitmachen",
   joinTitle: "Poste eine Idee. Bitte um Hilfe.",
   joinLede:
@@ -822,7 +829,7 @@ const de: UiCopy = {
   docsSectionWebsite: "Website",
   supportKicker: "Support",
   supportTitle: "Hilfe holen",
-  supportLede: "Support ist für Probleme und Fragen. Anleitungen stehen in den Docs.",
+  supportLede: "Support ist für Probleme und Fragen. Anleitungen stehen in den Dokumenten.",
   supportWhatTitle: "Dafür ist diese Seite da",
   supportBulletSignin: "Anmeldung ist nicht fertig (GitHub oder Microsoft)",
   supportBulletBroken: "Eine Seite hier ist kaputt oder fehlt",
@@ -831,7 +838,7 @@ const de: UiCopy = {
   supportOpenIssues: "Offene Issues ansehen",
   supportDocsTitle: "Du suchst, wie etwas funktioniert?",
   supportDocsBody: "Produktanleitungen und Schreibregeln stehen im Handbuch, nicht hier.",
-  supportOpenDocs: "Docs öffnen →",
+  supportOpenDocs: "Dokumente öffnen →",
   supportJoinTitle: "Ideenboard",
   supportJoinBody: "Nach der Anmeldung Idee posten oder antworten.",
   supportOpenJoin: "Mitmachen öffnen →",
@@ -873,7 +880,7 @@ const de: UiCopy = {
   helpKickerBadges: "Abzeichen",
   helpRecentShares: "Playtests zum Ausprobieren",
   helpRecentFeedback: "Neue Notizen",
-  helpEmptyShares: "Noch keine Playtests. Nach der Anmeldung teilen — oder die Liste bleibt leer, bis die Help-SQL läuft.",
+  helpEmptyShares: "Noch keine Playtests. Nach der Anmeldung teilen.",
   helpEmptyFeedback: "Öffne einen Playtest, um eine Notiz zu schreiben.",
   helpOpenResources: "Ressourcen öffnen →",
   helpOpenShare: "Build teilen →",
@@ -883,18 +890,19 @@ const de: UiCopy = {
   shareOpen: "Playtest öffnen",
   shareNotFoundTitle: "Dieser Playtest ist nicht hier",
   shareNotFoundBody:
-    "Er wurde entfernt, oder die Share-Tabellen sind noch nicht eingerichtet. Ressourcen und Docs bleiben offen.",
+    "Er wurde entfernt, oder die Share-Tabellen sind noch nicht eingerichtet. Ressourcen und Dokumente bleiben offen.",
   shareEmptyTitle: "Noch keine Playtests",
-  shareEmptyBody: "Teile zuerst einen Build. Dann können andere ihn öffnen und hier antworten. Bleibt die Liste leer, fehlt oft noch die Help-SQL.",
+  shareEmptyBody: "Teile zuerst einen Build. Dann können andere ihn öffnen und hier antworten.",
   shareFeedbackTitle: "Feedback zu diesem Playtest",
   shareFeedbackEmpty: "Noch kein Feedback zu diesem Playtest.",
   shareFirstHint: "Teile zuerst einen Build. Feedback gehört zu diesem Playtest, nicht auf einen eigenen Tab.",
   resourcesKicker: "Ressourcen",
-  resourcesTitle: "Guides, Support und das Board",
-  resourcesLede: "Handbuch, Support, Ideen und Studio-News — dieselbe Anmeldung.",
+  resourcesTitle: "Handbuch, Support und das Board",
+  resourcesLede: "Handbuch, Support, Ideen und Studio-Nachrichten — dieselbe Anmeldung.",
   resourcesHandbook: "Handbuch",
   resourcesHandbookBody: "Wie Hub, Git, Godot und TypeScript funktionieren.",
   resourcesSupportBody: "Kaputte Seiten, Anmeldeprobleme oder ein Mensch aus dem Club.",
+  resourcesGithubBody: "Öffentliche Repos und die Club-Arbeit liegen hier.",
   resourcesIdeasBody: "Nach der Anmeldung um Hilfe bei einer Projektidee bitten.",
   resourcesNewsBody: "Vom Studio geschriebene Beiträge; ohne Übersetzung erscheint Englisch.",
   shareKicker: "Teilen",

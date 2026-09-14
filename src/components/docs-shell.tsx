@@ -26,14 +26,19 @@ export function DocsShell({
   };
   const crumbs = [
     { href: "/docs", label: copy.docs },
-    ...page.slug.map((part, index) => ({
-      href: `/docs/${page.slug.slice(0, index + 1).join("/")}`,
-      label: docsSectionLabel(
-        part,
-        part.replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
-        copy,
-      ),
-    })),
+    ...page.slug.map((part, index) => {
+      const last = index === page.slug.length - 1;
+      return {
+        href: `/docs/${page.slug.slice(0, index + 1).join("/")}`,
+        label: last
+          ? page.sidebarLabel || page.title
+          : docsSectionLabel(
+              part,
+              part.replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
+              copy,
+            ),
+      };
+    }),
   ];
   const { previous, next } = neighbors(localizedTree, page);
   const sections = landing

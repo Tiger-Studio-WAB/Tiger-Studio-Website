@@ -78,7 +78,6 @@ function buildBoxes(
       kind: "stat",
       kicker: copy.orbitStudio,
       title: fill(copy.orbitCommits, { count: formatCount(commitCount) }),
-      meta: copy.orbitCommitsMeta,
       href: "/news",
     },
     {
@@ -86,17 +85,16 @@ function buildBoxes(
       kind: "stat",
       kicker: copy.orbitStudio,
       title: fill(copy.orbitPullRequests, { count: formatCount(pullRequestCount) }),
-      meta: copy.orbitPrsMeta,
       href: "/news",
     },
   ];
   const languageBoxes: Omit<OrbitBox, "ring" | "slot" | "slotCount">[] = languageItems.map(
-    (language) => ({
+    (language, index) => ({
       id: `lang-${language.name}`,
       kind: "language",
       kicker: copy.orbitLanguage,
       title: language.name,
-      meta: formatShare(language.bytes, totalBytes, copy),
+      meta: index === 0 ? undefined : formatShare(language.bytes, totalBytes, copy),
     }),
   );
   const commitBoxes: Omit<OrbitBox, "ring" | "slot" | "slotCount">[] = commitItems.map((commit) => ({
@@ -126,7 +124,7 @@ function ringPoint(box: Pick<OrbitBox, "ring" | "slot" | "slotCount">, innerRadi
 }
 
 function initialTransform(box: OrbitBox, tilt: number) {
-  const { angle, r } = ringPoint(box, 132, 228);
+  const { angle, r } = ringPoint(box, 108, 276);
   return `translate(-50%, -50%) translate(${Math.cos(angle) * r}px, ${Math.sin(angle) * r}px) rotate(${tilt}deg)`;
 }
 
@@ -172,9 +170,9 @@ export function OrbitHero({
             const height = rootRef.current?.querySelector(".hero-grid")?.clientHeight ?? window.innerHeight;
             const span = Math.min(width, height);
             if (isMobile) {
-              return { inner: Math.max(92, span * 0.2), outer: Math.max(158, span * 0.34) };
+              return { inner: Math.max(84, span * 0.16), outer: Math.max(196, span * 0.38) };
             }
-            return { inner: Math.max(128, span * 0.2), outer: Math.max(220, span * 0.34) };
+            return { inner: Math.max(108, span * 0.155), outer: Math.max(276, span * 0.4) };
           };
 
           const apply = (progress: number) => {
@@ -269,8 +267,9 @@ export function OrbitHero({
         <h1 className="sr-only">Tiger Studio</h1>
         <div className="relative isolate mx-auto flex min-h-[100svh] w-full max-w-none items-center justify-center px-5 py-16">
           {boxes.map((box, index) => {
-            const width = box.kind === "commit" ? 168 : box.kind === "language" ? languageWidth(box.title) : 138;
-            const tilt = ((index * 31) % 5) - 2;
+            const width =
+              box.kind === "commit" ? 160 : box.kind === "language" ? languageWidth(box.title) : 118;
+            const tilt = box.ring === "inner" ? 0 : ((index * 31) % 5) - 2;
             const className = `orbit-box absolute left-1/2 top-1/2 block shadow-[0_12px_32px_rgba(0,0,0,0.2)] ${
               BOX_COLORS[index % BOX_COLORS.length]
             } ${box.kind === "stat" ? "uppercase tracking-wide" : ""}`;

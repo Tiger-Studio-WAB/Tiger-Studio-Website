@@ -1,9 +1,9 @@
 ---
 title: Locale fallback demo
-description: English-only local page so missing German copy falls back here.
+description: Local page with English, Chinese, and German siblings so missing languages fall back here.
 order: 90
 ---
 
 # Locale fallback demo
 
-This starter page lives on the hub. It has a Chinese sibling and no German sibling. Switching the language picker to DE should keep this English text instead of 404.
+This starter page lives on the hub. It has Chinese and German siblings. If a language file is missing, the English source is shown instead of a 404.

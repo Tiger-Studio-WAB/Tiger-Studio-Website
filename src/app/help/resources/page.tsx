@@ -14,17 +14,17 @@ export default async function HelpResourcesPage() {
   const { copy } = await getCopy();
   const cards = [
     { href: "/docs", title: copy.resourcesHandbook, body: copy.resourcesHandbookBody },
-    { href: "/support", title: copy.support, body: copy.resourcesSupportBody },
+    { href: "/support", title: copy.supportShort, body: copy.resourcesSupportBody },
     { href: "/ideas", title: copy.ideas, body: copy.resourcesIdeasBody },
     { href: "/news", title: copy.news, body: copy.resourcesNewsBody },
-    { href: site.links.github, title: "GitHub", body: copy.joinGithubNote, external: true },
+    { href: site.links.github, title: "GitHub", body: copy.resourcesGithubBody, external: true },
   ];
 
   return (
     <>
       <PageHero kicker={copy.resourcesKicker} title={copy.resourcesTitle} lede={copy.resourcesLede} />
       <PageShell>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           {cards.map((card) =>
             card.external ? (
               <a
