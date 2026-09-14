@@ -139,7 +139,8 @@ function isStubMarkdown(filePath: string, text: string) {
 }
 
 function docsImageBase(source: SourceFile["source"], filePath: string) {
-  return markdownAssetBase(source, filePath, {
+  const normalized = filePath.replace(/\\/g, "/").replace(/^\.\//, "");
+  return markdownAssetBase(source, normalized, {
     localPrefix: "/api/docs-media",
     githubBase: `https://raw.githubusercontent.com/${STUDIO_ORG}/${DOCS_REPO}/main`,
   });

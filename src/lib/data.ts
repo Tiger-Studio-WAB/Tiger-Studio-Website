@@ -22,15 +22,38 @@ export async function listIdeas(options?: {
   }
 
   const { data, error } = await query;
-  if (error || !data) return [];
+  if (!error && data) {
+    return data.map((row) => {
+      const responses = row.responses as { count: number }[] | null;
+      return {
+        ...(row as Idea),
+        response_count: responses?.[0]?.count ?? 0,
+      };
+    });
+  }
 
-  return data.map((row) => {
-    const responses = row.responses as { count: number }[] | null;
-    return {
-      ...(row as Idea),
-      response_count: responses?.[0]?.count ?? 0,
-    };
-  });
+  // Guests can read `ideas` after the public-select migration, but profile /
+  // response embeds still fail under member-only RLS. Fall back so the board
+  // is not empty for signed-out visitors.
+  let fallback = supabase.from("ideas").select("*").order("created_at", { ascending: false });
+  if (options?.authorId) {
+    fallback = fallback.eq("author_id", options.authorId);
+  }
+  if (options?.category && options.category !== "all") {
+    fallback = fallback.eq("category", options.category);
+  }
+
+  const { data: ideasOnly, error: ideasError } = await fallback;
+  if (ideasError || !ideasOnly) {
+    console.error("[ideas] list failed", error, ideasError);
+    return [];
+  }
+
+  return ideasOnly.map((row) => ({
+    ...(row as Idea),
+    profiles: null,
+    response_count: 0,
+  }));
 }
 
 export async function getIdea(id: string): Promise<Idea | null> {
@@ -43,8 +66,21 @@ export async function getIdea(id: string): Promise<Idea | null> {
     .eq("id", id)
     .maybeSingle();
 
-  if (error || !data) return null;
-  return data as Idea;
+  if (!error && data) return data as Idea;
+
+  const { data: ideaOnly, error: ideaError } = await supabase
+    .from("ideas")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (ideaError) {
+    console.error("[ideas] get failed", error, ideaError);
+    return null;
+  }
+
+  if (!ideaOnly) return null;
+  return { ...(ideaOnly as Idea), profiles: null };
 }
 
 export async function listResponses(ideaId: string): Promise<ResponsePost[]> {
