@@ -15,7 +15,7 @@ const items = [
   { href: "/help/share", key: "helpNavShare" },
   { href: "/docs", key: "docs" },
   { href: "/support", key: "support" },
-  { href: "/ideas", key: "ideas" },
+  { href: "/join", key: "ideas" },
 ] as const;
 
 export function HelpNav({ copy }: { copy: UiCopy }) {

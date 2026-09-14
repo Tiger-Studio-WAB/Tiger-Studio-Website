@@ -280,6 +280,59 @@ async function recentOrbitCommits(repos: GitHubRepo[], events: GitHubEvent[]): P
   return sanitizeCommits(await fetchRecentStudioCommits(repos));
 }
 
+const STUDIO_BLURBS: Record<string, { name?: string; description: string }> = {
+  "tiger-studio-website": {
+    name: "Tiger Studio hub",
+    description: "The public club website: news, handbook, help, and join.",
+  },
+  "wab-project-1": {
+    name: "Project 1",
+    description: "The first project from Tiger Studio.",
+  },
+  "project-1": {
+    name: "Project 1",
+    description: "The first project from Tiger Studio.",
+  },
+};
+
+function closeOpenQuote(value: string) {
+  const quotes = (value.match(/"/g) ?? []).length;
+  if (quotes % 2 === 0) return value;
+  return `${value.replace(/"+$/, "").trimEnd()}."`;
+}
+
+function withStudioBlurb(item: Destination): Destination {
+  const blurb = STUDIO_BLURBS[item.slug] ?? STUDIO_BLURBS[item.name.toLowerCase()];
+  if (blurb) {
+    return { ...item, name: blurb.name ?? item.name, description: blurb.description };
+  }
+  return { ...item, description: closeOpenQuote(item.description) };
+}
+
+function isGuideCard(item: Destination) {
+  return item.slug === "docs" || item.slug === "support" || item.category === "Docs" || item.category === "Support";
+}
+
+function isToolCard(item: Destination) {
+  return item.category === "Tools" || item.slug === "vercel" || item.slug === "nextjs";
+}
+
+function isInfraCard(item: Destination) {
+  return /^(docs|support|news)$/i.test(item.slug) || /proj\.help-website/i.test(item.slug);
+}
+
+export function clubProductDestinations(items: Destination[]) {
+  return items
+    .filter((item) => !isGuideCard(item) && !isToolCard(item) && !isInfraCard(item) && item.slug !== "github-org")
+    .map(withStudioBlurb);
+}
+
+export function otherSiteDestinations(items: Destination[]) {
+  return items
+    .filter((item) => isToolCard(item) || item.slug === "github-org" || /proj\.help-website/i.test(item.slug))
+    .map(withStudioBlurb);
+}
+
 function uniqueByKey<T extends { slug: string; url: string }>(items: T[], key: (item: T) => string) {
   const seen = new Set<string>();
   return items.filter((item) => {

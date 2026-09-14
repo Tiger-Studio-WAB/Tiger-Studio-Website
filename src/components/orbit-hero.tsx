@@ -34,6 +34,7 @@ type OrbitBox = {
   ring: Ring;
   slot: number;
   slotCount: number;
+  mobile: "keep" | "extra";
 };
 
 function formatCount(value: number) {
@@ -72,7 +73,7 @@ function buildBoxes(
   const commitItems = recentCommits.slice(0, COMMIT_LIMIT);
   const totalBytes = languageItems.reduce((sum, language) => sum + language.bytes, 0);
 
-  const stats: Omit<OrbitBox, "ring" | "slot" | "slotCount">[] = [
+  const stats: Omit<OrbitBox, "ring" | "slot" | "slotCount" | "mobile">[] = [
     {
       id: "stat-commits",
       kind: "stat",
@@ -88,7 +89,7 @@ function buildBoxes(
       href: "/news",
     },
   ];
-  const languageBoxes: Omit<OrbitBox, "ring" | "slot" | "slotCount">[] = languageItems.map(
+  const languageBoxes: Omit<OrbitBox, "ring" | "slot" | "slotCount" | "mobile">[] = languageItems.map(
     (language, index) => ({
       id: `lang-${language.name}`,
       kind: "language",
@@ -97,7 +98,7 @@ function buildBoxes(
       meta: index === 0 ? undefined : formatShare(language.bytes, totalBytes, copy),
     }),
   );
-  const commitBoxes: Omit<OrbitBox, "ring" | "slot" | "slotCount">[] = commitItems.map((commit) => ({
+  const commitBoxes: Omit<OrbitBox, "ring" | "slot" | "slotCount" | "mobile">[] = commitItems.map((commit) => ({
     id: `commit-${commit.id}`,
     kind: "commit",
     kicker: copy.orbitCommit,
@@ -108,10 +109,23 @@ function buildBoxes(
 
   const inner = [...stats, ...languageBoxes.slice(0, 1)];
   const outer = [...languageBoxes.slice(1), ...commitBoxes];
+  const firstCommit = outer.findIndex((box) => box.kind === "commit");
 
   return [
-    ...inner.map((box, slot) => ({ ...box, ring: "inner" as const, slot, slotCount: inner.length })),
-    ...outer.map((box, slot) => ({ ...box, ring: "outer" as const, slot, slotCount: outer.length })),
+    ...inner.map((box, slot) => ({
+      ...box,
+      ring: "inner" as const,
+      slot,
+      slotCount: inner.length,
+      mobile: "keep" as const,
+    })),
+    ...outer.map((box, slot) => ({
+      ...box,
+      ring: "outer" as const,
+      slot,
+      slotCount: outer.length,
+      mobile: box.kind === "commit" && slot === firstCommit ? ("keep" as const) : ("extra" as const),
+    })),
   ];
 }
 
@@ -162,7 +176,9 @@ export function OrbitHero({
         (context) => {
           const reduce = Boolean(context.conditions?.reduceMotion);
           const isMobile = Boolean(context.conditions?.isMobile);
-          const nodes = gsap.utils.toArray<HTMLElement>(".orbit-box");
+          const nodes = gsap.utils
+            .toArray<HTMLElement>(".orbit-box")
+            .filter((node) => !isMobile || node.dataset.mobile !== "extra");
           if (!nodes.length) return;
 
           const radii = () => {
@@ -170,7 +186,7 @@ export function OrbitHero({
             const height = rootRef.current?.querySelector(".hero-grid")?.clientHeight ?? window.innerHeight;
             const span = Math.min(width, height);
             if (isMobile) {
-              return { inner: Math.max(84, span * 0.16), outer: Math.max(196, span * 0.38) };
+              return { inner: Math.max(72, span * 0.18), outer: Math.max(118, span * 0.3) };
             }
             return { inner: Math.max(108, span * 0.155), outer: Math.max(276, span * 0.4) };
           };
@@ -311,6 +327,7 @@ export function OrbitHero({
                   data-ring={box.ring}
                   data-slot={String(box.slot)}
                   data-slot-count={String(box.slotCount)}
+                  data-mobile={box.mobile}
                   data-kind={box.kind}
                   data-tilt={String(tilt)}
                   style={style}
@@ -329,6 +346,7 @@ export function OrbitHero({
                 data-ring={box.ring}
                 data-slot={String(box.slot)}
                 data-slot-count={String(box.slotCount)}
+                data-mobile={box.mobile}
                 data-kind={box.kind}
                 data-tilt={String(tilt)}
                 style={style}

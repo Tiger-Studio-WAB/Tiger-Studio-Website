@@ -221,7 +221,17 @@ export async function listNewsPosts(locale: ContentLanguage): Promise<NewsPost[]
 export async function getNewsPost(slug: string, locale: ContentLanguage): Promise<NewsPost | null> {
   const records = await getNewsRecords();
   const record = records.find((item) => item.slug === slug);
-  return record ? postFromRecord(record, locale) : null;
+  const post = record ? postFromRecord(record, locale) : null;
+  if (!post) return null;
+  const listed = preferRepoLaunchNotes(
+    records
+      .map((item) => postFromRecord(item, locale))
+      .filter((item): item is NewsPost => Boolean(item)),
+  );
+  if (isLocalLaunchNote(post) && !listed.some((item) => item.slug === post.slug)) {
+    return null;
+  }
+  return post;
 }
 
 export async function readLocalNewsAsset(relativePath: string) {

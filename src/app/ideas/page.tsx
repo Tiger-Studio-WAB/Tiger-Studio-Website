@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { IdeaCard } from "@/components/idea-card";
 import { PageShell } from "@/components/page-shell";
-import { requireSessionUser } from "@/lib/auth";
+import { getSessionUser } from "@/lib/auth";
 import { listIdeas } from "@/lib/data";
 import { IDEA_CATEGORIES } from "@/lib/i18n";
 import { getCopy } from "@/lib/locale";
@@ -11,10 +11,12 @@ export default async function IdeasPage({
 }: {
   searchParams: Promise<{ category?: string }>;
 }) {
-  await requireSessionUser();
   const { category } = await searchParams;
-  const { copy } = await getCopy();
-  const ideas = await listIdeas({ category });
+  const [{ copy }, user, ideas] = await Promise.all([
+    getCopy(),
+    getSessionUser(),
+    listIdeas({ category }),
+  ]);
   const active = category ?? "all";
 
   return (
@@ -24,9 +26,15 @@ export default async function IdeasPage({
           <h1 className="text-3xl font-bold italic">{copy.ideas}</h1>
           <span className="rule-yellow mt-3" />
         </div>
-        <Link href="/ideas/new" className="btn btn-red">
-          {copy.publish}
-        </Link>
+        {user ? (
+          <Link href="/ideas/new" className="btn btn-red">
+            {copy.publish}
+          </Link>
+        ) : (
+          <Link href="/join" className="btn btn-red">
+            {copy.signIn}
+          </Link>
+        )}
       </div>
 
       <div className="mt-8 flex flex-wrap gap-2">

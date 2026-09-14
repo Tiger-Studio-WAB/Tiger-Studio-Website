@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageHero } from "@/components/page-hero";
 import { PageShell } from "@/components/page-shell";
 import { StudioLink } from "@/components/studio-link";
-import { getHub } from "@/lib/hub";
+import { clubProductDestinations, getHub } from "@/lib/hub";
 import { getCopy } from "@/lib/locale";
 import { site } from "@/lib/site";
 
@@ -14,6 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProductsPage() {
   const [hub, { copy }] = await Promise.all([getHub(), getCopy()]);
+  const products = clubProductDestinations(hub.destinations);
 
   return (
     <>
@@ -31,7 +32,7 @@ export default async function ProductsPage() {
         <h2 className="mt-12 text-2xl font-bold italic">{copy.productsPublic}</h2>
         <span className="rule-yellow mt-3" />
         <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {hub.destinations.map((destination) => (
+          {products.map((destination) => (
             <StudioLink
               key={destination.slug}
               href={destination.url}

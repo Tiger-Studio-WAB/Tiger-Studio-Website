@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { PageShell } from "@/components/page-shell";
 import { ResponseForm } from "@/components/response-form";
 import { TranslatePanel } from "@/components/translate-panel";
-import { requireSessionUser } from "@/lib/auth";
+import { getSessionUser } from "@/lib/auth";
 import { getIdea, listResponses } from "@/lib/data";
 import { getCopy } from "@/lib/locale";
 
@@ -12,9 +12,12 @@ export default async function IdeaDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireSessionUser();
   const { id } = await params;
-  const [{ copy, locale }, idea] = await Promise.all([getCopy(), getIdea(id)]);
+  const [{ copy, locale }, idea, user] = await Promise.all([
+    getCopy(),
+    getIdea(id),
+    getSessionUser(),
+  ]);
   if (!idea) notFound();
 
   const responses = await listResponses(idea.id);
@@ -73,7 +76,13 @@ export default async function IdeaDetailPage({
               ))}
             </div>
           )}
-          <ResponseForm ideaId={idea.id} copy={copy} locale={locale} />
+          {user ? (
+            <ResponseForm ideaId={idea.id} copy={copy} locale={locale} />
+          ) : (
+            <Link href="/join" className="btn btn-red">
+              {copy.signIn}
+            </Link>
+          )}
         </section>
       </div>
     </PageShell>

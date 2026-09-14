@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { DestinationFilter } from "@/components/destination-filter";
 import { PageHero } from "@/components/page-hero";
-import { getHub } from "@/lib/hub";
+import { getHub, otherSiteDestinations } from "@/lib/hub";
 import { getCopy } from "@/lib/locale";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,7 +20,7 @@ export default async function DestinationsPage() {
         lede={copy.destinationsLede}
       />
       <div className="mx-auto max-w-7xl px-5 py-16 md:px-8">
-        <DestinationFilter items={hub.destinations} />
+        <DestinationFilter items={otherSiteDestinations(hub.destinations)} />
       </div>
     </>
   );

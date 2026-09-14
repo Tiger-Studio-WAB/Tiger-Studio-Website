@@ -15,7 +15,7 @@ export default async function HelpResourcesPage() {
   const cards = [
     { href: "/docs", title: copy.resourcesHandbook, body: copy.resourcesHandbookBody },
     { href: "/support", title: copy.supportShort, body: copy.resourcesSupportBody },
-    { href: "/ideas", title: copy.ideas, body: copy.resourcesIdeasBody },
+    { href: "/join", title: copy.ideas, body: copy.resourcesIdeasBody },
     { href: "/news", title: copy.news, body: copy.resourcesNewsBody },
     { href: site.links.github, title: "GitHub", body: copy.resourcesGithubBody, external: true },
   ];
