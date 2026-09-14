@@ -331,7 +331,7 @@ export function OrbitHero({
           const tilt = ((index * 47) % 13) - 6;
           const className = `orbit-box absolute left-1/2 top-1/2 block shadow-[0_12px_32px_rgba(0,0,0,0.2)] ${
             BOX_COLORS[index % BOX_COLORS.length]
-          } ${box.kind === "stat" ? "uppercase tracking-wide" : ""}`;
+          }`;
           const style = {
             width,
             padding,
@@ -339,12 +339,12 @@ export function OrbitHero({
           };
           const inner = (
             <span className="orbit-box-inner">
-              <span className="block text-[0.62em] font-semibold uppercase tracking-[0.16em] opacity-70">
+              <span className="block text-[0.72em] font-semibold opacity-70">
                 {box.kicker}
               </span>
               <span
                 className={`mt-1 block break-words [overflow-wrap:anywhere] [hyphens:manual] font-bold leading-tight ${
-                  box.kind === "commit" ? "line-clamp-3 normal-case tracking-normal" : "italic"
+                  box.kind === "commit" ? "line-clamp-3" : ""
                 }`}
                 style={{ fontSize: titleSize }}
               >

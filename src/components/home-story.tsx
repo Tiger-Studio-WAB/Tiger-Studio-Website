@@ -108,7 +108,7 @@ export function HomeStory({
             </div>
             <div className="home-pin-cards">
               <article className="home-pin-item panel tap-card p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-red">
+                <p className="text-xs font-semibold uppercase tracking-[0.06em] text-brand-red">
                   {copy.productsBoard}
                 </p>
                 <h3 className="mt-2 text-2xl font-bold italic">{copy.productsHelpName}</h3>
@@ -123,7 +123,7 @@ export function HomeStory({
                   href={destination.url}
                   className="home-pin-item panel tap-card p-5"
                 >
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                  <p className="text-xs font-semibold uppercase tracking-[0.06em] text-muted-foreground">
                     {destination.category}
                   </p>
                   <h3 className="mt-2 text-xl font-bold">{destination.name}</h3>

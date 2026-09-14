@@ -14,6 +14,7 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  style: ["normal", "italic"],
 });
 
 const notoSansSc = Noto_Sans_SC({
@@ -61,7 +62,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html
       lang={htmlLang(locale)}
-      className={`${geistSans.variable} ${notoSansSc.variable} h-full`}
+      className={`${geistSans.className} ${geistSans.variable} ${notoSansSc.variable} h-full`}
     >
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         <a className="skip-link" href="#main">

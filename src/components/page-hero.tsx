@@ -34,7 +34,7 @@ export function PageHero({ kicker, title, lede }: Props) {
     <header ref={rootRef} className="hero-grid text-white">
       <div className="mx-auto max-w-6xl px-5 py-14 md:py-20">
         {kicker ? (
-          <p className="hero-kicker text-xs font-semibold uppercase tracking-[0.18em] text-white/70">{kicker}</p>
+          <p className="hero-kicker text-xs font-semibold uppercase tracking-[0.06em] text-white/70">{kicker}</p>
         ) : null}
         <h1 className="hero-title mt-3 max-w-4xl text-4xl font-bold italic leading-[1.1] md:text-6xl">{title}</h1>
         <span className="hero-rule rule-yellow mt-4" />
