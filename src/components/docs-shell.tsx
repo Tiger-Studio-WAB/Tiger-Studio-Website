@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { MarkdownDoc } from "@/components/markdown-doc";
+import { Reveal } from "@/components/reveal";
 import type { DocPage, DocsTree } from "@/lib/docs";
 import { neighbors } from "@/lib/docs";
-import { fill, type UiCopy } from "@/lib/i18n";
+import { docsSectionLabel, fill, type UiCopy } from "@/lib/i18n";
 
 export function DocsShell({
   tree,
@@ -16,18 +17,32 @@ export function DocsShell({
   landing?: boolean;
   copy: UiCopy;
 }) {
+  const localizedTree = {
+    ...tree,
+    sections: tree.sections.map((section) => ({
+      ...section,
+      label: docsSectionLabel(section.id, section.label, copy),
+    })),
+  };
   const crumbs = [
     { href: "/docs", label: copy.docs },
-    ...page.slug.map((part, index) => ({
-      href: `/docs/${page.slug.slice(0, index + 1).join("/")}`,
-      label: part
-        .replace(/[-_]+/g, " ")
-        .replace(/\b\w/g, (letter) => letter.toUpperCase()),
-    })),
+    ...page.slug.map((part, index) => {
+      const last = index === page.slug.length - 1;
+      return {
+        href: `/docs/${page.slug.slice(0, index + 1).join("/")}`,
+        label: last
+          ? page.sidebarLabel || page.title
+          : docsSectionLabel(
+              part,
+              part.replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
+              copy,
+            ),
+      };
+    }),
   ];
-  const { previous, next } = neighbors(tree, page);
+  const { previous, next } = neighbors(localizedTree, page);
   const sections = landing
-    ? tree.sections.map((section) => ({
+    ? localizedTree.sections.map((section) => ({
         href: section.href ?? section.pages[0]?.href,
         label: section.label,
         body:
@@ -37,16 +52,16 @@ export function DocsShell({
     : [];
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 py-10 lg:flex-row">
+    <Reveal className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 py-10 lg:flex-row">
       <aside className="lg:w-56 lg:shrink-0">
         <details className="lg:hidden">
           <summary className="cursor-pointer text-sm font-semibold">{copy.docsOnThisSite}</summary>
           <div className="mt-4">
-            <DocsSidebar tree={tree} currentHref={page.href} copy={copy} />
+            <DocsSidebar tree={localizedTree} currentHref={page.href} copy={copy} />
           </div>
         </details>
         <div className="hidden lg:block">
-          <DocsSidebar tree={tree} currentHref={page.href} copy={copy} />
+          <DocsSidebar tree={localizedTree} currentHref={page.href} copy={copy} />
         </div>
       </aside>
       <div className="min-w-0 flex-1">
@@ -63,13 +78,13 @@ export function DocsShell({
         {page.usedFallback ? (
           <p className="mt-3 text-sm text-muted-foreground">{copy.newsFallbackNote}</p>
         ) : null}
-        <article className="panel mt-4 p-6 md:p-8">
-          <MarkdownDoc source={page.body} currentSlug={page.slug} />
+        <article className="panel mt-4 p-6 md:p-8" data-reveal>
+          <MarkdownDoc source={page.body} currentSlug={page.slug} imageBase={page.imageBase} />
           {landing && sections.length ? (
             <div className="mt-10 grid gap-4 md:grid-cols-2">
               {sections.map((section) =>
                 section.href ? (
-                  <Link key={section.label} href={section.href} className="panel lift-card p-5 hover:border-brand-red">
+                  <Link key={section.label} href={section.href} className="panel tap-card p-5" data-reveal>
                     <h2 className="text-lg font-bold italic">{section.label}</h2>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">{section.body}</p>
                   </Link>
@@ -93,18 +108,17 @@ export function DocsShell({
           ) : null}
         </div>
         <p className="mt-8 text-xs text-muted-foreground">
-          {copy.docsSource}:{" "}
           <a
             href={`${tree.githubUrl}/blob/main/${page.path}`}
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-brand-red hover:underline"
           >
-            {page.path}
+            {copy.docsOpenGithub}
           </a>
           {page.source === "local" ? copy.docsLocalNote : ""}
         </p>
       </div>
-    </div>
+    </Reveal>
   );
 }

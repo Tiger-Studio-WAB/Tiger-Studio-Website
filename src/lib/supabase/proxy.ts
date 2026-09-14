@@ -3,12 +3,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { isAllowedMember } from "@/lib/domain";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
 
-const PROTECTED_PREFIXES = ["/ideas", "/me"];
-
 function isProtectedPath(pathname: string) {
-  return PROTECTED_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
-  );
+  if (pathname === "/me" || pathname.startsWith("/me/")) return true;
+  if (pathname === "/ideas/new" || pathname.startsWith("/ideas/new/")) return true;
+  return false;
 }
 
 export async function updateSession(request: NextRequest) {

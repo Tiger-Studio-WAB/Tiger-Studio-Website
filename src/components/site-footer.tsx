@@ -22,11 +22,11 @@ export function SiteFooter({ copy, locale }: { copy: UiCopy; locale: ContentLang
         </div>
         <nav className="flex flex-wrap gap-4 font-semibold">
           {nav.map((item) => (
-            <Link key={item.href} href={item.href} className="hover:underline">
+            <Link key={item.href} href={item.href} className="rounded-sm hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
               {labels[item.href]}
             </Link>
           ))}
-          <Link href="/news" className="hover:underline">
+          <Link href="/news" className="rounded-sm hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
             {copy.news}
           </Link>
         </nav>

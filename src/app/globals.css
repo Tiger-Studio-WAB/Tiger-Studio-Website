@@ -108,6 +108,7 @@ a {
 
 .orbit-box {
   z-index: 10;
+  overflow: visible;
   border-radius: var(--radius-lg);
   will-change: transform;
   transition: box-shadow 0.25s ease;
@@ -130,7 +131,11 @@ a.orbit-box {
 }
 
 @media (max-width: 640px) {
-  .orbit-box[data-priority="low"] {
+  .orbit-box {
+    font-size: 0.92em;
+  }
+
+  .orbit-box[data-mobile="extra"] {
     display: none;
   }
 }
@@ -155,7 +160,8 @@ a.orbit-box {
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn:disabled {
@@ -170,6 +176,15 @@ a.orbit-box {
 
 .btn-red:hover:not(:disabled) {
   background: #b81c12;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 3px;
 }
 
 .btn-white {
@@ -191,8 +206,10 @@ a.orbit-box {
   outline: none;
 }
 
-.field:focus {
+.field:focus,
+.field:focus-visible {
   border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px rgba(34, 98, 213, 0.16);
 }
 
 .panel {
@@ -202,17 +219,37 @@ a.orbit-box {
   box-shadow: var(--shadow-card);
 }
 
-.lift-card {
+.lift-card,
+.tap-card {
   position: relative;
   z-index: 1;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
 }
 
 .lift-card:hover,
-.lift-card:focus-visible {
+.lift-card:focus-visible,
+.tap-card:hover,
+.tap-card:focus-visible {
   z-index: 4;
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
+  border-color: var(--brand-red);
+}
+
+.lift-card:active,
+.tap-card:active {
+  transform: scale(0.985);
+  box-shadow: var(--shadow-card);
+}
+
+.tap-card:focus-visible,
+.lift-card:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 3px;
 }
 
 .swatch {
@@ -282,10 +319,22 @@ a.orbit-box {
   list-style: decimal;
 }
 
+.prose-docs img {
+  margin-top: 1rem;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+
 .prose-docs a {
   font-weight: 600;
   color: var(--brand-red);
   text-decoration: underline;
+}
+
+.prose-docs a:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 2px;
 }
 
 .prose-docs code {
@@ -386,6 +435,69 @@ a.orbit-box {
   background: transparent;
 }
 
+.site-header-bar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.site-header-tools {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.site-nav-desktop {
+  display: none;
+}
+
+.site-menu {
+  position: relative;
+}
+
+.site-menu summary {
+  list-style: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.site-menu-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.55rem);
+  z-index: 50;
+  min-width: 11rem;
+  padding: 0.65rem;
+  background: var(--brand-red);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+.site-menu-panel a {
+  display: block;
+  padding: 0.4rem 0.35rem;
+}
+
+@media (min-width: 768px) {
+  .site-nav-desktop {
+    display: flex;
+  }
+
+  .site-menu {
+    display: none;
+  }
+}
+
 .site-nav a {
   position: relative;
 }
@@ -408,6 +520,12 @@ a.orbit-box {
   transform: scaleX(1);
 }
 
+.site-nav a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
 .site-nav button:hover {
   transform: none;
 }
@@ -419,6 +537,72 @@ a.orbit-box {
 .help-nav {
   border-bottom: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.92);
+}
+
+.tap-chip,
+.help-nav-item {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: #fff;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.18s ease;
+}
+
+.help-nav-item:hover,
+.help-nav-item:focus-visible,
+.tap-chip:hover,
+.tap-chip:focus-visible {
+  background: var(--brand-yellow);
+  transform: translateY(-1px);
+}
+
+.help-nav-item.is-active,
+.tap-chip.is-active {
+  background: var(--brand-red);
+  color: #fff;
+}
+
+.help-nav-item:active,
+.tap-chip:active {
+  transform: scale(0.97);
+}
+
+.help-nav-item:focus-visible,
+.tap-chip:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+
+.docs-nav-link {
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+}
+
+.docs-nav-link:hover,
+.docs-nav-link:focus-visible {
+  color: var(--brand-red);
+}
+
+.docs-nav-link.is-active {
+  color: var(--brand-red);
+}
+
+.docs-nav-link:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 2px;
+}
+
+.docs-nav-link:active {
+  transform: scale(0.98);
 }
 
 .badge-chip {
@@ -454,6 +638,23 @@ a.orbit-box {
   color: var(--brand-red);
 }
 
+.lang-picker button:hover,
+.lang-picker button:focus-visible {
+  background: var(--brand-yellow);
+  color: var(--ink);
+}
+
+.lang-picker button[aria-pressed="true"]:hover,
+.lang-picker button[aria-pressed="true"]:focus-visible {
+  background: #fff;
+  color: var(--brand-red);
+}
+
+.lang-picker button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+
 .pointer-card,
 .destination-card {
   border-radius: var(--radius-lg);
@@ -466,6 +667,10 @@ a.orbit-box {
 
 @media (prefers-reduced-motion: reduce) {
   .lift-card,
+  .tap-card,
+  .tap-chip,
+  .help-nav-item,
+  .docs-nav-link,
   .btn,
   .orbit-box,
   .code-block-copy,
@@ -479,7 +684,19 @@ a.orbit-box {
   .panel:focus-within,
   .lift-card:hover,
   .lift-card:focus-visible,
+  .lift-card:active,
+  .tap-card:hover,
+  .tap-card:focus-visible,
+  .tap-card:active,
+  .tap-chip:hover,
+  .tap-chip:focus-visible,
+  .tap-chip:active,
+  .help-nav-item:hover,
+  .help-nav-item:focus-visible,
+  .help-nav-item:active,
+  .docs-nav-link:active,
   .btn:hover:not(:disabled),
+  .btn:active:not(:disabled),
   .pointer-card:hover,
   .destination-card:hover {
     transform: none;

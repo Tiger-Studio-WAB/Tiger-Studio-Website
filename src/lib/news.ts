@@ -4,6 +4,7 @@ import { cache } from "react";
 import { NEWS_ORG, NEWS_REPO, fetchNewsRepoSources, fetchRepoFileText } from "@/lib/github";
 import type { ContentLanguage } from "@/lib/help-types";
 import { pickLocalizedText, splitLocaleMarkdownPath } from "@/lib/locale-files";
+import { markdownAssetBase, prepareMarkdownBody } from "@/lib/markdown";
 
 export type NewsFrontmatter = {
   title?: string;
@@ -82,18 +83,19 @@ function allowlistedAuthor(author: string) {
 }
 
 function assetBase(source: "local" | "github", canonical: string) {
-  const folder = canonical.replace(/\\/g, "/").replace(/\.md$/i, "");
-  if (source === "github") {
-    return `https://raw.githubusercontent.com/${NEWS_ORG}/${NEWS_REPO}/main/${folder}`;
-  }
-  return `/api/news-media/${folder}`;
+  return markdownAssetBase(source, canonical, {
+    localPrefix: "/api/news-media",
+    githubBase: `https://raw.githubusercontent.com/${NEWS_ORG}/${NEWS_REPO}/main`,
+    stemFolder: true,
+  });
 }
 
-function firstImage(body: string, imageBase: string) {
+function firstImage(body: string, imageBase: string, source: "local" | "github") {
   const match = body.match(/!\[[^\]]*]\(([^)]+)\)/);
   if (!match) return undefined;
   const src = match[1].trim();
   if (/^https?:\/\//i.test(src) || src.startsWith("/")) return src;
+  if (source !== "local") return undefined;
   return `${imageBase}/${src.replace(/^\.\//, "")}`;
 }
 
@@ -148,7 +150,7 @@ function recordsFromFiles(files: SourceFile[]): NewsRecord[] {
     const { data, body } = parseFrontmatter(file.text);
     const slug = slugFromCanonical(inPosts);
     const current = groups.get(inPosts) ?? { slug, canonical: inPosts, variants: {} };
-    current.variants[locale] = { file, data, body };
+    current.variants[locale] = { file, data, body: prepareMarkdownBody(body) };
     groups.set(inPosts, current);
   }
   return [...groups.values()];
@@ -174,7 +176,7 @@ function postFromRecord(record: NewsRecord, locale: ContentLanguage): NewsPost |
     author,
     summary: chosen.data.summary || english.data.summary || "",
     body: chosen.body,
-    cover: firstImage(chosen.body, imageBase),
+    cover: firstImage(chosen.body, imageBase, english.file.source),
     path: chosen.file.path,
     source: chosen.file.source,
     locale: picked.locale,
@@ -196,18 +198,40 @@ async function loadNewsRecords(): Promise<NewsRecord[]> {
 
 const getNewsRecords = cache(loadNewsRecords);
 
+function isLocalLaunchNote(post: NewsPost) {
+  if (post.source !== "local") return false;
+  return /welcome|starts-here|studio-news-starts/i.test(`${post.slug} ${post.title}`);
+}
+
+function preferRepoLaunchNotes(posts: NewsPost[]) {
+  if (!posts.some((post) => post.source === "github")) return posts;
+  return posts.filter((post) => !isLocalLaunchNote(post));
+}
+
 export async function listNewsPosts(locale: ContentLanguage): Promise<NewsPost[]> {
   const records = await getNewsRecords();
-  return records
-    .map((record) => postFromRecord(record, locale))
-    .filter((post): post is NewsPost => Boolean(post))
-    .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+  return preferRepoLaunchNotes(
+    records
+      .map((record) => postFromRecord(record, locale))
+      .filter((post): post is NewsPost => Boolean(post))
+      .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title)),
+  );
 }
 
 export async function getNewsPost(slug: string, locale: ContentLanguage): Promise<NewsPost | null> {
   const records = await getNewsRecords();
   const record = records.find((item) => item.slug === slug);
-  return record ? postFromRecord(record, locale) : null;
+  const post = record ? postFromRecord(record, locale) : null;
+  if (!post) return null;
+  const listed = preferRepoLaunchNotes(
+    records
+      .map((item) => postFromRecord(item, locale))
+      .filter((item): item is NewsPost => Boolean(item)),
+  );
+  if (isLocalLaunchNote(post) && !listed.some((item) => item.slug === post.slug)) {
+    return null;
+  }
+  return post;
 }
 
 export async function readLocalNewsAsset(relativePath: string) {
@@ -220,11 +244,7 @@ export async function readLocalNewsAsset(relativePath: string) {
   }
 }
 
-export function resolveNewsImage(src: string | undefined, imageBase: string) {
-  if (!src) return src;
-  if (/^https?:\/\//i.test(src) || src.startsWith("/")) return src;
-  return `${imageBase}/${src.replace(/^\.\//, "")}`;
-}
+export { resolveMarkdownImage as resolveNewsImage } from "@/lib/markdown";
 
 export async function fetchNewsReadme(locale: ContentLanguage) {
   if (locale !== "en") {

@@ -19,11 +19,11 @@ export function PageHero({ kicker, title, lede }: Props) {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const tl = gsap.timeline({ defaults: { ease: "power1.out" } });
-        tl.from(".hero-kicker", { y: 6, autoAlpha: 0, duration: 0.28 })
-          .from(".hero-title", { y: 10, autoAlpha: 0, duration: 0.32 }, "-=0.16")
-          .from(".hero-rule", { scaleX: 0, transformOrigin: "left center", duration: 0.28 }, "-=0.18")
-          .from(".hero-lede", { y: 8, autoAlpha: 0, duration: 0.28 }, "-=0.16");
+        const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+        tl.from(".hero-kicker", { y: 8, autoAlpha: 0, duration: 0.32 })
+          .from(".hero-title", { y: 12, autoAlpha: 0, duration: 0.4 }, "-=0.18")
+          .from(".hero-rule", { scaleX: 0, transformOrigin: "left center", duration: 0.32 }, "-=0.22")
+          .from(".hero-lede", { y: 10, autoAlpha: 0, duration: 0.34 }, "-=0.18");
       });
       return () => mm.revert();
     },

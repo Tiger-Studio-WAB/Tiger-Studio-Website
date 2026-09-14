@@ -55,11 +55,13 @@ export type UiCopy = {
   join: string;
   docs: string;
   support: string;
+  supportShort: string;
   help: string;
   news: string;
   changelog: string;
   destinations: string;
   skipToMain: string;
+  menu: string;
   home: string;
   member: string;
   anonymousName: string;
@@ -103,11 +105,17 @@ export type UiCopy = {
   joinOpenGithub: string;
   docsOverview: string;
   docsOnThisSite: string;
+  docsSourceDraft: string;
   docsNeedHelp: string;
   docsSource: string;
   docsLocalNote: string;
   docsPages: string;
   docsCopy: string;
+  docsOpenGithub: string;
+  docsSectionGettingStarted: string;
+  docsSectionProducts: string;
+  docsSectionGuides: string;
+  docsSectionWebsite: string;
   supportKicker: string;
   supportTitle: string;
   supportLede: string;
@@ -152,6 +160,9 @@ export type UiCopy = {
   helpNavFeedback: string;
   helpHowBadges: string;
   helpHowBadgesBody: string;
+  helpKickerShares: string;
+  helpKickerNotes: string;
+  helpKickerBadges: string;
   helpRecentShares: string;
   helpRecentFeedback: string;
   helpEmptyShares: string;
@@ -159,12 +170,23 @@ export type UiCopy = {
   helpOpenResources: string;
   helpOpenShare: string;
   helpOpenFeedback: string;
+  helpFeedbackHint: string;
+  shareBack: string;
+  shareOpen: string;
+  shareNotFoundTitle: string;
+  shareNotFoundBody: string;
+  shareEmptyTitle: string;
+  shareEmptyBody: string;
+  shareFeedbackTitle: string;
+  shareFeedbackEmpty: string;
+  shareFirstHint: string;
   resourcesKicker: string;
   resourcesTitle: string;
   resourcesLede: string;
   resourcesHandbook: string;
   resourcesHandbookBody: string;
   resourcesSupportBody: string;
+  resourcesGithubBody: string;
   resourcesIdeasBody: string;
   resourcesNewsBody: string;
   shareKicker: string;
@@ -260,11 +282,13 @@ const en: UiCopy = {
   join: "Join",
   docs: "Docs",
   support: "Support",
+  supportShort: "Support",
   help: "Help",
   news: "News",
   changelog: "Changelog",
   destinations: "Destinations",
   skipToMain: "Skip to main content",
+  menu: "Menu",
   home: "Home",
   member: "Member",
   anonymousName: "Anonymous",
@@ -302,7 +326,7 @@ const en: UiCopy = {
   aboutJoin: "Join is Proj.Help: ideas, replies, and translation.",
   aboutDocs: "Docs is the handbook: folders and Markdown, with a sidebar like other developer docs.",
   aboutSupport: "Support is separate — issues and help, not guides.",
-  aboutHelp: "Help is a site inside the hub: share a build, leave feedback, and find resources.",
+  aboutHelp: "Help is a site inside the hub: share a build, leave feedback on that playtest, and find resources.",
   aboutNews: "News is studio-written Markdown, not a raw GitHub event dump.",
   joinKicker: "Join",
   joinTitle: "Post an idea. Ask for help.",
@@ -313,11 +337,17 @@ const en: UiCopy = {
   joinOpenGithub: "Open GitHub →",
   docsOverview: "Overview",
   docsOnThisSite: "On this site",
+  docsSourceDraft: "German draft · {topic}",
   docsNeedHelp: "Need help?",
   docsSource: "Source",
   docsLocalNote: " (starter copy on this site until the docs repo has this file)",
   docsPages: "{count} pages",
   docsCopy: "Copy",
+  docsOpenGithub: "Open on GitHub",
+  docsSectionGettingStarted: "Getting started",
+  docsSectionProducts: "Products",
+  docsSectionGuides: "Guides",
+  docsSectionWebsite: "Website",
   supportKicker: "Support",
   supportTitle: "Get help",
   supportLede: "Support is for problems and questions. Guides and how-tos live in Docs.",
@@ -326,7 +356,7 @@ const en: UiCopy = {
   supportBulletBroken: "A page on this site is broken or missing",
   supportBulletHuman: "You need a human from the club",
   supportOpenIssue: "Open a support issue",
-  supportOpenIssues: "Open issues",
+  supportOpenIssues: "View open issues",
   supportDocsTitle: "Looking up how something works?",
   supportDocsBody: "Product guides and writing rules are in the handbook, not here.",
   supportOpenDocs: "Open docs →",
@@ -358,7 +388,7 @@ const en: UiCopy = {
   helpKicker: "Help",
   helpTitle: "A place to try work and talk back",
   helpLede:
-    "Share a build for humans to playtest, leave feedback, and find docs. Badges stay visible even when a name is hidden.",
+    "Share a build for humans to playtest, leave feedback on that playtest, and find docs. Badges stay visible even when a name is hidden.",
   helpNavHome: "Community",
   helpNavResources: "Resources",
   helpNavShare: "Share",
@@ -366,25 +396,40 @@ const en: UiCopy = {
   helpHowBadges: "How badges work",
   helpHowBadgesBody:
     "Sign in, then post a playtest, leave feedback, or mark that you can help on an idea. The first time you do each of those, a badge is added to your profile. Studio member is awarded by the club.",
+  helpKickerShares: "Playtests",
+  helpKickerNotes: "Notes",
+  helpKickerBadges: "Badges",
   helpRecentShares: "Playtests to try",
-  helpRecentFeedback: "Recent feedback",
-  helpEmptyShares: "No playtests posted yet. Be the first to share a build.",
-  helpEmptyFeedback: "No feedback yet.",
+  helpRecentFeedback: "Recent notes",
+  helpEmptyShares: "No playtests yet. Share a build after you sign in.",
+  helpEmptyFeedback: "Open a playtest to write a note.",
   helpOpenResources: "Open resources →",
   helpOpenShare: "Share a build →",
-  helpOpenFeedback: "Leave feedback →",
+  helpOpenFeedback: "Open a playtest →",
+  helpFeedbackHint: "Feedback lives on a playtest, not as its own tab. Open a share to reply.",
+  shareBack: "All playtests",
+  shareOpen: "Open playtest",
+  shareNotFoundTitle: "This playtest is not here",
+  shareNotFoundBody:
+    "It may have been removed, or the share tables are not set up yet. You can still browse resources and docs.",
+  shareEmptyTitle: "No playtests yet",
+  shareEmptyBody: "Share a build first. Then others can open it and reply here.",
+  shareFeedbackTitle: "Feedback on this playtest",
+  shareFeedbackEmpty: "No feedback on this playtest yet.",
+  shareFirstHint: "Share a build first. Other people leave feedback on that playtest, not on a separate tab.",
   resourcesKicker: "Resources",
-  resourcesTitle: "Guides, support, and the board",
+  resourcesTitle: "Handbook, support, and the board",
   resourcesLede: "Handbook pages, the support desk, ideas, and studio news — still the same login.",
   resourcesHandbook: "Handbook",
   resourcesHandbookBody: "How the hub, Git, Godot, and TypeScript work.",
   resourcesSupportBody: "Broken pages, sign-in trouble, or a human from the club.",
+  resourcesGithubBody: "Public repos and club work live here.",
   resourcesIdeasBody: "Ask for help on a project idea after you sign in.",
   resourcesNewsBody: "Studio-written posts, with English if a translation is missing.",
   shareKicker: "Share",
   shareTitle: "Put a build in front of people",
   shareLede:
-    "This is the anti-AI-tester loop: a human tries your product. You must be signed in. Hide your name if you want; badges still show.",
+    "A person in the club tries your build. You must be signed in. Hide your name if you want; badges still show.",
   shareWhatToTry: "What should people try?",
   shareLink: "Link",
   shareNotes: "Notes",
@@ -395,7 +440,7 @@ const en: UiCopy = {
   feedbackKicker: "Feedback",
   feedbackTitle: "Tell someone what you found",
   feedbackLede:
-    "Feedback is signed in so we can award badges and keep spam down. Anonymous hides your name, not the badge.",
+    "Write feedback on this playtest. You must be signed in so we can award badges and keep spam down. Anonymous hides your name, not the badge.",
   feedbackTarget: "What is this about?",
   feedbackTargetFree: "Something else",
   feedbackBody: "What did you notice?",
@@ -483,11 +528,13 @@ const zh: UiCopy = {
   join: "加入",
   docs: "文档",
   support: "支持",
+  supportShort: "支持",
   help: "帮助",
   news: "新闻",
   changelog: "更新记录",
   destinations: "去处",
   skipToMain: "跳到正文",
+  menu: "菜单",
   home: "首页",
   member: "成员",
   anonymousName: "匿名",
@@ -523,7 +570,7 @@ const zh: UiCopy = {
   aboutJoin: "加入就是 Proj.Help：想法、回复和翻译。",
   aboutDocs: "文档是手册：按文件夹放 Markdown，侧栏和其他开发者文档类似。",
   aboutSupport: "支持是分开的——用来提问题和求助，不是写指南。",
-  aboutHelp: "帮助是站点里的站点：分享作品、留下反馈、找到资料。",
+  aboutHelp: "帮助是站点里的站点：分享作品，在该试玩上留下反馈，并找到资料。",
   aboutNews: "新闻是社团自己写的 Markdown，不是 GitHub 事件流水。",
   joinKicker: "加入",
   joinTitle: "发布一个想法，请求帮助。",
@@ -532,8 +579,14 @@ const zh: UiCopy = {
   joinOpenGithub: "打开 GitHub →",
   docsOverview: "概览",
   docsOnThisSite: "本站目录",
+  docsSourceDraft: "德文草稿 · {topic}",
   docsNeedHelp: "需要帮助？",
   docsSource: "来源",
+  docsOpenGithub: "在 GitHub 打开",
+  docsSectionGettingStarted: "入门",
+  docsSectionProducts: "产品",
+  docsSectionGuides: "指南",
+  docsSectionWebsite: "网站",
   docsLocalNote: "（文档仓库还没有这个文件时，先用本站的起始文稿）",
   docsPages: "{count} 页",
   docsCopy: "复制",
@@ -545,7 +598,7 @@ const zh: UiCopy = {
   supportBulletBroken: "本站某个页面坏了或找不到",
   supportBulletHuman: "你需要社团里的人来看一眼",
   supportOpenIssue: "开一个支持工单",
-  supportOpenIssues: "已有工单",
+  supportOpenIssues: "查看已有工单",
   supportDocsTitle: "在查某件事怎么做？",
   supportDocsBody: "产品指南和写作规则在手册里，不在这里。",
   supportOpenDocs: "打开文档 →",
@@ -574,7 +627,7 @@ const zh: UiCopy = {
   hubErrorBody: "请再试一次，或回到首页。",
   helpKicker: "帮助",
   helpTitle: "试玩作品，并说回自己的感受",
-  helpLede: "把作品交给真人试玩，留下反馈，并找到文档。即使隐藏名字，徽章仍然会显示。",
+  helpLede: "把作品交给真人试玩，在该试玩上留下反馈，并找到文档。即使隐藏名字，徽章仍然会显示。",
   helpNavHome: "社区",
   helpNavResources: "资源",
   helpNavShare: "分享",
@@ -582,19 +635,33 @@ const zh: UiCopy = {
   helpHowBadges: "徽章怎么获得",
   helpHowBadgesBody:
     "先登录，然后发布试玩、留下反馈，或在想法上标记“我可以帮忙”。每件事的第一次都会加一枚徽章。社团成员徽章由社团发放。",
+  helpKickerShares: "试玩",
+  helpKickerNotes: "笔记",
+  helpKickerBadges: "徽章",
   helpRecentShares: "可以试玩的作品",
-  helpRecentFeedback: "最近的反馈",
-  helpEmptyShares: "还没有人分享试玩。来做第一个吧。",
-  helpEmptyFeedback: "还没有反馈。",
+  helpRecentFeedback: "最近的笔记",
+  helpEmptyShares: "还没有试玩。登录后可以分享。",
+  helpEmptyFeedback: "打开一个试玩再写笔记。",
   helpOpenResources: "打开资源 →",
   helpOpenShare: "分享作品 →",
-  helpOpenFeedback: "留下反馈 →",
+  helpOpenFeedback: "打开试玩 →",
+  helpFeedbackHint: "反馈写在具体试玩上，不是单独的标签页。打开分享后再回复。",
+  shareBack: "全部试玩",
+  shareOpen: "打开试玩",
+  shareNotFoundTitle: "这个试玩不在这里",
+  shareNotFoundBody: "它可能已删除，或分享表还没有建好。你仍然可以看资源和文档。",
+  shareEmptyTitle: "还没有试玩",
+  shareEmptyBody: "先分享一个作品，别人才能打开并在这里回复。",
+  shareFeedbackTitle: "对这次试玩的反馈",
+  shareFeedbackEmpty: "这次试玩还没有反馈。",
+  shareFirstHint: "先分享作品。反馈写在那次试玩上，不是单独的标签页。",
   resourcesKicker: "资源",
   resourcesTitle: "指南、支持和看板",
   resourcesLede: "手册、支持台、想法板和社团新闻——登录方式不变。",
   resourcesHandbook: "手册",
   resourcesHandbookBody: "这个站点、Git、Godot 和 TypeScript 怎么用。",
   resourcesSupportBody: "页面坏了、登录出问题，或需要社团里的人。",
+  resourcesGithubBody: "公开仓库和社团工作都在这里。",
   resourcesIdeasBody: "登录后，为项目想法请求帮助。",
   resourcesNewsBody: "社团自己写的文章；缺译文时显示英文。",
   shareKicker: "分享",
@@ -609,7 +676,7 @@ const zh: UiCopy = {
   sharePosted: "试玩已分享。",
   feedbackKicker: "反馈",
   feedbackTitle: "告诉对方你发现了什么",
-  feedbackLede: "反馈需要登录，这样才能发徽章并减少垃圾内容。匿名只隐藏名字，不隐藏徽章。",
+  feedbackLede: "请针对这次试玩写反馈。需要登录才能发徽章并减少垃圾内容。匿名只隐藏名字，不隐藏徽章。",
   feedbackTarget: "这是关于什么？",
   feedbackTargetFree: "其他",
   feedbackBody: "你注意到了什么？",
@@ -696,13 +763,15 @@ const de: UiCopy = {
   products: "Produkte",
   about: "Über uns",
   join: "Mitmachen",
-  docs: "Docs",
-  support: "Support",
+  docs: "Dokumente",
+  support: "Support-Seite",
+  supportShort: "Support",
   help: "Hilfe",
-  news: "News",
+  news: "Nachrichten",
   changelog: "Changelog",
   destinations: "Ziele",
   skipToMain: "Zum Inhalt springen",
+  menu: "Menü",
   home: "Start",
   member: "Mitglied",
   anonymousName: "Anonym",
@@ -717,7 +786,7 @@ const de: UiCopy = {
   homeProductsBody: "Öffentliche Projekte des Studios.",
   homeAboutBody: "Was Tiger Studio ist und wie der Hub funktioniert.",
   homeJoinBody: "Ideen posten, antworten und mit dem Club shippen.",
-  homeHelpBody: "Playtests, Feedback, Docs und Support an einem Ort.",
+  homeHelpBody: "Testspiele, Notizen, Dokumente und Support an einem Ort.",
   productsKicker: "Produkte",
   productsTitle: "Was das Studio veröffentlicht",
   productsLede: "Öffentliche Repos, das Ideenboard und die Websites, auf die die Projekte zeigen.",
@@ -738,10 +807,10 @@ const de: UiCopy = {
   aboutHowTitle: "So ist der Hub aufgebaut",
   aboutProducts: "Produkte listet öffentliche Repos und Studio-Tools.",
   aboutJoin: "Mitmachen ist Proj.Help: Ideen, Antworten und Übersetzung.",
-  aboutDocs: "Docs ist das Handbuch: Ordner und Markdown, mit einer Sidebar wie andere Entwickler-Docs.",
-  aboutSupport: "Support ist getrennt — Issues und Hilfe, keine Anleitungen.",
-  aboutHelp: "Hilfe ist eine Seite in der Seite: Build teilen, Feedback geben, Ressourcen finden.",
-  aboutNews: "News sind vom Studio geschriebene Markdown-Texte, kein roher GitHub-Event-Feed.",
+  aboutDocs: "Das Handbuch: Ordner und Markdown, mit einer Sidebar wie andere Entwickler-Handbücher.",
+  aboutSupport: "Hier geht es um Issues und Hilfe, nicht um Anleitungen.",
+  aboutHelp: "Hilfe ist eine Seite in der Seite: Build teilen, eine Notiz dazu schreiben, Ressourcen finden.",
+  aboutNews: "Vom Studio geschriebene Markdown-Texte, kein roher GitHub-Event-Feed.",
   joinKicker: "Mitmachen",
   joinTitle: "Poste eine Idee. Bitte um Hilfe.",
   joinLede:
@@ -751,23 +820,29 @@ const de: UiCopy = {
   joinOpenGithub: "GitHub öffnen →",
   docsOverview: "Überblick",
   docsOnThisSite: "Auf dieser Seite",
+  docsSourceDraft: "Deutscher Entwurf · {topic}",
   docsNeedHelp: "Hilfe nötig?",
   docsSource: "Quelle",
   docsLocalNote: " (Starttext auf dieser Website, bis das Docs-Repo die Datei hat)",
   docsPages: "{count} Seiten",
   docsCopy: "Kopieren",
+  docsOpenGithub: "Auf GitHub öffnen",
+  docsSectionGettingStarted: "Erste Schritte",
+  docsSectionProducts: "Produkte",
+  docsSectionGuides: "Anleitungen",
+  docsSectionWebsite: "Website",
   supportKicker: "Support",
   supportTitle: "Hilfe holen",
-  supportLede: "Support ist für Probleme und Fragen. Anleitungen stehen in den Docs.",
+  supportLede: "Support ist für Probleme und Fragen. Anleitungen stehen in den Dokumenten.",
   supportWhatTitle: "Dafür ist diese Seite da",
   supportBulletSignin: "Anmeldung ist nicht fertig (GitHub oder Microsoft)",
   supportBulletBroken: "Eine Seite hier ist kaputt oder fehlt",
   supportBulletHuman: "Du brauchst einen Menschen aus dem Club",
   supportOpenIssue: "Support-Issue öffnen",
-  supportOpenIssues: "Offene Issues",
+  supportOpenIssues: "Offene Issues ansehen",
   supportDocsTitle: "Du suchst, wie etwas funktioniert?",
   supportDocsBody: "Produktanleitungen und Schreibregeln stehen im Handbuch, nicht hier.",
-  supportOpenDocs: "Docs öffnen →",
+  supportOpenDocs: "Dokumente öffnen →",
   supportJoinTitle: "Ideenboard",
   supportJoinBody: "Nach der Anmeldung Idee posten oder antworten.",
   supportOpenJoin: "Mitmachen öffnen →",
@@ -796,33 +871,48 @@ const de: UiCopy = {
   helpKicker: "Hilfe",
   helpTitle: "Arbeit ausprobieren und zurückschreiben",
   helpLede:
-    "Teile einen Build zum Playtest, hinterlasse Feedback und finde Docs. Abzeichen bleiben sichtbar, auch wenn der Name versteckt ist.",
-  helpNavHome: "Community",
+    "Teile einen Build zum Testen, hinterlasse eine Notiz dazu und finde Dokumente. Abzeichen bleiben sichtbar, auch wenn der Name versteckt ist.",
+  helpNavHome: "Gemeinschaft",
   helpNavResources: "Ressourcen",
   helpNavShare: "Teilen",
   helpNavFeedback: "Feedback",
   helpHowBadges: "So funktionieren Abzeichen",
   helpHowBadgesBody:
-    "Melde dich an, teile einen Playtest, hinterlasse Feedback oder markiere bei einer Idee, dass du helfen kannst. Das erste Mal gibt je ein Abzeichen. Studio-Mitglied vergibt der Club.",
-  helpRecentShares: "Playtests zum Ausprobieren",
-  helpRecentFeedback: "Neues Feedback",
-  helpEmptyShares: "Noch keine Playtests. Teile den ersten Build.",
-  helpEmptyFeedback: "Noch kein Feedback.",
+    "Melde dich an, teile ein Testspiel, hinterlasse eine Notiz oder markiere bei einer Idee, dass du helfen kannst. Das erste Mal gibt je ein Abzeichen. Studio-Mitglied vergibt der Club.",
+  helpKickerShares: "Testspiele",
+  helpKickerNotes: "Notizen",
+  helpKickerBadges: "Abzeichen",
+  helpRecentShares: "Testspiele zum Ausprobieren",
+  helpRecentFeedback: "Neue Notizen",
+  helpEmptyShares: "Noch keine Testspiele. Nach der Anmeldung teilen.",
+  helpEmptyFeedback: "Öffne ein Testspiel, um eine Notiz zu schreiben.",
   helpOpenResources: "Ressourcen öffnen →",
   helpOpenShare: "Build teilen →",
-  helpOpenFeedback: "Feedback geben →",
+  helpOpenFeedback: "Testspiel öffnen →",
+  helpFeedbackHint: "Notizen gehören zu einem Testspiel, nicht auf einen eigenen Tab. Öffne einen Share, um zu antworten.",
+  shareBack: "Alle Testspiele",
+  shareOpen: "Testspiel öffnen",
+  shareNotFoundTitle: "Dieses Testspiel ist nicht hier",
+  shareNotFoundBody:
+    "Es wurde entfernt, oder die Share-Tabellen sind noch nicht eingerichtet. Ressourcen und Dokumente bleiben offen.",
+  shareEmptyTitle: "Noch keine Testspiele",
+  shareEmptyBody: "Teile zuerst einen Build. Dann können andere ihn öffnen und hier antworten.",
+  shareFeedbackTitle: "Notiz zu diesem Testspiel",
+  shareFeedbackEmpty: "Noch keine Notiz zu diesem Testspiel.",
+  shareFirstHint: "Teile zuerst einen Build. Notizen gehören zu diesem Testspiel, nicht auf einen eigenen Tab.",
   resourcesKicker: "Ressourcen",
-  resourcesTitle: "Guides, Support und das Board",
-  resourcesLede: "Handbuch, Support, Ideen und Studio-News — dieselbe Anmeldung.",
+  resourcesTitle: "Handbuch, Support und das Board",
+  resourcesLede: "Handbuch, Support, Ideen und Studio-Nachrichten — dieselbe Anmeldung.",
   resourcesHandbook: "Handbuch",
   resourcesHandbookBody: "Wie Hub, Git, Godot und TypeScript funktionieren.",
   resourcesSupportBody: "Kaputte Seiten, Anmeldeprobleme oder ein Mensch aus dem Club.",
+  resourcesGithubBody: "Öffentliche Repos und die Club-Arbeit liegen hier.",
   resourcesIdeasBody: "Nach der Anmeldung um Hilfe bei einer Projektidee bitten.",
   resourcesNewsBody: "Vom Studio geschriebene Beiträge; ohne Übersetzung erscheint Englisch.",
   shareKicker: "Teilen",
   shareTitle: "Einen Build vor Menschen stellen",
   shareLede:
-    "Das ist die Schleife gegen KI-Tester: ein Mensch spielt dein Produkt. Du musst angemeldet sein. Name verstecken geht; Abzeichen bleiben.",
+    "Ein Mensch aus dem Club spielt deinen Build. Du musst angemeldet sein. Name verstecken geht; Abzeichen bleiben.",
   shareWhatToTry: "Was sollen Leute ausprobieren?",
   shareLink: "Link",
   shareNotes: "Notizen",
@@ -833,7 +923,7 @@ const de: UiCopy = {
   feedbackKicker: "Feedback",
   feedbackTitle: "Sag, was du gefunden hast",
   feedbackLede:
-    "Feedback braucht Anmeldung, damit wir Abzeichen geben und Spam klein halten. Anonym versteckt den Namen, nicht das Abzeichen.",
+    "Schreib Feedback zu diesem Playtest. Anmeldung ist nötig, damit wir Abzeichen geben und Spam klein halten. Anonym versteckt den Namen, nicht das Abzeichen.",
   feedbackTarget: "Worum geht es?",
   feedbackTargetFree: "Etwas anderes",
   feedbackBody: "Was ist dir aufgefallen?",
@@ -882,6 +972,14 @@ export function htmlLang(locale: ContentLanguage) {
 
 export function fill(template: string, values: Record<string, string | number>) {
   return template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ""));
+}
+
+export function docsSectionLabel(id: string, fallback: string, copy: UiCopy) {
+  if (id === "getting-started") return copy.docsSectionGettingStarted;
+  if (id === "products") return copy.docsSectionProducts;
+  if (id === "guides") return copy.docsSectionGuides;
+  if (id === "website") return copy.docsSectionWebsite;
+  return fallback;
 }
 
 export function badgeLabel(copy: UiCopy, slug: string, fallback: string) {

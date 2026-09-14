@@ -22,15 +22,61 @@ export async function listIdeas(options?: {
   }
 
   const { data, error } = await query;
-  if (error || !data) return [];
+  if (!error && data) {
+    return data.map((row) => {
+      const responses = row.responses as { count: number }[] | null;
+      return {
+        ...(row as Idea),
+        response_count: responses?.[0]?.count ?? 0,
+      };
+    });
+  }
 
-  return data.map((row) => {
-    const responses = row.responses as { count: number }[] | null;
-    return {
-      ...(row as Idea),
-      response_count: responses?.[0]?.count ?? 0,
-    };
-  });
+  // Guests can read `ideas` after the public-select migration, but profile
+  // embeds still fail under member-only RLS. Retry without profiles so the
+  // board keeps real reply counts.
+  let withoutProfiles = supabase
+    .from("ideas")
+    .select("*, responses(count)")
+    .order("created_at", { ascending: false });
+  if (options?.authorId) {
+    withoutProfiles = withoutProfiles.eq("author_id", options.authorId);
+  }
+  if (options?.category && options.category !== "all") {
+    withoutProfiles = withoutProfiles.eq("category", options.category);
+  }
+
+  const { data: counted, error: countedError } = await withoutProfiles;
+  if (!countedError && counted) {
+    return counted.map((row) => {
+      const responses = row.responses as { count: number }[] | null;
+      return {
+        ...(row as Idea),
+        profiles: null,
+        response_count: responses?.[0]?.count ?? 0,
+      };
+    });
+  }
+
+  let ideasOnlyQuery = supabase.from("ideas").select("*").order("created_at", { ascending: false });
+  if (options?.authorId) {
+    ideasOnlyQuery = ideasOnlyQuery.eq("author_id", options.authorId);
+  }
+  if (options?.category && options.category !== "all") {
+    ideasOnlyQuery = ideasOnlyQuery.eq("category", options.category);
+  }
+
+  const { data: ideasOnly, error: ideasError } = await ideasOnlyQuery;
+  if (ideasError || !ideasOnly) {
+    console.error("[ideas] list failed", error, countedError, ideasError);
+    return [];
+  }
+
+  return ideasOnly.map((row) => ({
+    ...(row as Idea),
+    profiles: null,
+    response_count: 0,
+  }));
 }
 
 export async function getIdea(id: string): Promise<Idea | null> {
@@ -43,8 +89,21 @@ export async function getIdea(id: string): Promise<Idea | null> {
     .eq("id", id)
     .maybeSingle();
 
-  if (error || !data) return null;
-  return data as Idea;
+  if (!error && data) return data as Idea;
+
+  const { data: ideaOnly, error: ideaError } = await supabase
+    .from("ideas")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (ideaError) {
+    console.error("[ideas] get failed", error, ideaError);
+    return null;
+  }
+
+  if (!ideaOnly) return null;
+  return { ...(ideaOnly as Idea), profiles: null };
 }
 
 export async function listResponses(ideaId: string): Promise<ResponsePost[]> {
@@ -57,8 +116,23 @@ export async function listResponses(ideaId: string): Promise<ResponsePost[]> {
     .eq("idea_id", ideaId)
     .order("created_at", { ascending: true });
 
-  if (error || !data) return [];
-  return data as ResponsePost[];
+  if (!error && data) return data as ResponsePost[];
+
+  const { data: repliesOnly, error: repliesError } = await supabase
+    .from("responses")
+    .select("*")
+    .eq("idea_id", ideaId)
+    .order("created_at", { ascending: true });
+
+  if (repliesError || !repliesOnly) {
+    console.error("[ideas] list responses failed", error, repliesError);
+    return [];
+  }
+
+  return repliesOnly.map((row) => ({
+    ...(row as ResponsePost),
+    profiles: null,
+  }));
 }
 
 export async function listMyResponses(authorId: string): Promise<ResponsePost[]> {
@@ -115,6 +189,24 @@ export async function listPlaytestShares(): Promise<PlaytestShare[]> {
   }));
 }
 
+export async function getPlaytestShare(id: string): Promise<PlaytestShare | null> {
+  if (!isSupabaseConfigured() || !id) return null;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("playtest_shares")
+    .select("*, profiles(*)")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  const badges = await badgesByAuthors([data.author_id]);
+  return {
+    ...(data as PlaytestShare),
+    badges: badges.get(data.author_id) ?? [],
+  };
+}
+
 export async function listProductFeedback(): Promise<ProductFeedback[]> {
   if (!isSupabaseConfigured()) return [];
 
@@ -122,6 +214,24 @@ export async function listProductFeedback(): Promise<ProductFeedback[]> {
   const { data, error } = await supabase
     .from("product_feedback")
     .select("*, profiles(*)")
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  const badges = await badgesByAuthors(data.map((row) => row.author_id));
+  return data.map((row) => ({
+    ...(row as ProductFeedback),
+    badges: badges.get(row.author_id) ?? [],
+  }));
+}
+
+export async function listProductFeedbackForShare(shareId: string): Promise<ProductFeedback[]> {
+  if (!isSupabaseConfigured() || !shareId) return [];
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("product_feedback")
+    .select("*, profiles(*)")
+    .eq("share_id", shareId)
     .order("created_at", { ascending: false });
 
   if (error || !data) return [];

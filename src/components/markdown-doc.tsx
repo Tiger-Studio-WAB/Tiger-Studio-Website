@@ -1,7 +1,8 @@
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { SoftImage } from "@/components/soft-image";
 import { resolveDocHref } from "@/lib/docs";
-import { resolveNewsImage } from "@/lib/news";
+import { omitMatchingTitleHeading, prepareMarkdownBody, resolveMarkdownImage } from "@/lib/markdown";
 
 function languageFromPreNode(node: unknown) {
   if (!node || typeof node !== "object" || !("children" in node)) return undefined;
@@ -64,10 +65,12 @@ export function MarkdownDoc({
   source,
   currentSlug = [],
   imageBase,
+  omitHeading,
 }: {
   source: string;
   currentSlug?: string[];
   imageBase?: string;
+  omitHeading?: string;
 }) {
   return (
     <div className="prose-docs">
@@ -90,14 +93,11 @@ export function MarkdownDoc({
           },
           img: ({ src, alt }) => {
             const raw = typeof src === "string" ? src : undefined;
-            return (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={imageBase ? resolveNewsImage(raw, imageBase) : raw} alt={alt ?? ""} />
-            );
+            return <SoftImage src={resolveMarkdownImage(raw, imageBase)} alt={alt ?? ""} />;
           },
         }}
       >
-        {source}
+        {omitMatchingTitleHeading(prepareMarkdownBody(source), omitHeading)}
       </Markdown>
     </div>
   );
