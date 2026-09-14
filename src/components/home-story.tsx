@@ -36,10 +36,13 @@ export function HomeStory({
           const sections = gsap.utils.toArray<HTMLElement>(".home-pin");
 
           sections.forEach((section) => {
+            const frame = section.querySelector<HTMLElement>(".home-pin-frame");
+            const inner = section.querySelector<HTMLElement>(".home-pin-inner");
             const items = section.querySelectorAll<HTMLElement>(".home-pin-item");
-            if (!items.length || reduce) return;
+            if (!frame || !inner) return;
 
             if (!desktop) {
+              if (reduce || !items.length) return;
               gsap.from(items, {
                 y: 16,
                 duration: 0.36,
@@ -55,20 +58,54 @@ export function HomeStory({
               return;
             }
 
-            gsap.timeline({
+            const overflowY = () => {
+              const styles = getComputedStyle(frame);
+              const pad =
+                parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom);
+              return Math.max(0, inner.scrollHeight - (frame.clientHeight - pad));
+            };
+
+            const applyHeight = () => {
+              gsap.set(inner, { y: 0 });
+              const overflow = overflowY();
+              const hold = Math.round(window.innerHeight * (overflow > 0 ? 0.4 : 0.8));
+              section.style.height = `${window.innerHeight + overflow + hold}px`;
+            };
+
+            applyHeight();
+
+            const tl = gsap.timeline({
               defaults: { ease: "none" },
               scrollTrigger: {
                 trigger: section,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 0.55,
+                start: "top top",
+                end: "bottom bottom",
+                scrub: reduce ? true : 0.55,
                 invalidateOnRefresh: true,
+                onRefresh: applyHeight,
               },
-            }).from(items, {
-              y: 28,
-              stagger: 0.12,
             });
+
+            tl.to(inner, { y: () => -overflowY(), duration: 1 }, 0);
+
+            if (!reduce && items.length) {
+              tl.from(
+                items,
+                {
+                  y: 28,
+                  duration: 0.35,
+                  stagger: 0.08,
+                },
+                0,
+              );
+            }
           });
+
+          return () => {
+            sections.forEach((section) => {
+              section.style.removeProperty("height");
+            });
+          };
         },
       );
 
@@ -94,7 +131,7 @@ export function HomeStory({
     <div ref={rootRef}>
       <section className="home-pin home-pin--products" aria-labelledby="home-products-title">
         <div className="home-pin-frame">
-          <div className="home-pin-split">
+          <div className="home-pin-inner home-pin-split">
             <div className="home-pin-copy">
               <p className="home-pin-kicker">{copy.productsKicker}</p>
               <h2 id="home-products-title" className="home-pin-title">
@@ -137,7 +174,7 @@ export function HomeStory({
 
       <section className="home-pin home-pin--about" aria-labelledby="home-about-title">
         <div className="home-pin-frame">
-          <div className="home-pin-split">
+          <div className="home-pin-inner home-pin-split">
             <div className="home-pin-copy">
               <p className="home-pin-kicker home-pin-kicker--on-dark">{copy.aboutKicker}</p>
               <h2 id="home-about-title" className="home-pin-title">
@@ -165,7 +202,7 @@ export function HomeStory({
 
       <section className="home-pin home-pin--values" aria-labelledby="home-values-title">
         <div className="home-pin-frame">
-          <div className="home-pin-values">
+          <div className="home-pin-inner home-pin-values">
             <div className="home-pin-copy mx-auto max-w-3xl text-center">
               <p className="home-pin-kicker">{copy.valuesKicker}</p>
               <h2 id="home-values-title" className="home-pin-title">
