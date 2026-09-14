@@ -39,6 +39,14 @@ export function prepareMarkdownBody(source: string) {
     .trim();
 }
 
+export function omitMatchingTitleHeading(source: string, title?: string) {
+  const normalized = title?.replace(/\s+/g, " ").trim().toLowerCase();
+  if (!normalized) return source;
+  return source.replace(/^#\s+(.+?)\s*(?:\r?\n)+/, (full, heading: string) => {
+    return heading.replace(/\s+/g, " ").trim().toLowerCase() === normalized ? "" : full;
+  });
+}
+
 export function resolveMarkdownImage(src: string | undefined, imageBase?: string) {
   if (!src) return src;
   if (/^https?:\/\//i.test(src) || src.startsWith("/")) return src;

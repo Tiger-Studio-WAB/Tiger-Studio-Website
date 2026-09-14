@@ -4,7 +4,7 @@ import { MarkdownDoc } from "@/components/markdown-doc";
 import { Reveal } from "@/components/reveal";
 import type { DocPage, DocsTree } from "@/lib/docs";
 import { neighbors } from "@/lib/docs";
-import { fill, type UiCopy } from "@/lib/i18n";
+import { docsSectionLabel, fill, type UiCopy } from "@/lib/i18n";
 
 export function DocsShell({
   tree,
@@ -17,18 +17,27 @@ export function DocsShell({
   landing?: boolean;
   copy: UiCopy;
 }) {
+  const localizedTree = {
+    ...tree,
+    sections: tree.sections.map((section) => ({
+      ...section,
+      label: docsSectionLabel(section.id, section.label, copy),
+    })),
+  };
   const crumbs = [
     { href: "/docs", label: copy.docs },
     ...page.slug.map((part, index) => ({
       href: `/docs/${page.slug.slice(0, index + 1).join("/")}`,
-      label: part
-        .replace(/[-_]+/g, " ")
-        .replace(/\b\w/g, (letter) => letter.toUpperCase()),
+      label: docsSectionLabel(
+        part,
+        part.replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
+        copy,
+      ),
     })),
   ];
-  const { previous, next } = neighbors(tree, page);
+  const { previous, next } = neighbors(localizedTree, page);
   const sections = landing
-    ? tree.sections.map((section) => ({
+    ? localizedTree.sections.map((section) => ({
         href: section.href ?? section.pages[0]?.href,
         label: section.label,
         body:
@@ -43,11 +52,11 @@ export function DocsShell({
         <details className="lg:hidden">
           <summary className="cursor-pointer text-sm font-semibold">{copy.docsOnThisSite}</summary>
           <div className="mt-4">
-            <DocsSidebar tree={tree} currentHref={page.href} copy={copy} />
+            <DocsSidebar tree={localizedTree} currentHref={page.href} copy={copy} />
           </div>
         </details>
         <div className="hidden lg:block">
-          <DocsSidebar tree={tree} currentHref={page.href} copy={copy} />
+          <DocsSidebar tree={localizedTree} currentHref={page.href} copy={copy} />
         </div>
       </aside>
       <div className="min-w-0 flex-1">
@@ -100,13 +109,7 @@ export function DocsShell({
             rel="noopener noreferrer"
             className="font-semibold text-brand-red hover:underline"
           >
-            {page.locale === "de"
-              ? fill(copy.docsSourceDraft, {
-                  topic: page.slug[0]
-                    ? page.slug[0].replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase())
-                    : copy.docs,
-                })
-              : copy.docsSource}
+            {copy.docsOpenGithub}
           </a>
           {page.source === "local" ? copy.docsLocalNote : ""}
         </p>

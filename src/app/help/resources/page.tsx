@@ -24,7 +24,7 @@ export default async function HelpResourcesPage() {
     <>
       <PageHero kicker={copy.resourcesKicker} title={copy.resourcesTitle} lede={copy.resourcesLede} />
       <PageShell>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {cards.map((card) =>
             card.external ? (
               <a

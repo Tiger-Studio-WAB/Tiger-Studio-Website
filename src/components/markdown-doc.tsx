@@ -2,7 +2,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { SoftImage } from "@/components/soft-image";
 import { resolveDocHref } from "@/lib/docs";
-import { prepareMarkdownBody, resolveMarkdownImage } from "@/lib/markdown";
+import { omitMatchingTitleHeading, prepareMarkdownBody, resolveMarkdownImage } from "@/lib/markdown";
 
 function languageFromPreNode(node: unknown) {
   if (!node || typeof node !== "object" || !("children" in node)) return undefined;
@@ -65,10 +65,12 @@ export function MarkdownDoc({
   source,
   currentSlug = [],
   imageBase,
+  omitHeading,
 }: {
   source: string;
   currentSlug?: string[];
   imageBase?: string;
+  omitHeading?: string;
 }) {
   return (
     <div className="prose-docs">
@@ -95,7 +97,7 @@ export function MarkdownDoc({
           },
         }}
       >
-        {prepareMarkdownBody(source)}
+        {omitMatchingTitleHeading(prepareMarkdownBody(source), omitHeading)}
       </Markdown>
     </div>
   );

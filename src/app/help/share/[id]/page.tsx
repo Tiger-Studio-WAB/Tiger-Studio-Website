@@ -48,6 +48,14 @@ export default async function HelpShareDetailPage({ params, searchParams }: Prop
           <Link href="/help/share" className="text-sm font-semibold text-brand-red hover:underline">
             ← {copy.shareBack}
           </Link>
+          <p className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+            <Link href="/help/resources" className="text-brand-red hover:underline">
+              {copy.helpOpenResources}
+            </Link>
+            <Link href="/docs" className="text-brand-red hover:underline">
+              {copy.supportOpenDocs}
+            </Link>
+          </p>
         </PageShell>
       </>
     );

@@ -109,6 +109,11 @@ export type UiCopy = {
   docsLocalNote: string;
   docsPages: string;
   docsCopy: string;
+  docsOpenGithub: string;
+  docsSectionGettingStarted: string;
+  docsSectionProducts: string;
+  docsSectionGuides: string;
+  docsSectionWebsite: string;
   supportKicker: string;
   supportTitle: string;
   supportLede: string;
@@ -333,6 +338,11 @@ const en: UiCopy = {
   docsLocalNote: " (starter copy on this site until the docs repo has this file)",
   docsPages: "{count} pages",
   docsCopy: "Copy",
+  docsOpenGithub: "Open on GitHub",
+  docsSectionGettingStarted: "Getting started",
+  docsSectionProducts: "Products",
+  docsSectionGuides: "Guides",
+  docsSectionWebsite: "Website",
   supportKicker: "Support",
   supportTitle: "Get help",
   supportLede: "Support is for problems and questions. Guides and how-tos live in Docs.",
@@ -564,6 +574,11 @@ const zh: UiCopy = {
   docsSourceDraft: "德文草稿 · {topic}",
   docsNeedHelp: "需要帮助？",
   docsSource: "来源",
+  docsOpenGithub: "在 GitHub 打开",
+  docsSectionGettingStarted: "入门",
+  docsSectionProducts: "产品",
+  docsSectionGuides: "指南",
+  docsSectionWebsite: "网站",
   docsLocalNote: "（文档仓库还没有这个文件时，先用本站的起始文稿）",
   docsPages: "{count} 页",
   docsCopy: "复制",
@@ -740,7 +755,7 @@ const de: UiCopy = {
   about: "Über uns",
   join: "Mitmachen",
   docs: "Dokumente",
-  support: "Support",
+  support: "Support-Seite",
   help: "Hilfe",
   news: "Nachrichten",
   changelog: "Changelog",
@@ -800,6 +815,11 @@ const de: UiCopy = {
   docsLocalNote: " (Starttext auf dieser Website, bis das Docs-Repo die Datei hat)",
   docsPages: "{count} Seiten",
   docsCopy: "Kopieren",
+  docsOpenGithub: "Auf GitHub öffnen",
+  docsSectionGettingStarted: "Erste Schritte",
+  docsSectionProducts: "Produkte",
+  docsSectionGuides: "Anleitungen",
+  docsSectionWebsite: "Website",
   supportKicker: "Support",
   supportTitle: "Hilfe holen",
   supportLede: "Support ist für Probleme und Fragen. Anleitungen stehen in den Docs.",
@@ -840,7 +860,7 @@ const de: UiCopy = {
   helpKicker: "Hilfe",
   helpTitle: "Arbeit ausprobieren und zurückschreiben",
   helpLede:
-    "Teile einen Build zum Playtest, hinterlasse Feedback zu diesem Playtest und finde Docs. Abzeichen bleiben sichtbar, auch wenn der Name versteckt ist.",
+    "Teile einen Build zum Playtest, hinterlasse Feedback zu diesem Playtest und finde Dokumente. Abzeichen bleiben sichtbar, auch wenn der Name versteckt ist.",
   helpNavHome: "Gemeinschaft",
   helpNavResources: "Ressourcen",
   helpNavShare: "Teilen",
@@ -940,6 +960,14 @@ export function htmlLang(locale: ContentLanguage) {
 
 export function fill(template: string, values: Record<string, string | number>) {
   return template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ""));
+}
+
+export function docsSectionLabel(id: string, fallback: string, copy: UiCopy) {
+  if (id === "getting-started") return copy.docsSectionGettingStarted;
+  if (id === "products") return copy.docsSectionProducts;
+  if (id === "guides") return copy.docsSectionGuides;
+  if (id === "website") return copy.docsSectionWebsite;
+  return fallback;
 }
 
 export function badgeLabel(copy: UiCopy, slug: string, fallback: string) {

@@ -40,7 +40,7 @@ export default async function NewsArticlePage({ params }: Props) {
         <p className="mt-4 text-sm text-muted-foreground">{copy.newsFallbackNote}</p>
       ) : null}
       <article className="panel mt-8 p-6 md:p-8">
-        <MarkdownDoc source={post.body} imageBase={post.imageBase} />
+        <MarkdownDoc source={post.body} imageBase={post.imageBase} omitHeading={post.title} />
       </article>
     </PageShell>
   );
