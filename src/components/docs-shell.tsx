@@ -94,14 +94,19 @@ export function DocsShell({
           ) : null}
         </div>
         <p className="mt-8 text-xs text-muted-foreground">
-          {copy.docsSource}:{" "}
           <a
             href={`${tree.githubUrl}/blob/main/${page.path}`}
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-brand-red hover:underline"
           >
-            {page.path}
+            {page.locale === "de"
+              ? fill(copy.docsSourceDraft, {
+                  topic: page.slug[0]
+                    ? page.slug[0].replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase())
+                    : copy.docs,
+                })
+              : copy.docsSource}
           </a>
           {page.source === "local" ? copy.docsLocalNote : ""}
         </p>

@@ -1,5 +1,6 @@
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { SoftImage } from "@/components/soft-image";
 import { resolveDocHref } from "@/lib/docs";
 import { prepareMarkdownBody, resolveMarkdownImage } from "@/lib/markdown";
 
@@ -90,10 +91,7 @@ export function MarkdownDoc({
           },
           img: ({ src, alt }) => {
             const raw = typeof src === "string" ? src : undefined;
-            return (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={resolveMarkdownImage(raw, imageBase)} alt={alt ?? ""} />
-            );
+            return <SoftImage src={resolveMarkdownImage(raw, imageBase)} alt={alt ?? ""} />;
           },
         }}
       >

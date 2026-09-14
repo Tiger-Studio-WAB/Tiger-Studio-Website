@@ -19,8 +19,8 @@ const BOX_COLORS = [
 ];
 
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
-const LANGUAGE_LIMIT = 10;
-const COMMIT_LIMIT = 4;
+const LANGUAGE_LIMIT = 5;
+const COMMIT_LIMIT = 2;
 
 type BoxKind = "language" | "commit" | "stat";
 
@@ -55,6 +55,14 @@ function logWeight(value: number) {
 function sizeFromImportance(t: number, min: number, max: number) {
   const clamped = Math.min(1, Math.max(0, t));
   return Math.round(min + clamped * (max - min));
+}
+
+function clipTitle(title: string, max = 40) {
+  const clean = title.replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const slice = clean.slice(0, max - 1);
+  const cut = slice.lastIndexOf(" ");
+  return `${(cut > 18 ? slice.slice(0, cut) : slice).trim()}…`;
 }
 
 function importanceFor(weight: number, weights: number[]) {
@@ -111,7 +119,7 @@ function buildBoxes(
       id: `commit-${commit.id}`,
       kind: "commit" as const,
       kicker: copy.orbitCommit,
-      title: commit.message.length > 88 ? `${commit.message.slice(0, 85)}…` : commit.message,
+      title: clipTitle(commit.message, 40),
       meta: commit.repo,
       href: commit.url,
       weight: peakLanguage * Math.max(0.18, 0.62 - index * 0.07),
@@ -139,40 +147,61 @@ function layoutBoxes(nodes: HTMLElement[], inner: number, maxRadius: number) {
     w: node.offsetWidth,
     h: node.offsetHeight,
   }));
-  const placed: { x: number; y: number; r: number; angle: number }[] = [];
+  const order = sizes
+    .map((_, index) => index)
+    .sort((a, b) => sizes[b].w * sizes[b].h - sizes[a].w * sizes[a].h || a - b);
+  const placed: ({ x: number; y: number; r: number; angle: number } | null)[] = Array(
+    nodes.length,
+  ).fill(null);
 
-  nodes.forEach((node, index) => {
+  for (const index of order) {
+    const node = nodes[index];
     const box = sizes[index];
     const angle = index * GOLDEN_ANGLE - Math.PI / 2;
-    const minRadius = inner + Math.max(box.w, box.h) * 0.45;
-    let radius = Math.min(maxRadius, Math.max(minRadius, inner + Math.sqrt(index + 1) * 24));
+    let radius = Math.max(inner + Math.max(box.w, box.h) * 0.55, inner + Math.sqrt(index + 1) * 28);
     let x = 0;
     let y = 0;
+    let fits = false;
 
     const overlaps = () => {
       const hw = box.w / 2;
       const hh = box.h / 2;
-      if (Math.hypot(x, y) < inner + Math.max(hw, hh) * 0.4) return true;
+      if (Math.hypot(x, y) < inner + Math.max(hw, hh) * 0.55) return true;
       return placed.some((point, otherIndex) => {
+        if (!point) return false;
         const other = sizes[otherIndex];
         return (
-          Math.abs(x - point.x) < (hw + other.w / 2) * 0.78 &&
-          Math.abs(y - point.y) < (hh + other.h / 2) * 0.78
+          Math.abs(x - point.x) < (hw + other.w / 2) * 0.96 &&
+          Math.abs(y - point.y) < (hh + other.h / 2) * 0.96
         );
       });
     };
 
-    for (let step = 0; step < 32; step += 1) {
+    for (let step = 0; step < 72; step += 1) {
       x = Math.cos(angle) * radius;
       y = Math.sin(angle) * radius;
-      if (!overlaps() || radius >= maxRadius) break;
-      radius = Math.min(maxRadius, radius + 14);
+      if (!overlaps()) {
+        fits = true;
+        break;
+      }
+      radius += 16;
+      if (radius > maxRadius) break;
     }
 
-    placed.push({ x, y, r: radius, angle });
+    if (!fits) {
+      node.dataset.skip = "1";
+      node.style.visibility = "hidden";
+      node.style.pointerEvents = "none";
+      continue;
+    }
+
+    node.dataset.skip = "0";
+    node.style.visibility = "";
+    node.style.pointerEvents = "";
+    placed[index] = { x, y, r: radius, angle };
     node.dataset.radius = String(radius);
     node.dataset.angle = String(angle);
-  });
+  }
 
   return placed;
 }
@@ -224,16 +253,16 @@ export function OrbitHero({
           const maxRadius = () => {
             const width = rootRef.current?.offsetWidth ?? window.innerWidth;
             const height = rootRef.current?.querySelector(".hero-grid")?.clientHeight ?? window.innerHeight;
-            return Math.min(width, height) * 0.38;
+            return Math.min(width, height) * 0.42;
           };
 
           let placed = layoutBoxes(nodes, innerRadius(), maxRadius());
 
           const apply = (progress: number) => {
-            const fly = 1 + progress * 0.7;
+            const fly = 1 + progress * 0.45;
             nodes.forEach((node, index) => {
               const point = placed[index];
-              if (!point) return;
+              if (!point || node.dataset.skip === "1") return;
               gsap.set(node, {
                 x: Math.cos(point.angle) * point.r * fly,
                 y: Math.sin(point.angle) * point.r * fly,
@@ -250,6 +279,7 @@ export function OrbitHero({
           apply(0);
 
           const cleanups = nodes.map((node) => {
+            if (node.dataset.skip === "1") return () => undefined;
             const inner = node.querySelector<HTMLElement>(".orbit-box-inner");
             const enter = safe(() => {
               nodes.forEach((other) => {
@@ -259,13 +289,13 @@ export function OrbitHero({
               });
               gsap.set(node, { zIndex: 30 });
               if (!reduce && inner) {
-                gsap.to(inner, { scale: 1.03, duration: 0.18, ease: "power1.out", overwrite: "auto" });
+                gsap.to(inner, { y: -6, scale: 1.08, duration: 0.22, ease: "power2.out", overwrite: "auto" });
               }
             });
             const leave = safe(() => {
               gsap.set(node, { zIndex: 16 });
               if (!reduce && inner) {
-                gsap.to(inner, { scale: 1, duration: 0.18, ease: "power1.out", overwrite: "auto" });
+                gsap.to(inner, { y: 0, scale: 1, duration: 0.22, ease: "power2.out", overwrite: "auto" });
               }
             });
             node.addEventListener("pointerenter", enter);
@@ -324,12 +354,12 @@ export function OrbitHero({
           const importance = importanceFor(box.weight, weights);
           const width =
             box.kind === "commit"
-              ? sizeFromImportance(importance, 148, 236)
-              : sizeFromImportance(importance, 96, 220);
-          const padding = sizeFromImportance(importance, 10, 22);
-          const titleSize = sizeFromImportance(importance, 14, 28);
-          const tilt = ((index * 47) % 13) - 6;
-          const className = `orbit-box absolute left-1/2 top-1/2 block shadow-[0_12px_32px_rgba(0,0,0,0.2)] ${
+              ? sizeFromImportance(importance, 168, 220)
+              : sizeFromImportance(importance, 108, 188);
+          const padding = sizeFromImportance(importance, 10, 18);
+          const titleSize = sizeFromImportance(importance, 14, 24);
+          const tilt = ((index * 47) % 7) - 3;
+          const className = `orbit-box absolute left-1/2 top-1/2 block overflow-hidden shadow-[0_12px_32px_rgba(0,0,0,0.2)] ${
             BOX_COLORS[index % BOX_COLORS.length]
           } ${box.kind === "stat" ? "uppercase tracking-wide" : ""}`;
           const style = {
@@ -343,8 +373,8 @@ export function OrbitHero({
                 {box.kicker}
               </span>
               <span
-                className={`mt-1 block break-words font-bold leading-tight ${
-                  box.kind === "commit" ? "line-clamp-3 normal-case tracking-normal" : "italic"
+                className={`mt-1 block break-words [overflow-wrap:anywhere] font-bold leading-tight ${
+                  box.kind === "commit" ? "line-clamp-2 normal-case tracking-normal" : "italic"
                 }`}
                 style={{ fontSize: titleSize }}
               >

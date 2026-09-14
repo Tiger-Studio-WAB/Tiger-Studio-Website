@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
+import { SoftImage } from "@/components/soft-image";
 import { PageHero } from "@/components/page-hero";
 import { PageShell } from "@/components/page-shell";
 import { getCopy } from "@/lib/locale";
@@ -33,10 +34,7 @@ export default async function NewsPage() {
                 className="panel tap-card block overflow-hidden"
                 data-reveal
               >
-                {post.cover ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={post.cover} alt="" className="h-44 w-full object-cover" />
-                ) : null}
+                <SoftImage src={post.cover} alt="" className="h-44 w-full object-cover" />
                 <div className="p-6">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                     {post.date} · {copy.newsBy} {post.author}

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MarkdownDoc } from "@/components/markdown-doc";
 import { PageHero } from "@/components/page-hero";
 import { PageShell } from "@/components/page-shell";
 import { getSupportPage } from "@/lib/docs";
@@ -28,15 +27,7 @@ export default async function SupportPage() {
               <li>{copy.supportBulletBroken}</li>
               <li>{copy.supportBulletHuman}</li>
             </ul>
-            {support.usedFallback ? (
-              <p className="mt-6 text-sm text-muted-foreground">{copy.newsFallbackNote}</p>
-            ) : null}
-            {support.body ? (
-              <div className="mt-8">
-                <MarkdownDoc source={support.body} imageBase={support.imageBase} />
-              </div>
-            ) : null}
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3">
               <a href={support.issuesUrl} target="_blank" rel="noopener noreferrer" className="btn btn-red">
                 {copy.supportOpenIssue}
               </a>
@@ -44,7 +35,7 @@ export default async function SupportPage() {
                 href={support.issuesListUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-white border border-brand-red"
+                className="text-sm font-semibold text-brand-red hover:underline"
               >
                 {copy.supportOpenIssues}
               </a>

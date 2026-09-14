@@ -90,11 +90,12 @@ function assetBase(source: "local" | "github", canonical: string) {
   });
 }
 
-function firstImage(body: string, imageBase: string) {
+function firstImage(body: string, imageBase: string, source: "local" | "github") {
   const match = body.match(/!\[[^\]]*]\(([^)]+)\)/);
   if (!match) return undefined;
   const src = match[1].trim();
   if (/^https?:\/\//i.test(src) || src.startsWith("/")) return src;
+  if (source !== "local") return undefined;
   return `${imageBase}/${src.replace(/^\.\//, "")}`;
 }
 
@@ -175,7 +176,7 @@ function postFromRecord(record: NewsRecord, locale: ContentLanguage): NewsPost |
     author,
     summary: chosen.data.summary || english.data.summary || "",
     body: chosen.body,
-    cover: firstImage(chosen.body, imageBase),
+    cover: firstImage(chosen.body, imageBase, english.file.source),
     path: chosen.file.path,
     source: chosen.file.source,
     locale: picked.locale,

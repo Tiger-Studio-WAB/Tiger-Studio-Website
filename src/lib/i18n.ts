@@ -103,6 +103,7 @@ export type UiCopy = {
   joinOpenGithub: string;
   docsOverview: string;
   docsOnThisSite: string;
+  docsSourceDraft: string;
   docsNeedHelp: string;
   docsSource: string;
   docsLocalNote: string;
@@ -152,6 +153,9 @@ export type UiCopy = {
   helpNavFeedback: string;
   helpHowBadges: string;
   helpHowBadgesBody: string;
+  helpKickerShares: string;
+  helpKickerNotes: string;
+  helpKickerBadges: string;
   helpRecentShares: string;
   helpRecentFeedback: string;
   helpEmptyShares: string;
@@ -168,6 +172,7 @@ export type UiCopy = {
   shareEmptyBody: string;
   shareFeedbackTitle: string;
   shareFeedbackEmpty: string;
+  shareFirstHint: string;
   resourcesKicker: string;
   resourcesTitle: string;
   resourcesLede: string;
@@ -322,6 +327,7 @@ const en: UiCopy = {
   joinOpenGithub: "Open GitHub →",
   docsOverview: "Overview",
   docsOnThisSite: "On this site",
+  docsSourceDraft: "German draft · {topic}",
   docsNeedHelp: "Need help?",
   docsSource: "Source",
   docsLocalNote: " (starter copy on this site until the docs repo has this file)",
@@ -335,7 +341,7 @@ const en: UiCopy = {
   supportBulletBroken: "A page on this site is broken or missing",
   supportBulletHuman: "You need a human from the club",
   supportOpenIssue: "Open a support issue",
-  supportOpenIssues: "Open issues",
+  supportOpenIssues: "View open issues",
   supportDocsTitle: "Looking up how something works?",
   supportDocsBody: "Product guides and writing rules are in the handbook, not here.",
   supportOpenDocs: "Open docs →",
@@ -375,10 +381,13 @@ const en: UiCopy = {
   helpHowBadges: "How badges work",
   helpHowBadgesBody:
     "Sign in, then post a playtest, leave feedback, or mark that you can help on an idea. The first time you do each of those, a badge is added to your profile. Studio member is awarded by the club.",
+  helpKickerShares: "Playtests",
+  helpKickerNotes: "Notes",
+  helpKickerBadges: "Badges",
   helpRecentShares: "Playtests to try",
-  helpRecentFeedback: "Recent feedback",
+  helpRecentFeedback: "Recent notes",
   helpEmptyShares: "No playtests yet. Share a build after you sign in — or this list stays empty until the Help SQL is running.",
-  helpEmptyFeedback: "No feedback yet. Open a playtest to write the first note.",
+  helpEmptyFeedback: "Open a playtest to write a note.",
   helpOpenResources: "Open resources →",
   helpOpenShare: "Share a build →",
   helpOpenFeedback: "Open a playtest →",
@@ -389,9 +398,10 @@ const en: UiCopy = {
   shareNotFoundBody:
     "It may have been removed, or the share tables are not set up yet. You can still browse resources and docs.",
   shareEmptyTitle: "No playtests yet",
-  shareEmptyBody: "When someone shares a build, it shows up here. Sign in to post one once the Help SQL is running.",
+  shareEmptyBody: "Share a build first. Then others can open it and reply here. If this list stays empty, the Help SQL may still be unrun.",
   shareFeedbackTitle: "Feedback on this playtest",
   shareFeedbackEmpty: "No feedback on this playtest yet.",
+  shareFirstHint: "Share a build first. Other people leave feedback on that playtest, not on a separate tab.",
   resourcesKicker: "Resources",
   resourcesTitle: "Guides, support, and the board",
   resourcesLede: "Handbook pages, the support desk, ideas, and studio news — still the same login.",
@@ -551,6 +561,7 @@ const zh: UiCopy = {
   joinOpenGithub: "打开 GitHub →",
   docsOverview: "概览",
   docsOnThisSite: "本站目录",
+  docsSourceDraft: "德文草稿 · {topic}",
   docsNeedHelp: "需要帮助？",
   docsSource: "来源",
   docsLocalNote: "（文档仓库还没有这个文件时，先用本站的起始文稿）",
@@ -564,7 +575,7 @@ const zh: UiCopy = {
   supportBulletBroken: "本站某个页面坏了或找不到",
   supportBulletHuman: "你需要社团里的人来看一眼",
   supportOpenIssue: "开一个支持工单",
-  supportOpenIssues: "已有工单",
+  supportOpenIssues: "查看已有工单",
   supportDocsTitle: "在查某件事怎么做？",
   supportDocsBody: "产品指南和写作规则在手册里，不在这里。",
   supportOpenDocs: "打开文档 →",
@@ -601,10 +612,13 @@ const zh: UiCopy = {
   helpHowBadges: "徽章怎么获得",
   helpHowBadgesBody:
     "先登录，然后发布试玩、留下反馈，或在想法上标记“我可以帮忙”。每件事的第一次都会加一枚徽章。社团成员徽章由社团发放。",
+  helpKickerShares: "试玩",
+  helpKickerNotes: "笔记",
+  helpKickerBadges: "徽章",
   helpRecentShares: "可以试玩的作品",
-  helpRecentFeedback: "最近的反馈",
+  helpRecentFeedback: "最近的笔记",
   helpEmptyShares: "还没有试玩。登录后可以分享；如果 Help SQL 还没跑，这里会一直是空的。",
-  helpEmptyFeedback: "还没有反馈。打开一个试玩，写下第一条。",
+  helpEmptyFeedback: "打开一个试玩再写笔记。",
   helpOpenResources: "打开资源 →",
   helpOpenShare: "分享作品 →",
   helpOpenFeedback: "打开试玩 →",
@@ -614,9 +628,10 @@ const zh: UiCopy = {
   shareNotFoundTitle: "这个试玩不在这里",
   shareNotFoundBody: "它可能已删除，或分享表还没有建好。你仍然可以看资源和文档。",
   shareEmptyTitle: "还没有试玩",
-  shareEmptyBody: "有人分享作品后会出现在这里。Help SQL 跑通后，登录即可发布。",
+  shareEmptyBody: "先分享一个作品，别人才能打开并在这里回复。如果这里一直是空的，可能是 Help SQL 还没跑。",
   shareFeedbackTitle: "对这次试玩的反馈",
   shareFeedbackEmpty: "这次试玩还没有反馈。",
+  shareFirstHint: "先分享作品。反馈写在那次试玩上，不是单独的标签页。",
   resourcesKicker: "资源",
   resourcesTitle: "指南、支持和看板",
   resourcesLede: "手册、支持台、想法板和社团新闻——登录方式不变。",
@@ -724,10 +739,10 @@ const de: UiCopy = {
   products: "Produkte",
   about: "Über uns",
   join: "Mitmachen",
-  docs: "Docs",
+  docs: "Dokumente",
   support: "Support",
   help: "Hilfe",
-  news: "News",
+  news: "Nachrichten",
   changelog: "Changelog",
   destinations: "Ziele",
   skipToMain: "Zum Inhalt springen",
@@ -779,6 +794,7 @@ const de: UiCopy = {
   joinOpenGithub: "GitHub öffnen →",
   docsOverview: "Überblick",
   docsOnThisSite: "Auf dieser Seite",
+  docsSourceDraft: "Deutscher Entwurf · {topic}",
   docsNeedHelp: "Hilfe nötig?",
   docsSource: "Quelle",
   docsLocalNote: " (Starttext auf dieser Website, bis das Docs-Repo die Datei hat)",
@@ -792,7 +808,7 @@ const de: UiCopy = {
   supportBulletBroken: "Eine Seite hier ist kaputt oder fehlt",
   supportBulletHuman: "Du brauchst einen Menschen aus dem Club",
   supportOpenIssue: "Support-Issue öffnen",
-  supportOpenIssues: "Offene Issues",
+  supportOpenIssues: "Offene Issues ansehen",
   supportDocsTitle: "Du suchst, wie etwas funktioniert?",
   supportDocsBody: "Produktanleitungen und Schreibregeln stehen im Handbuch, nicht hier.",
   supportOpenDocs: "Docs öffnen →",
@@ -825,17 +841,20 @@ const de: UiCopy = {
   helpTitle: "Arbeit ausprobieren und zurückschreiben",
   helpLede:
     "Teile einen Build zum Playtest, hinterlasse Feedback zu diesem Playtest und finde Docs. Abzeichen bleiben sichtbar, auch wenn der Name versteckt ist.",
-  helpNavHome: "Community",
+  helpNavHome: "Gemeinschaft",
   helpNavResources: "Ressourcen",
   helpNavShare: "Teilen",
   helpNavFeedback: "Feedback",
   helpHowBadges: "So funktionieren Abzeichen",
   helpHowBadgesBody:
     "Melde dich an, teile einen Playtest, hinterlasse Feedback oder markiere bei einer Idee, dass du helfen kannst. Das erste Mal gibt je ein Abzeichen. Studio-Mitglied vergibt der Club.",
+  helpKickerShares: "Playtests",
+  helpKickerNotes: "Notizen",
+  helpKickerBadges: "Abzeichen",
   helpRecentShares: "Playtests zum Ausprobieren",
-  helpRecentFeedback: "Neues Feedback",
+  helpRecentFeedback: "Neue Notizen",
   helpEmptyShares: "Noch keine Playtests. Nach der Anmeldung teilen — oder die Liste bleibt leer, bis die Help-SQL läuft.",
-  helpEmptyFeedback: "Noch kein Feedback. Öffne einen Playtest und schreib die erste Notiz.",
+  helpEmptyFeedback: "Öffne einen Playtest, um eine Notiz zu schreiben.",
   helpOpenResources: "Ressourcen öffnen →",
   helpOpenShare: "Build teilen →",
   helpOpenFeedback: "Playtest öffnen →",
@@ -846,9 +865,10 @@ const de: UiCopy = {
   shareNotFoundBody:
     "Er wurde entfernt, oder die Share-Tabellen sind noch nicht eingerichtet. Ressourcen und Docs bleiben offen.",
   shareEmptyTitle: "Noch keine Playtests",
-  shareEmptyBody: "Wenn jemand einen Build teilt, erscheint er hier. Nach der Help-SQL und Anmeldung kannst du posten.",
+  shareEmptyBody: "Teile zuerst einen Build. Dann können andere ihn öffnen und hier antworten. Bleibt die Liste leer, fehlt oft noch die Help-SQL.",
   shareFeedbackTitle: "Feedback zu diesem Playtest",
   shareFeedbackEmpty: "Noch kein Feedback zu diesem Playtest.",
+  shareFirstHint: "Teile zuerst einen Build. Feedback gehört zu diesem Playtest, nicht auf einen eigenen Tab.",
   resourcesKicker: "Ressourcen",
   resourcesTitle: "Guides, Support und das Board",
   resourcesLede: "Handbuch, Support, Ideen und Studio-News — dieselbe Anmeldung.",

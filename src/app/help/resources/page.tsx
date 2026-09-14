@@ -14,7 +14,6 @@ export default async function HelpResourcesPage() {
   const { copy } = await getCopy();
   const cards = [
     { href: "/docs", title: copy.resourcesHandbook, body: copy.resourcesHandbookBody },
-    { href: "/docs/getting-started", title: copy.docs, body: copy.resourcesHandbookBody },
     { href: "/support", title: copy.support, body: copy.resourcesSupportBody },
     { href: "/ideas", title: copy.ideas, body: copy.resourcesIdeasBody },
     { href: "/news", title: copy.news, body: copy.resourcesNewsBody },

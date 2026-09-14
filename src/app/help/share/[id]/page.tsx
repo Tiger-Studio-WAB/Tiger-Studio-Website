@@ -45,8 +45,7 @@ export default async function HelpShareDetailPage({ params, searchParams }: Prop
       <>
         <PageHero kicker={copy.helpNavShare} title={copy.shareNotFoundTitle} lede={copy.shareNotFoundBody} />
         <PageShell>
-          <EmptyState title={copy.shareNotFoundTitle} body={copy.shareNotFoundBody} />
-          <Link href="/help/share" className="mt-6 inline-block text-sm font-semibold text-brand-red hover:underline">
+          <Link href="/help/share" className="text-sm font-semibold text-brand-red hover:underline">
             ← {copy.shareBack}
           </Link>
         </PageShell>
