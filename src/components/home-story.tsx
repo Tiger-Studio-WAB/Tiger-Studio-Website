@@ -42,11 +42,10 @@ export function HomeStory({
               if (reduce || !items.length) return;
               gsap.from(items, {
                 y: 16,
-                autoAlpha: 0,
                 duration: 0.36,
                 stagger: 0.06,
                 ease: "power1.out",
-                clearProps: "all",
+                clearProps: "transform",
                 scrollTrigger: {
                   trigger: section,
                   start: "top 86%",
@@ -73,8 +72,7 @@ export function HomeStory({
             if (reduce || !items.length) return;
 
             tl.from(items, {
-              y: 40,
-              autoAlpha: 0,
+              y: 36,
               stagger: 0.16,
             });
           });
@@ -160,9 +158,7 @@ export function HomeStory({
               </Link>
             </div>
             <div className="home-pin-cards">
-              <p className="home-pin-item home-pin-kicker home-pin-kicker--on-dark">
-                {copy.aboutHowTitle}
-              </p>
+              <p className="home-pin-kicker home-pin-kicker--on-dark">{copy.aboutHowTitle}</p>
               {hubHow.map((item) => (
                 <article key={item.title} className="home-pin-item home-pin-dark-card">
                   <h3 className="text-xl font-bold italic">{item.title}</h3>
