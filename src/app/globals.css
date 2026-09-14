@@ -131,11 +131,7 @@ a.orbit-box {
 }
 
 @media (max-width: 640px) {
-  .orbit-box {
-    font-size: 0.92em;
-  }
-
-  .orbit-box[data-mobile="extra"] {
+  .orbit-box[data-priority="low"] {
     display: none;
   }
 }
@@ -663,6 +659,159 @@ a.orbit-box {
 
 .orbit-logo {
   border-radius: var(--radius-lg);
+}
+
+.home-pin {
+  position: relative;
+}
+
+.home-pin-frame {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: auto;
+  overflow: visible;
+  padding: 3.25rem 1.25rem 3.75rem;
+}
+
+.home-pin-split,
+.home-pin-values {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.home-pin-copy {
+  max-width: 36rem;
+}
+
+.home-pin-kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-red);
+}
+
+.home-pin-kicker--on-dark {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.home-pin-title {
+  margin-top: 0.75rem;
+  max-width: 18ch;
+  font-size: clamp(2.25rem, 6vw, 4.5rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.05;
+}
+
+.home-pin-lede {
+  margin-top: 1.25rem;
+  max-width: 36rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--gray);
+}
+
+.home-pin-lede--on-dark {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.home-pin-link {
+  display: inline-flex;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--brand-red);
+}
+
+.home-pin-link:hover,
+.home-pin-link:focus-visible {
+  text-decoration: underline;
+}
+
+.home-pin-link--on-dark {
+  color: var(--brand-yellow);
+}
+
+.home-pin-cards,
+.home-pin-value-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.home-pin-dark-card {
+  padding: 1.15rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.home-pin--products {
+  background: var(--fog);
+}
+
+.home-pin--about {
+  background: var(--ink);
+  color: #fff;
+}
+
+.home-pin--values {
+  background: var(--brand-yellow);
+}
+
+.home-pin--values .home-pin-copy {
+  max-width: 40rem;
+  text-align: center;
+}
+
+.home-pin--values .home-pin-title {
+  max-width: none;
+}
+
+.home-pin-link:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 3px;
+}
+
+.home-pin-link--on-dark:focus-visible {
+  outline-color: #fff;
+}
+
+.home-pin--values .home-pin-lede {
+  color: var(--ink);
+}
+
+@media (min-width: 768px) {
+  .home-pin-frame {
+    min-height: 100svh;
+    padding: 5.75rem 1.5rem 3rem;
+  }
+
+  .home-pin-split {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    gap: 3.25rem;
+    align-items: center;
+  }
+
+  .home-pin-cards,
+  .home-pin-value-grid {
+    margin-top: 0;
+  }
+
+  .home-pin-value-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 2.75rem;
+  }
+
+  .home-pin--values .home-pin-copy {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
