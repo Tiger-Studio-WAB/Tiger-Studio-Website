@@ -35,11 +35,11 @@ export function HomeStory({
           const reduce = Boolean(context.conditions?.reduceMotion);
           const sections = gsap.utils.toArray<HTMLElement>(".home-pin");
 
-          sections.forEach((section, index) => {
+          sections.forEach((section) => {
             const items = section.querySelectorAll<HTMLElement>(".home-pin-item");
+            if (!items.length || reduce) return;
 
             if (!desktop) {
-              if (reduce || !items.length) return;
               gsap.from(items, {
                 y: 16,
                 duration: 0.36,
@@ -55,25 +55,18 @@ export function HomeStory({
               return;
             }
 
-            const tl = gsap.timeline({
+            gsap.timeline({
               defaults: { ease: "none" },
               scrollTrigger: {
                 trigger: section,
-                start: "top top",
-                end: () => `+=${Math.round(window.innerHeight * (reduce ? 0.85 : 1.55))}`,
-                pin: true,
-                scrub: reduce ? false : 0.7,
-                anticipatePin: 1,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 0.55,
                 invalidateOnRefresh: true,
-                refreshPriority: index,
               },
-            });
-
-            if (reduce || !items.length) return;
-
-            tl.from(items, {
-              y: 36,
-              stagger: 0.16,
+            }).from(items, {
+              y: 28,
+              stagger: 0.12,
             });
           });
         },
