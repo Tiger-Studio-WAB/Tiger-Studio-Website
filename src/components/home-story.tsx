@@ -34,6 +34,7 @@ export function HomeStory({
           const desktop = Boolean(context.conditions?.isDesktop);
           const reduce = Boolean(context.conditions?.reduceMotion);
           const sections = gsap.utils.toArray<HTMLElement>(".home-pin");
+          const refreshInits: Array<() => void> = [];
 
           sections.forEach((section) => {
             const frame = section.querySelector<HTMLElement>(".home-pin-frame");
@@ -66,13 +67,14 @@ export function HomeStory({
             };
 
             const applyHeight = () => {
-              gsap.set(inner, { y: 0 });
               const overflow = overflowY();
               const hold = Math.round(window.innerHeight * (overflow > 0 ? 0.4 : 0.8));
               section.style.height = `${window.innerHeight + overflow + hold}px`;
             };
 
             applyHeight();
+            refreshInits.push(applyHeight);
+            ScrollTrigger.addEventListener("refreshInit", applyHeight);
 
             const tl = gsap.timeline({
               defaults: { ease: "none" },
@@ -82,7 +84,6 @@ export function HomeStory({
                 end: "bottom bottom",
                 scrub: reduce ? true : 0.55,
                 invalidateOnRefresh: true,
-                onRefresh: applyHeight,
               },
             });
 
@@ -102,6 +103,9 @@ export function HomeStory({
           });
 
           return () => {
+            refreshInits.forEach((applyHeight) => {
+              ScrollTrigger.removeEventListener("refreshInit", applyHeight);
+            });
             sections.forEach((section) => {
               section.style.removeProperty("height");
             });
