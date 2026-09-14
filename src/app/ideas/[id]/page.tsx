@@ -31,7 +31,7 @@ export default async function IdeaDetailPage({
 
         <article className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            {copy.categories[idea.category]} · {idea.profiles?.display_name} ·{" "}
+            {copy.categories[idea.category]} · {idea.profiles?.display_name ?? copy.member} ·{" "}
             {new Date(idea.created_at).toLocaleDateString()}
           </p>
           <TranslatePanel
@@ -58,7 +58,7 @@ export default async function IdeaDetailPage({
                 <article key={response.id} className="border-t border-border pt-5">
                   <p className="mb-2 text-sm text-muted-foreground">
                     <span className="font-semibold text-foreground">
-                      {response.profiles?.display_name}
+                      {response.profiles?.display_name ?? copy.member}
                     </span>
                     {" · "}
                     {new Date(response.created_at).toLocaleDateString()}

@@ -32,20 +32,43 @@ export async function listIdeas(options?: {
     });
   }
 
-  // Guests can read `ideas` after the public-select migration, but profile /
-  // response embeds still fail under member-only RLS. Fall back so the board
-  // is not empty for signed-out visitors.
-  let fallback = supabase.from("ideas").select("*").order("created_at", { ascending: false });
+  // Guests can read `ideas` after the public-select migration, but profile
+  // embeds still fail under member-only RLS. Retry without profiles so the
+  // board keeps real reply counts.
+  let withoutProfiles = supabase
+    .from("ideas")
+    .select("*, responses(count)")
+    .order("created_at", { ascending: false });
   if (options?.authorId) {
-    fallback = fallback.eq("author_id", options.authorId);
+    withoutProfiles = withoutProfiles.eq("author_id", options.authorId);
   }
   if (options?.category && options.category !== "all") {
-    fallback = fallback.eq("category", options.category);
+    withoutProfiles = withoutProfiles.eq("category", options.category);
   }
 
-  const { data: ideasOnly, error: ideasError } = await fallback;
+  const { data: counted, error: countedError } = await withoutProfiles;
+  if (!countedError && counted) {
+    return counted.map((row) => {
+      const responses = row.responses as { count: number }[] | null;
+      return {
+        ...(row as Idea),
+        profiles: null,
+        response_count: responses?.[0]?.count ?? 0,
+      };
+    });
+  }
+
+  let ideasOnlyQuery = supabase.from("ideas").select("*").order("created_at", { ascending: false });
+  if (options?.authorId) {
+    ideasOnlyQuery = ideasOnlyQuery.eq("author_id", options.authorId);
+  }
+  if (options?.category && options.category !== "all") {
+    ideasOnlyQuery = ideasOnlyQuery.eq("category", options.category);
+  }
+
+  const { data: ideasOnly, error: ideasError } = await ideasOnlyQuery;
   if (ideasError || !ideasOnly) {
-    console.error("[ideas] list failed", error, ideasError);
+    console.error("[ideas] list failed", error, countedError, ideasError);
     return [];
   }
 
@@ -93,8 +116,23 @@ export async function listResponses(ideaId: string): Promise<ResponsePost[]> {
     .eq("idea_id", ideaId)
     .order("created_at", { ascending: true });
 
-  if (error || !data) return [];
-  return data as ResponsePost[];
+  if (!error && data) return data as ResponsePost[];
+
+  const { data: repliesOnly, error: repliesError } = await supabase
+    .from("responses")
+    .select("*")
+    .eq("idea_id", ideaId)
+    .order("created_at", { ascending: true });
+
+  if (repliesError || !repliesOnly) {
+    console.error("[ideas] list responses failed", error, repliesError);
+    return [];
+  }
+
+  return repliesOnly.map((row) => ({
+    ...(row as ResponsePost),
+    profiles: null,
+  }));
 }
 
 export async function listMyResponses(authorId: string): Promise<ResponsePost[]> {
