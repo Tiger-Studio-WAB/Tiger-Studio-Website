@@ -677,48 +677,96 @@ a.orbit-box {
   padding: 3.25rem 1.25rem 3.75rem;
 }
 
-.home-pin-split,
-.home-pin-values {
+.home-pin-inner {
   width: 100%;
   max-width: 72rem;
   margin: 0 auto;
 }
 
-.home-pin-copy {
-  max-width: 36rem;
-}
-
-.home-pin-kicker {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--brand-red);
-}
-
-.home-pin-kicker--on-dark {
-  color: rgba(255, 255, 255, 0.72);
-}
-
 .home-pin-title {
-  margin-top: 0.75rem;
-  max-width: 18ch;
-  font-size: clamp(2.25rem, 6vw, 4.5rem);
+  max-width: 16ch;
+  font-size: clamp(2.4rem, 7vw, 4.75rem);
   font-weight: 700;
   font-style: italic;
-  line-height: 1.05;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.home-pin-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+
+.home-pin-shot {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 1.75rem;
+  background: var(--ink);
+  box-shadow: 0 18px 48px rgba(14, 32, 52, 0.16);
+}
+
+.home-pin-shot img,
+.home-pin-tiles {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-pin-shot img.is-contain {
+  object-fit: contain;
+  padding: 18%;
+  background: #262018;
+}
+
+.home-pin-tiles {
+  background-color: #c48458;
+  background-image: url("/home/godot-tiles.png");
+  background-repeat: repeat;
+  background-size: 192px 48px;
+  image-rendering: pixelated;
 }
 
 .home-pin-lede {
-  margin-top: 1.25rem;
-  max-width: 36rem;
-  font-size: 1.05rem;
+  margin: 0;
+  max-width: 34rem;
+  font-size: 1.08rem;
   line-height: 1.7;
   color: var(--gray);
 }
 
-.home-pin-lede--on-dark {
-  color: rgba(255, 255, 255, 0.86);
+.home-pin-bullets {
+  margin: 1.15rem 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 34rem;
+}
+
+.home-pin-bullets li {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid rgba(14, 32, 52, 0.12);
+}
+
+.home-pin-bullets li:last-child {
+  padding-bottom: 0;
+}
+
+.home-pin-bullets strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.home-pin-bullets span {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--gray);
 }
 
 .home-pin-link {
@@ -738,39 +786,36 @@ a.orbit-box {
   color: var(--brand-yellow);
 }
 
-.home-pin-cards,
-.home-pin-value-grid {
-  display: grid;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.home-pin-dark-card {
-  padding: 1.15rem 1.2rem;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.home-pin--products {
+.home-pin--fog {
   background: var(--fog);
 }
 
-.home-pin--about {
+.home-pin--ink {
   background: var(--ink);
   color: #fff;
 }
 
-.home-pin--values {
+.home-pin--ink .home-pin-lede,
+.home-pin--ink .home-pin-bullets span {
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.home-pin--ink .home-pin-bullets li {
+  border-top-color: rgba(255, 255, 255, 0.16);
+}
+
+.home-pin--yellow {
   background: var(--brand-yellow);
 }
 
-.home-pin--values .home-pin-copy {
-  max-width: 40rem;
-  text-align: center;
+.home-pin--yellow .home-pin-title,
+.home-pin--yellow .home-pin-lede,
+.home-pin--yellow .home-pin-bullets span,
+.home-pin--yellow .home-pin-link {
+  color: var(--ink);
 }
 
-.home-pin--values .home-pin-title {
+.home-pin--yellow .home-pin-title {
   max-width: none;
 }
 
@@ -781,10 +826,6 @@ a.orbit-box {
 
 .home-pin-link--on-dark:focus-visible {
   outline-color: #fff;
-}
-
-.home-pin--values .home-pin-lede {
-  color: var(--ink);
 }
 
 @media (min-width: 768px) {
@@ -798,29 +839,57 @@ a.orbit-box {
     height: 100svh;
     max-height: 100svh;
     overflow: hidden;
-    padding: 5.75rem 1.5rem 3rem;
+    padding: 5.5rem 1.5rem 2.5rem;
   }
 
-  .home-pin-split {
+  .home-pin-inner {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - 8rem);
+  }
+
+  .home-pin-stage {
     display: grid;
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-    gap: 3.25rem;
-    align-items: start;
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+    gap: 3rem 3.5rem;
+    align-items: center;
+    flex: 1;
+    margin-top: 1.5rem;
   }
 
-  .home-pin-cards,
-  .home-pin-value-grid {
-    margin-top: 0;
+  .home-pin-shot,
+  .home-pin-beat {
+    min-width: 0;
   }
 
-  .home-pin-value-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-top: 2.75rem;
+  .home-pin-shot {
+    grid-column: 1;
+    grid-row: 1;
+    aspect-ratio: auto;
+    height: min(64svh, 36rem);
+    opacity: 0;
   }
 
-  .home-pin--values .home-pin-copy {
-    margin-left: auto;
-    margin-right: auto;
+  .home-pin-beat {
+    grid-column: 2;
+    grid-row: 1;
+    opacity: 0;
+  }
+
+  .home-pin-shot.is-active,
+  .home-pin-beat.is-active {
+    z-index: 1;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .home-pin-shot:not(.is-active),
+  .home-pin-beat:not(.is-active) {
+    pointer-events: none;
+  }
+
+  .home-pin-link {
+    margin-top: 1.25rem;
   }
 }
 

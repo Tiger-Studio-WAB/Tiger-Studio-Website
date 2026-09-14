@@ -5,11 +5,29 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { StudioLink } from "@/components/studio-link";
 import type { UiCopy } from "@/lib/i18n";
 import type { Destination } from "@/lib/types";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+type Beat = {
+  src?: string;
+  tiles?: boolean;
+  contain?: boolean;
+  alt: string;
+  body: string;
+  bullets?: { title?: string; text: string }[];
+};
+
+type Story = {
+  id: string;
+  titleId: string;
+  title: string;
+  href: string;
+  hrefLabel: string;
+  tone: "fog" | "ink" | "yellow";
+  beats: Beat[];
+};
 
 export function HomeStory({
   copy,
@@ -19,6 +37,106 @@ export function HomeStory({
   products: Destination[];
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
+
+  const stories: Story[] = [
+    {
+      id: "products",
+      titleId: "home-products-title",
+      title: copy.productsTitle,
+      href: "/products",
+      hrefLabel: `${copy.products} →`,
+      tone: "fog",
+      beats: [
+        {
+          src: "/home/join.png",
+          alt: copy.productsHelpName,
+          body: copy.productsHelpBody,
+          bullets: [
+            { text: copy.howPost },
+            { text: copy.howReply },
+            { text: copy.howTranslate },
+          ],
+        },
+        {
+          src: "/home/news-cover.png",
+          alt: copy.newsTitle,
+          body: copy.productsLede,
+          bullets: [{ title: copy.productsBoard, text: copy.homeJoinBody }],
+        },
+        {
+          src: "/home/godot-icon.svg",
+          contain: true,
+          alt: "Project 1",
+          body: copy.homeProductsBody,
+          bullets: products.slice(0, 4).map((item) => ({
+            title: item.name,
+            text: item.description,
+          })),
+        },
+      ],
+    },
+    {
+      id: "about",
+      titleId: "home-about-title",
+      title: copy.aboutTitle,
+      href: "/about",
+      hrefLabel: `${copy.about} →`,
+      tone: "ink",
+      beats: [
+        {
+          src: "/home/orbit.png",
+          alt: copy.aboutTitle,
+          body: copy.aboutP1,
+        },
+        {
+          src: "/home/docs.png",
+          alt: copy.docs,
+          body: copy.aboutP2,
+          bullets: [
+            { title: copy.products, text: copy.aboutProducts },
+            { title: copy.docs, text: copy.aboutDocs },
+          ],
+        },
+        {
+          src: "/home/help.png",
+          alt: copy.help,
+          body: copy.aboutHelp,
+          bullets: [
+            { title: copy.join, text: copy.aboutJoin },
+            { title: copy.news, text: copy.aboutNews },
+          ],
+        },
+      ],
+    },
+    {
+      id: "values",
+      titleId: "home-values-title",
+      title: copy.motto,
+      href: "/about",
+      hrefLabel: `${copy.about} →`,
+      tone: "yellow",
+      beats: [
+        {
+          tiles: true,
+          alt: copy.valueMake,
+          body: copy.aboutP1,
+          bullets: [{ title: copy.valueMake, text: copy.homeProductsBody }],
+        },
+        {
+          src: "/home/news-cover.png",
+          alt: copy.valueShip,
+          body: copy.homeProductsBody,
+          bullets: [{ title: copy.valueShip, text: copy.productsLede }],
+        },
+        {
+          src: "/home/join.png",
+          alt: copy.valueShare,
+          body: copy.aboutP2,
+          bullets: [{ title: copy.valueShare, text: copy.aboutNews }],
+        },
+      ],
+    },
+  ];
 
   useGSAP(
     () => {
@@ -39,36 +157,22 @@ export function HomeStory({
           sections.forEach((section) => {
             const frame = section.querySelector<HTMLElement>(".home-pin-frame");
             const inner = section.querySelector<HTMLElement>(".home-pin-inner");
-            const items = section.querySelectorAll<HTMLElement>(".home-pin-item");
+            const shots = gsap.utils.toArray<HTMLElement>(section.querySelectorAll(".home-pin-shot"));
+            const beats = gsap.utils.toArray<HTMLElement>(section.querySelectorAll(".home-pin-beat"));
             if (!frame || !inner) return;
 
-            if (!desktop) {
-              if (reduce || !items.length) return;
-              gsap.from(items, {
-                y: 16,
-                duration: 0.36,
-                stagger: 0.06,
-                ease: "power1.out",
-                clearProps: "transform",
-                scrollTrigger: {
-                  trigger: section,
-                  start: "top 86%",
-                  once: true,
-                },
-              });
-              return;
-            }
+            if (!desktop) return;
 
             const overflowY = () => {
               const styles = getComputedStyle(frame);
-              const pad =
-                parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom);
+              const pad = parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom);
               return Math.max(0, inner.scrollHeight - (frame.clientHeight - pad));
             };
 
             const applyHeight = () => {
               const overflow = overflowY();
-              const hold = Math.round(window.innerHeight * (overflow > 0 ? 0.4 : 0.8));
+              const beatCount = Math.max(1, shots.length);
+              const hold = Math.round(window.innerHeight * (overflow > 0 ? 0.55 : 0.85) * beatCount);
               section.style.height = `${window.innerHeight + overflow + hold}px`;
             };
 
@@ -76,30 +180,50 @@ export function HomeStory({
             refreshInits.push(applyHeight);
             ScrollTrigger.addEventListener("refreshInit", applyHeight);
 
+            const fade = reduce ? 0 : 0.28;
+            let current = 0;
+
+            const showBeat = (next: number) => {
+              shots.forEach((shot, index) => {
+                const on = index === next;
+                shot.classList.toggle("is-active", on);
+                shot.toggleAttribute("aria-hidden", !on);
+                gsap.to(shot, { opacity: on ? 1 : 0, duration: fade, ease: "power1.out", overwrite: "auto" });
+              });
+              beats.forEach((beat, index) => {
+                const on = index === next;
+                beat.classList.toggle("is-active", on);
+                beat.toggleAttribute("aria-hidden", !on);
+                gsap.to(beat, { opacity: on ? 1 : 0, duration: fade, ease: "power1.out", overwrite: "auto" });
+              });
+            };
+
+            showBeat(0);
+
             const tl = gsap.timeline({
               defaults: { ease: "none" },
               scrollTrigger: {
                 trigger: section,
                 start: "top top",
                 end: "bottom bottom",
-                scrub: reduce ? true : 0.55,
+                scrub: reduce ? true : 0.45,
                 invalidateOnRefresh: true,
+                onRefresh: (self) => {
+                  const count = Math.max(1, shots.length);
+                  current = Math.min(count - 1, Math.floor(self.progress * count + 1e-6));
+                  showBeat(current);
+                },
+                onUpdate: (self) => {
+                  const count = Math.max(1, shots.length);
+                  const next = Math.min(count - 1, Math.floor(self.progress * count + 1e-6));
+                  if (next === current) return;
+                  current = next;
+                  showBeat(next);
+                },
               },
             });
 
             tl.to(inner, { y: () => -overflowY(), duration: 1 }, 0);
-
-            if (!reduce && items.length) {
-              tl.from(
-                items,
-                {
-                  y: 28,
-                  duration: 0.35,
-                  stagger: 0.08,
-                },
-                0,
-              );
-            }
           });
 
           return () => {
@@ -108,6 +232,9 @@ export function HomeStory({
             });
             sections.forEach((section) => {
               section.style.removeProperty("height");
+              section.querySelectorAll(".home-pin-shot, .home-pin-beat").forEach((node) => {
+                node.removeAttribute("aria-hidden");
+              });
             });
           };
         },
@@ -118,114 +245,67 @@ export function HomeStory({
     { scope: rootRef, dependencies: [products.length] },
   );
 
-  const hubHow = [
-    { title: copy.products, body: copy.aboutProducts },
-    { title: copy.join, body: copy.aboutJoin },
-    { title: copy.help, body: copy.aboutHelp },
-    { title: copy.news, body: copy.aboutNews },
-  ];
-
-  const values = [
-    { title: copy.valueMake, body: copy.aboutP1 },
-    { title: copy.valueShip, body: copy.homeProductsBody },
-    { title: copy.valueShare, body: copy.aboutP2 },
-  ];
-
   return (
     <div ref={rootRef}>
-      <section className="home-pin home-pin--products" aria-labelledby="home-products-title">
-        <div className="home-pin-frame">
-          <div className="home-pin-inner home-pin-split">
-            <div className="home-pin-copy">
-              <p className="home-pin-kicker">{copy.productsKicker}</p>
-              <h2 id="home-products-title" className="home-pin-title">
-                {copy.productsTitle}
+      {stories.map((story) => (
+        <section
+          key={story.id}
+          className={`home-pin home-pin--${story.tone}`}
+          aria-labelledby={story.titleId}
+        >
+          <div className="home-pin-frame">
+            <div className="home-pin-inner">
+              <h2 id={story.titleId} className="home-pin-title">
+                {story.title}
               </h2>
               <span className="rule-yellow mt-4" />
-              <p className="home-pin-lede">{copy.productsLede}</p>
-              <Link href="/products" className="home-pin-link">
-                {copy.products} →
+              <div className="home-pin-stage">
+                {story.beats.map((beat, index) => (
+                  <StoryBeat key={`${story.id}-${index}`} beat={beat} active={index === 0} />
+                ))}
+              </div>
+              <Link
+                href={story.href}
+                className={`home-pin-link${story.tone === "ink" ? " home-pin-link--on-dark" : ""}`}
+              >
+                {story.hrefLabel}
               </Link>
             </div>
-            <div className="home-pin-cards">
-              <article className="home-pin-item panel tap-card p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.06em] text-brand-red">
-                  {copy.productsBoard}
-                </p>
-                <h3 className="mt-2 text-2xl font-bold italic">{copy.productsHelpName}</h3>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">{copy.productsHelpBody}</p>
-                <Link href="/join" className="btn btn-red mt-5">
-                  {copy.productsOpenJoin}
-                </Link>
-              </article>
-              {products.slice(0, 3).map((destination) => (
-                <StudioLink
-                  key={destination.slug}
-                  href={destination.url}
-                  className="home-pin-item panel tap-card p-5"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-                    {destination.category}
-                  </p>
-                  <h3 className="mt-2 text-xl font-bold">{destination.name}</h3>
-                  <p className="mt-2 text-sm leading-7 text-muted-foreground">{destination.description}</p>
-                </StudioLink>
-              ))}
-            </div>
           </div>
-        </div>
-      </section>
-
-      <section className="home-pin home-pin--about" aria-labelledby="home-about-title">
-        <div className="home-pin-frame">
-          <div className="home-pin-inner home-pin-split">
-            <div className="home-pin-copy">
-              <p className="home-pin-kicker home-pin-kicker--on-dark">{copy.aboutKicker}</p>
-              <h2 id="home-about-title" className="home-pin-title">
-                {copy.aboutTitle}
-              </h2>
-              <span className="rule-yellow mt-4" />
-              <p className="home-pin-lede home-pin-lede--on-dark">{copy.aboutP1}</p>
-              <p className="home-pin-lede home-pin-lede--on-dark">{copy.aboutP2}</p>
-              <Link href="/about" className="home-pin-link home-pin-link--on-dark">
-                {copy.about} →
-              </Link>
-            </div>
-            <div className="home-pin-cards">
-              <p className="home-pin-kicker home-pin-kicker--on-dark">{copy.aboutHowTitle}</p>
-              {hubHow.map((item) => (
-                <article key={item.title} className="home-pin-item home-pin-dark-card">
-                  <h3 className="text-xl font-bold italic">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-white/75">{item.body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="home-pin home-pin--values" aria-labelledby="home-values-title">
-        <div className="home-pin-frame">
-          <div className="home-pin-inner home-pin-values">
-            <div className="home-pin-copy mx-auto max-w-3xl text-center">
-              <p className="home-pin-kicker">{copy.valuesKicker}</p>
-              <h2 id="home-values-title" className="home-pin-title">
-                {copy.motto}
-              </h2>
-              <span className="rule-yellow mx-auto mt-4" />
-              <p className="home-pin-lede mx-auto">{copy.tagline}</p>
-            </div>
-            <div className="home-pin-value-grid">
-              {values.map((value) => (
-                <article key={value.title} className="home-pin-item panel p-6">
-                  <h3 className="text-3xl font-bold italic md:text-4xl">{value.title}</h3>
-                  <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">{value.body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      ))}
     </div>
+  );
+}
+
+function StoryBeat({ beat, active }: { beat: Beat; active: boolean }) {
+  return (
+    <>
+      <figure className={`home-pin-shot${active ? " is-active" : ""}`}>
+        {beat.tiles ? (
+          <div className="home-pin-tiles" role="img" aria-label={beat.alt} />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={beat.src}
+            alt={beat.alt}
+            className={beat.contain ? "is-contain" : undefined}
+          />
+        )}
+      </figure>
+      <div className={`home-pin-beat${active ? " is-active" : ""}`}>
+        <p className="home-pin-lede">{beat.body}</p>
+        {beat.bullets?.length ? (
+          <ul className="home-pin-bullets">
+            {beat.bullets.map((item) => (
+              <li key={`${item.title ?? ""}-${item.text.slice(0, 24)}`}>
+                {item.title ? <strong>{item.title}</strong> : null}
+                <span>{item.text}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+    </>
   );
 }
