@@ -159,6 +159,15 @@ export type UiCopy = {
   helpOpenResources: string;
   helpOpenShare: string;
   helpOpenFeedback: string;
+  helpFeedbackHint: string;
+  shareBack: string;
+  shareOpen: string;
+  shareNotFoundTitle: string;
+  shareNotFoundBody: string;
+  shareEmptyTitle: string;
+  shareEmptyBody: string;
+  shareFeedbackTitle: string;
+  shareFeedbackEmpty: string;
   resourcesKicker: string;
   resourcesTitle: string;
   resourcesLede: string;
@@ -302,7 +311,7 @@ const en: UiCopy = {
   aboutJoin: "Join is Proj.Help: ideas, replies, and translation.",
   aboutDocs: "Docs is the handbook: folders and Markdown, with a sidebar like other developer docs.",
   aboutSupport: "Support is separate — issues and help, not guides.",
-  aboutHelp: "Help is a site inside the hub: share a build, leave feedback, and find resources.",
+  aboutHelp: "Help is a site inside the hub: share a build, leave feedback on that playtest, and find resources.",
   aboutNews: "News is studio-written Markdown, not a raw GitHub event dump.",
   joinKicker: "Join",
   joinTitle: "Post an idea. Ask for help.",
@@ -358,7 +367,7 @@ const en: UiCopy = {
   helpKicker: "Help",
   helpTitle: "A place to try work and talk back",
   helpLede:
-    "Share a build for humans to playtest, leave feedback, and find docs. Badges stay visible even when a name is hidden.",
+    "Share a build for humans to playtest, leave feedback on that playtest, and find docs. Badges stay visible even when a name is hidden.",
   helpNavHome: "Community",
   helpNavResources: "Resources",
   helpNavShare: "Share",
@@ -368,11 +377,21 @@ const en: UiCopy = {
     "Sign in, then post a playtest, leave feedback, or mark that you can help on an idea. The first time you do each of those, a badge is added to your profile. Studio member is awarded by the club.",
   helpRecentShares: "Playtests to try",
   helpRecentFeedback: "Recent feedback",
-  helpEmptyShares: "No playtests posted yet. Be the first to share a build.",
-  helpEmptyFeedback: "No feedback yet.",
+  helpEmptyShares: "No playtests yet. Share a build after you sign in — or this list stays empty until the Help SQL is running.",
+  helpEmptyFeedback: "No feedback yet. Open a playtest to write the first note.",
   helpOpenResources: "Open resources →",
   helpOpenShare: "Share a build →",
-  helpOpenFeedback: "Leave feedback →",
+  helpOpenFeedback: "Open a playtest →",
+  helpFeedbackHint: "Feedback lives on a playtest, not as its own tab. Open a share to reply.",
+  shareBack: "All playtests",
+  shareOpen: "Open playtest",
+  shareNotFoundTitle: "This playtest is not here",
+  shareNotFoundBody:
+    "It may have been removed, or the share tables are not set up yet. You can still browse resources and docs.",
+  shareEmptyTitle: "No playtests yet",
+  shareEmptyBody: "When someone shares a build, it shows up here. Sign in to post one once the Help SQL is running.",
+  shareFeedbackTitle: "Feedback on this playtest",
+  shareFeedbackEmpty: "No feedback on this playtest yet.",
   resourcesKicker: "Resources",
   resourcesTitle: "Guides, support, and the board",
   resourcesLede: "Handbook pages, the support desk, ideas, and studio news — still the same login.",
@@ -395,7 +414,7 @@ const en: UiCopy = {
   feedbackKicker: "Feedback",
   feedbackTitle: "Tell someone what you found",
   feedbackLede:
-    "Feedback is signed in so we can award badges and keep spam down. Anonymous hides your name, not the badge.",
+    "Write feedback on this playtest. You must be signed in so we can award badges and keep spam down. Anonymous hides your name, not the badge.",
   feedbackTarget: "What is this about?",
   feedbackTargetFree: "Something else",
   feedbackBody: "What did you notice?",
@@ -523,7 +542,7 @@ const zh: UiCopy = {
   aboutJoin: "加入就是 Proj.Help：想法、回复和翻译。",
   aboutDocs: "文档是手册：按文件夹放 Markdown，侧栏和其他开发者文档类似。",
   aboutSupport: "支持是分开的——用来提问题和求助，不是写指南。",
-  aboutHelp: "帮助是站点里的站点：分享作品、留下反馈、找到资料。",
+  aboutHelp: "帮助是站点里的站点：分享作品，在该试玩上留下反馈，并找到资料。",
   aboutNews: "新闻是社团自己写的 Markdown，不是 GitHub 事件流水。",
   joinKicker: "加入",
   joinTitle: "发布一个想法，请求帮助。",
@@ -574,7 +593,7 @@ const zh: UiCopy = {
   hubErrorBody: "请再试一次，或回到首页。",
   helpKicker: "帮助",
   helpTitle: "试玩作品，并说回自己的感受",
-  helpLede: "把作品交给真人试玩，留下反馈，并找到文档。即使隐藏名字，徽章仍然会显示。",
+  helpLede: "把作品交给真人试玩，在该试玩上留下反馈，并找到文档。即使隐藏名字，徽章仍然会显示。",
   helpNavHome: "社区",
   helpNavResources: "资源",
   helpNavShare: "分享",
@@ -584,11 +603,20 @@ const zh: UiCopy = {
     "先登录，然后发布试玩、留下反馈，或在想法上标记“我可以帮忙”。每件事的第一次都会加一枚徽章。社团成员徽章由社团发放。",
   helpRecentShares: "可以试玩的作品",
   helpRecentFeedback: "最近的反馈",
-  helpEmptyShares: "还没有人分享试玩。来做第一个吧。",
-  helpEmptyFeedback: "还没有反馈。",
+  helpEmptyShares: "还没有试玩。登录后可以分享；如果 Help SQL 还没跑，这里会一直是空的。",
+  helpEmptyFeedback: "还没有反馈。打开一个试玩，写下第一条。",
   helpOpenResources: "打开资源 →",
   helpOpenShare: "分享作品 →",
-  helpOpenFeedback: "留下反馈 →",
+  helpOpenFeedback: "打开试玩 →",
+  helpFeedbackHint: "反馈写在具体试玩上，不是单独的标签页。打开分享后再回复。",
+  shareBack: "全部试玩",
+  shareOpen: "打开试玩",
+  shareNotFoundTitle: "这个试玩不在这里",
+  shareNotFoundBody: "它可能已删除，或分享表还没有建好。你仍然可以看资源和文档。",
+  shareEmptyTitle: "还没有试玩",
+  shareEmptyBody: "有人分享作品后会出现在这里。Help SQL 跑通后，登录即可发布。",
+  shareFeedbackTitle: "对这次试玩的反馈",
+  shareFeedbackEmpty: "这次试玩还没有反馈。",
   resourcesKicker: "资源",
   resourcesTitle: "指南、支持和看板",
   resourcesLede: "手册、支持台、想法板和社团新闻——登录方式不变。",
@@ -609,7 +637,7 @@ const zh: UiCopy = {
   sharePosted: "试玩已分享。",
   feedbackKicker: "反馈",
   feedbackTitle: "告诉对方你发现了什么",
-  feedbackLede: "反馈需要登录，这样才能发徽章并减少垃圾内容。匿名只隐藏名字，不隐藏徽章。",
+  feedbackLede: "请针对这次试玩写反馈。需要登录才能发徽章并减少垃圾内容。匿名只隐藏名字，不隐藏徽章。",
   feedbackTarget: "这是关于什么？",
   feedbackTargetFree: "其他",
   feedbackBody: "你注意到了什么？",
@@ -740,7 +768,7 @@ const de: UiCopy = {
   aboutJoin: "Mitmachen ist Proj.Help: Ideen, Antworten und Übersetzung.",
   aboutDocs: "Docs ist das Handbuch: Ordner und Markdown, mit einer Sidebar wie andere Entwickler-Docs.",
   aboutSupport: "Support ist getrennt — Issues und Hilfe, keine Anleitungen.",
-  aboutHelp: "Hilfe ist eine Seite in der Seite: Build teilen, Feedback geben, Ressourcen finden.",
+  aboutHelp: "Hilfe ist eine Seite in der Seite: Build teilen, Feedback zu diesem Playtest geben, Ressourcen finden.",
   aboutNews: "News sind vom Studio geschriebene Markdown-Texte, kein roher GitHub-Event-Feed.",
   joinKicker: "Mitmachen",
   joinTitle: "Poste eine Idee. Bitte um Hilfe.",
@@ -796,7 +824,7 @@ const de: UiCopy = {
   helpKicker: "Hilfe",
   helpTitle: "Arbeit ausprobieren und zurückschreiben",
   helpLede:
-    "Teile einen Build zum Playtest, hinterlasse Feedback und finde Docs. Abzeichen bleiben sichtbar, auch wenn der Name versteckt ist.",
+    "Teile einen Build zum Playtest, hinterlasse Feedback zu diesem Playtest und finde Docs. Abzeichen bleiben sichtbar, auch wenn der Name versteckt ist.",
   helpNavHome: "Community",
   helpNavResources: "Ressourcen",
   helpNavShare: "Teilen",
@@ -806,11 +834,21 @@ const de: UiCopy = {
     "Melde dich an, teile einen Playtest, hinterlasse Feedback oder markiere bei einer Idee, dass du helfen kannst. Das erste Mal gibt je ein Abzeichen. Studio-Mitglied vergibt der Club.",
   helpRecentShares: "Playtests zum Ausprobieren",
   helpRecentFeedback: "Neues Feedback",
-  helpEmptyShares: "Noch keine Playtests. Teile den ersten Build.",
-  helpEmptyFeedback: "Noch kein Feedback.",
+  helpEmptyShares: "Noch keine Playtests. Nach der Anmeldung teilen — oder die Liste bleibt leer, bis die Help-SQL läuft.",
+  helpEmptyFeedback: "Noch kein Feedback. Öffne einen Playtest und schreib die erste Notiz.",
   helpOpenResources: "Ressourcen öffnen →",
   helpOpenShare: "Build teilen →",
-  helpOpenFeedback: "Feedback geben →",
+  helpOpenFeedback: "Playtest öffnen →",
+  helpFeedbackHint: "Feedback gehört zu einem Playtest, nicht auf einen eigenen Tab. Öffne einen Share, um zu antworten.",
+  shareBack: "Alle Playtests",
+  shareOpen: "Playtest öffnen",
+  shareNotFoundTitle: "Dieser Playtest ist nicht hier",
+  shareNotFoundBody:
+    "Er wurde entfernt, oder die Share-Tabellen sind noch nicht eingerichtet. Ressourcen und Docs bleiben offen.",
+  shareEmptyTitle: "Noch keine Playtests",
+  shareEmptyBody: "Wenn jemand einen Build teilt, erscheint er hier. Nach der Help-SQL und Anmeldung kannst du posten.",
+  shareFeedbackTitle: "Feedback zu diesem Playtest",
+  shareFeedbackEmpty: "Noch kein Feedback zu diesem Playtest.",
   resourcesKicker: "Ressourcen",
   resourcesTitle: "Guides, Support und das Board",
   resourcesLede: "Handbuch, Support, Ideen und Studio-News — dieselbe Anmeldung.",
@@ -833,7 +871,7 @@ const de: UiCopy = {
   feedbackKicker: "Feedback",
   feedbackTitle: "Sag, was du gefunden hast",
   feedbackLede:
-    "Feedback braucht Anmeldung, damit wir Abzeichen geben und Spam klein halten. Anonym versteckt den Namen, nicht das Abzeichen.",
+    "Schreib Feedback zu diesem Playtest. Anmeldung ist nötig, damit wir Abzeichen geben und Spam klein halten. Anonym versteckt den Namen, nicht das Abzeichen.",
   feedbackTarget: "Worum geht es?",
   feedbackTargetFree: "Etwas anderes",
   feedbackBody: "Was ist dir aufgefallen?",

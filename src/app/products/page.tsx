@@ -35,7 +35,8 @@ export default async function ProductsPage() {
             <StudioLink
               key={destination.slug}
               href={destination.url}
-              className="panel lift-card p-5 hover:border-brand-red"
+              className="panel tap-card p-5"
+              data-reveal
             >
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                 {destination.category}

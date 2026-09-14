@@ -115,6 +115,24 @@ export async function listPlaytestShares(): Promise<PlaytestShare[]> {
   }));
 }
 
+export async function getPlaytestShare(id: string): Promise<PlaytestShare | null> {
+  if (!isSupabaseConfigured() || !id) return null;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("playtest_shares")
+    .select("*, profiles(*)")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  const badges = await badgesByAuthors([data.author_id]);
+  return {
+    ...(data as PlaytestShare),
+    badges: badges.get(data.author_id) ?? [],
+  };
+}
+
 export async function listProductFeedback(): Promise<ProductFeedback[]> {
   if (!isSupabaseConfigured()) return [];
 
@@ -122,6 +140,24 @@ export async function listProductFeedback(): Promise<ProductFeedback[]> {
   const { data, error } = await supabase
     .from("product_feedback")
     .select("*, profiles(*)")
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  const badges = await badgesByAuthors(data.map((row) => row.author_id));
+  return data.map((row) => ({
+    ...(row as ProductFeedback),
+    badges: badges.get(row.author_id) ?? [],
+  }));
+}
+
+export async function listProductFeedbackForShare(shareId: string): Promise<ProductFeedback[]> {
+  if (!isSupabaseConfigured() || !shareId) return [];
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("product_feedback")
+    .select("*, profiles(*)")
+    .eq("share_id", shareId)
     .order("created_at", { ascending: false });
 
   if (error || !data) return [];

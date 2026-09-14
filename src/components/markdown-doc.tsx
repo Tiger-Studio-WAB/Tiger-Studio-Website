@@ -1,7 +1,7 @@
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { resolveDocHref } from "@/lib/docs";
-import { resolveNewsImage } from "@/lib/news";
+import { prepareMarkdownBody, resolveMarkdownImage } from "@/lib/markdown";
 
 function languageFromPreNode(node: unknown) {
   if (!node || typeof node !== "object" || !("children" in node)) return undefined;
@@ -92,12 +92,12 @@ export function MarkdownDoc({
             const raw = typeof src === "string" ? src : undefined;
             return (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={imageBase ? resolveNewsImage(raw, imageBase) : raw} alt={alt ?? ""} />
+              <img src={resolveMarkdownImage(raw, imageBase)} alt={alt ?? ""} />
             );
           },
         }}
       >
-        {source}
+        {prepareMarkdownBody(source)}
       </Markdown>
     </div>
   );

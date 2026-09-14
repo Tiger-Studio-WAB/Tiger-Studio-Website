@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { MarkdownDoc } from "@/components/markdown-doc";
+import { Reveal } from "@/components/reveal";
 import type { DocPage, DocsTree } from "@/lib/docs";
 import { neighbors } from "@/lib/docs";
 import { fill, type UiCopy } from "@/lib/i18n";
@@ -37,7 +38,7 @@ export function DocsShell({
     : [];
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 py-10 lg:flex-row">
+    <Reveal className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 py-10 lg:flex-row">
       <aside className="lg:w-56 lg:shrink-0">
         <details className="lg:hidden">
           <summary className="cursor-pointer text-sm font-semibold">{copy.docsOnThisSite}</summary>
@@ -63,13 +64,13 @@ export function DocsShell({
         {page.usedFallback ? (
           <p className="mt-3 text-sm text-muted-foreground">{copy.newsFallbackNote}</p>
         ) : null}
-        <article className="panel mt-4 p-6 md:p-8">
-          <MarkdownDoc source={page.body} currentSlug={page.slug} />
+        <article className="panel mt-4 p-6 md:p-8" data-reveal>
+          <MarkdownDoc source={page.body} currentSlug={page.slug} imageBase={page.imageBase} />
           {landing && sections.length ? (
             <div className="mt-10 grid gap-4 md:grid-cols-2">
               {sections.map((section) =>
                 section.href ? (
-                  <Link key={section.label} href={section.href} className="panel lift-card p-5 hover:border-brand-red">
+                  <Link key={section.label} href={section.href} className="panel tap-card p-5" data-reveal>
                     <h2 className="text-lg font-bold italic">{section.label}</h2>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">{section.body}</p>
                   </Link>
@@ -105,6 +106,6 @@ export function DocsShell({
           {page.source === "local" ? copy.docsLocalNote : ""}
         </p>
       </div>
-    </div>
+    </Reveal>
   );
 }

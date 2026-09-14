@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { setLocale } from "@/lib/actions/locale";
-import { LOCALES } from "@/lib/i18n";
+import { LOCALES, type UiCopy } from "@/lib/i18n";
 import type { ContentLanguage } from "@/lib/help-types";
 
 const LABELS: Record<ContentLanguage, string> = {
@@ -11,7 +11,7 @@ const LABELS: Record<ContentLanguage, string> = {
   de: "DE",
 };
 
-export function LanguageToggle({ locale }: { locale: ContentLanguage }) {
+export function LanguageToggle({ locale, copy }: { locale: ContentLanguage; copy?: UiCopy }) {
   const router = useRouter();
 
   async function choose(next: ContentLanguage) {
@@ -21,7 +21,7 @@ export function LanguageToggle({ locale }: { locale: ContentLanguage }) {
   }
 
   return (
-    <div className="lang-picker" role="group" aria-label="Language">
+    <div className="lang-picker" role="group" aria-label={copy?.languagePicker ?? "Language"}>
       {LOCALES.map((item) => (
         <button
           key={item}

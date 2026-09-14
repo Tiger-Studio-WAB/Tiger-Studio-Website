@@ -33,13 +33,14 @@ export default async function HelpResourcesPage() {
                 href={card.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="panel lift-card p-5 hover:border-brand-red"
+                className="panel tap-card p-5"
+                data-reveal
               >
                 <h2 className="text-xl font-bold italic">{card.title}</h2>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">{card.body}</p>
               </a>
             ) : (
-              <Link key={card.href} href={card.href} className="panel lift-card p-5 hover:border-brand-red">
+              <Link key={card.href} href={card.href} className="panel tap-card p-5" data-reveal>
                 <h2 className="text-xl font-bold italic">{card.title}</h2>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">{card.body}</p>
               </Link>

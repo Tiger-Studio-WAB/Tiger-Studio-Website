@@ -12,7 +12,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/help",
     "/help/resources",
     "/help/share",
-    "/help/feedback",
     "/news",
     "/changelog",
     "/destinations",

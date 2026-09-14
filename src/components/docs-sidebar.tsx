@@ -16,7 +16,7 @@ export function DocsSidebar({
       <p className="section-kicker">{copy.docs}</p>
       <Link
         href="/docs"
-        className={`mt-3 block font-semibold ${currentHref === "/docs" ? "text-brand-red" : "hover:text-brand-red"}`}
+        className={`docs-nav-link mt-3 block font-semibold ${currentHref === "/docs" ? "is-active" : ""}`}
       >
         {copy.docsOverview}
       </Link>
@@ -26,8 +26,8 @@ export function DocsSidebar({
             {section.href ? (
               <Link
                 href={section.href}
-                className={`block text-xs font-semibold uppercase tracking-[0.16em] ${
-                  currentHref === section.href ? "text-brand-red" : "text-muted-foreground hover:text-brand-red"
+                className={`docs-nav-link block text-xs font-semibold uppercase tracking-[0.16em] ${
+                  currentHref === section.href ? "is-active" : "text-muted-foreground"
                 }`}
               >
                 {section.label}
@@ -44,8 +44,8 @@ export function DocsSidebar({
                   <li key={page.href}>
                     <Link
                       href={page.href}
-                      className={`block leading-6 ${
-                        currentHref === page.href ? "font-semibold text-brand-red" : "hover:text-brand-red"
+                      className={`docs-nav-link block rounded-[var(--radius-sm)] px-2 py-1 leading-6 ${
+                        currentHref === page.href ? "is-active font-semibold" : ""
                       }`}
                     >
                       {page.sidebarLabel}

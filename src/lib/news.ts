@@ -4,6 +4,7 @@ import { cache } from "react";
 import { NEWS_ORG, NEWS_REPO, fetchNewsRepoSources, fetchRepoFileText } from "@/lib/github";
 import type { ContentLanguage } from "@/lib/help-types";
 import { pickLocalizedText, splitLocaleMarkdownPath } from "@/lib/locale-files";
+import { markdownAssetBase, prepareMarkdownBody } from "@/lib/markdown";
 
 export type NewsFrontmatter = {
   title?: string;
@@ -82,11 +83,11 @@ function allowlistedAuthor(author: string) {
 }
 
 function assetBase(source: "local" | "github", canonical: string) {
-  const folder = canonical.replace(/\\/g, "/").replace(/\.md$/i, "");
-  if (source === "github") {
-    return `https://raw.githubusercontent.com/${NEWS_ORG}/${NEWS_REPO}/main/${folder}`;
-  }
-  return `/api/news-media/${folder}`;
+  return markdownAssetBase(source, canonical, {
+    localPrefix: "/api/news-media",
+    githubBase: `https://raw.githubusercontent.com/${NEWS_ORG}/${NEWS_REPO}/main`,
+    stemFolder: true,
+  });
 }
 
 function firstImage(body: string, imageBase: string) {
@@ -148,7 +149,7 @@ function recordsFromFiles(files: SourceFile[]): NewsRecord[] {
     const { data, body } = parseFrontmatter(file.text);
     const slug = slugFromCanonical(inPosts);
     const current = groups.get(inPosts) ?? { slug, canonical: inPosts, variants: {} };
-    current.variants[locale] = { file, data, body };
+    current.variants[locale] = { file, data, body: prepareMarkdownBody(body) };
     groups.set(inPosts, current);
   }
   return [...groups.values()];
@@ -220,11 +221,7 @@ export async function readLocalNewsAsset(relativePath: string) {
   }
 }
 
-export function resolveNewsImage(src: string | undefined, imageBase: string) {
-  if (!src) return src;
-  if (/^https?:\/\//i.test(src) || src.startsWith("/")) return src;
-  return `${imageBase}/${src.replace(/^\.\//, "")}`;
-}
+export { resolveMarkdownImage as resolveNewsImage } from "@/lib/markdown";
 
 export async function fetchNewsReadme(locale: ContentLanguage) {
   if (locale !== "en") {

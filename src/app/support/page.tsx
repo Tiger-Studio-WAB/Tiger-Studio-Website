@@ -33,7 +33,7 @@ export default async function SupportPage() {
             ) : null}
             {support.body ? (
               <div className="mt-8">
-                <MarkdownDoc source={support.body} />
+                <MarkdownDoc source={support.body} imageBase={support.imageBase} />
               </div>
             ) : null}
             <div className="mt-8 flex flex-wrap gap-3">

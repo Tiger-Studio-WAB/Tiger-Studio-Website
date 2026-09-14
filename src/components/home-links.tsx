@@ -75,7 +75,7 @@ export function HomeLinks({
       className="home-links isolate mx-auto grid w-full max-w-6xl gap-4 px-5 py-12 sm:grid-cols-2 lg:grid-cols-4"
     >
       {links.map((link) => (
-        <Link key={link.href} href={link.href} className="panel lift-card p-5 hover:border-brand-red">
+        <Link key={link.href} href={link.href} className="panel tap-card p-5">
           <h2 className="text-xl font-bold italic">{link.title}</h2>
           <span className="rule-yellow mt-3 w-16" />
           <p className="mt-3 text-sm leading-6 text-muted-foreground">{link.body}</p>

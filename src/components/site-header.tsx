@@ -25,7 +25,7 @@ export function SiteHeader({
   return (
     <header className="sticky top-0 z-40 bg-brand-red text-white">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-3">
-        <Link href="/" className="text-lg font-bold italic text-white">
+        <Link href="/" className="rounded-[var(--radius-sm)] text-lg font-bold italic text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
           {copy.brand}
         </Link>
         <nav className="site-nav flex flex-wrap items-center gap-4 text-sm font-semibold">
@@ -45,7 +45,7 @@ export function SiteHeader({
           ) : (
             <Link href="/login">{copy.signIn}</Link>
           )}
-          <LanguageToggle locale={locale} />
+          <LanguageToggle locale={locale} copy={copy} />
         </nav>
       </div>
     </header>

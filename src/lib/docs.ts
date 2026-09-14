@@ -11,6 +11,7 @@ import {
 } from "@/lib/github";
 import type { ContentLanguage } from "@/lib/help-types";
 import { pickLocalizedText, splitLocaleMarkdownPath, stripLocaleMarkdownSuffix } from "@/lib/locale-files";
+import { markdownAssetBase, prepareMarkdownBody } from "@/lib/markdown";
 
 export type DocFrontmatter = {
   title?: string;
@@ -26,6 +27,7 @@ export type LocalizedDoc = {
   body: string;
   path: string;
   source: "local" | "github";
+  imageBase: string;
 };
 
 export type DocPage = {
@@ -43,6 +45,7 @@ export type DocPage = {
   translations: Partial<Record<ContentLanguage, LocalizedDoc>>;
   locale: ContentLanguage;
   usedFallback: boolean;
+  imageBase: string;
 };
 
 export type DocSection = {
@@ -131,20 +134,29 @@ function hrefFromSlug(slug: string[]) {
 function isStubMarkdown(filePath: string, text: string) {
   const name = filePath.split("/").pop() ?? "";
   if (!/^readme(\.(zh|de))?\.md$/i.test(name) && !/^index(\.(zh|de))?\.md$/i.test(name)) return false;
-  const body = text.replace(/^---[\s\S]*?---/, "").trim();
+  const body = prepareMarkdownBody(text.replace(/^---[\s\S]*?---/, ""));
   return /^(#\s*)?(docs|support)\s*(\r?\n+(docs repository|support repo))?$/i.test(body);
+}
+
+function docsImageBase(source: SourceFile["source"], filePath: string) {
+  return markdownAssetBase(source, filePath, {
+    localPrefix: "/api/docs-media",
+    githubBase: `https://raw.githubusercontent.com/${STUDIO_ORG}/${DOCS_REPO}/main`,
+  });
 }
 
 function localizedFromSource(filePath: string, text: string, source: SourceFile["source"], fallback: string): LocalizedDoc {
   const { data, body } = parseFrontmatter(text);
-  const title = data.title || titleFromMarkdown(body, fallback);
+  const cleaned = prepareMarkdownBody(body);
+  const title = data.title || titleFromMarkdown(cleaned, fallback);
   return {
     title,
     description: data.description,
     sidebarLabel: data.sidebar_label || title,
-    body,
+    body: cleaned,
     path: filePath.replace(/\\/g, "/"),
     source,
+    imageBase: docsImageBase(source, filePath),
   };
 }
 
@@ -169,6 +181,7 @@ function pageFromEnglish(file: SourceFile, translations: Partial<Record<ContentL
     translations,
     locale: "en",
     usedFallback: false,
+    imageBase: english.imageBase,
   };
 }
 
@@ -369,6 +382,7 @@ export function localizePage(page: DocPage, locale: ContentLanguage): DocPage {
     body: next.body,
     path: next.path,
     source: next.source,
+    imageBase: next.imageBase,
     locale: picked.locale,
     usedFallback: picked.usedFallback,
   };
@@ -419,10 +433,21 @@ export async function getSupportPage(locale: ContentLanguage = "en") {
     githubUrl: `https://github.com/${STUDIO_ORG}/${SUPPORT_REPO}`,
     issuesUrl: `https://github.com/${STUDIO_ORG}/${SUPPORT_REPO}/issues/new`,
     issuesListUrl: `https://github.com/${STUDIO_ORG}/${SUPPORT_REPO}/issues`,
-    body: stub ? null : readme,
+    body: stub ? null : prepareMarkdownBody(readme),
     path: usedPath,
+    imageBase: `https://raw.githubusercontent.com/${STUDIO_ORG}/${SUPPORT_REPO}/main`,
     usedFallback: Boolean(readme && locale !== "en" && !localized),
   };
+}
+
+export async function readLocalDocsAsset(relativePath: string) {
+  const cleaned = relativePath.replace(/\\/g, "/").replace(/^\/+/, "");
+  if (!cleaned || cleaned.includes("..")) return null;
+  try {
+    return await readFile(path.join(LOCAL_DOCS, cleaned));
+  } catch {
+    return null;
+  }
 }
 
 export function studioRepoUrl(name: string) {
