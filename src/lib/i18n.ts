@@ -77,6 +77,11 @@ export type UiCopy = {
   homeAboutBody: string;
   homeJoinBody: string;
   homeHelpBody: string;
+  valuesKicker: string;
+  motto: string;
+  valueMake: string;
+  valueShip: string;
+  valueShare: string;
   productsKicker: string;
   productsTitle: string;
   productsLede: string;
@@ -304,6 +309,11 @@ const en: UiCopy = {
   homeAboutBody: "What Tiger Studio is, and how the hub works.",
   homeJoinBody: "Post ideas, reply, and ship with the club.",
   homeHelpBody: "Playtests, feedback, docs, and support in one place.",
+  valuesKicker: "Core values",
+  motto: "Make, ship, share",
+  valueMake: "Make",
+  valueShip: "Ship",
+  valueShare: "Share",
   productsKicker: "Products",
   productsTitle: "What the studio ships",
   productsLede: "Public repositories, the ideas board, and the websites those projects point to.",
@@ -550,6 +560,11 @@ const zh: UiCopy = {
   homeAboutBody: "Tiger Studio 是什么，以及这个站点怎么用。",
   homeJoinBody: "发布想法、回复，并一起把作品做出来。",
   homeHelpBody: "试玩、反馈、文档和支持都在这里。",
+  valuesKicker: "核心价值",
+  motto: "制作、发布、分享",
+  valueMake: "制作",
+  valueShip: "发布",
+  valueShare: "分享",
   productsKicker: "产品",
   productsTitle: "社团在做的东西",
   productsLede: "公开仓库、想法板，以及这些项目指向的网站。",
@@ -787,6 +802,11 @@ const de: UiCopy = {
   homeAboutBody: "Was Tiger Studio ist und wie der Hub funktioniert.",
   homeJoinBody: "Ideen posten, antworten und mit dem Club shippen.",
   homeHelpBody: "Testspiele, Notizen, Dokumente und Support an einem Ort.",
+  valuesKicker: "Grundwerte",
+  motto: "Machen, shippen, teilen",
+  valueMake: "Machen",
+  valueShip: "Shippen",
+  valueShare: "Teilen",
   productsKicker: "Produkte",
   productsTitle: "Was das Studio veröffentlicht",
   productsLede: "Öffentliche Repos, das Ideenboard und die Websites, auf die die Projekte zeigen.",

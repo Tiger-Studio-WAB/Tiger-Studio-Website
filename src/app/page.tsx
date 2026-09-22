@@ -1,6 +1,7 @@
 import { HomeLinks } from "@/components/home-links";
+import { HomeStory } from "@/components/home-story";
 import { OrbitHero } from "@/components/orbit-hero";
-import { getHub } from "@/lib/hub";
+import { clubProductDestinations, getHub } from "@/lib/hub";
 import { getCopy } from "@/lib/locale";
 import { site } from "@/lib/site";
 
@@ -17,12 +18,13 @@ export default async function HomePage() {
         commitCount={hub.commitCount}
         copy={copy}
       />
+      <HomeStory copy={copy} products={clubProductDestinations(hub.destinations)} />
       <HomeLinks
         links={[
-          { href: "/products", title: copy.products, body: copy.homeProductsBody },
-          { href: "/about", title: copy.about, body: copy.homeAboutBody },
           { href: "/join", title: copy.join, body: copy.homeJoinBody },
           { href: "/help", title: copy.help, body: copy.homeHelpBody },
+          { href: "/news", title: copy.news, body: copy.resourcesNewsBody },
+          { href: "/docs", title: copy.docs, body: copy.aboutDocs },
         ]}
       />
     </>
