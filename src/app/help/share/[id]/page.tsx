@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { BadgeRow } from "@/components/badge-row";
 import { EmptyState } from "@/components/empty-state";
 import { FeedbackForm } from "@/components/feedback-form";
@@ -12,6 +12,7 @@ import { getSessionUser } from "@/lib/auth";
 import { getPlaytestShare, listProductFeedbackForShare } from "@/lib/data";
 import { authorLabel } from "@/lib/display-name";
 import { getCopy } from "@/lib/locale";
+import { withLocale } from "@/lib/paths";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 type Props = {
@@ -31,14 +32,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function HelpShareDetailPage({ params, searchParams }: Props) {
   const { id } = await params;
   const { error, ok } = await searchParams;
-  const [{ copy }, user, share, feedback] = await Promise.all([
+  const [{ copy, locale }, user, share, feedback] = await Promise.all([
     getCopy(),
     getSessionUser(),
     getPlaytestShare(id),
     listProductFeedbackForShare(id),
   ]);
   const configured = isSupabaseConfigured();
-  const nextPath = `/help/share/${id}`;
+  const nextPath = withLocale(`/help/share/${id}`, locale);
 
   if (!share) {
     return (

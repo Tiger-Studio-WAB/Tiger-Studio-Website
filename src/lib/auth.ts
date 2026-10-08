@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { isAllowedMember } from "@/lib/domain";
+import { getLocale, getRequestPath, localizedPath } from "@/lib/locale";
+import { withLocale } from "@/lib/paths";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import type { Profile } from "@/lib/help-types";
@@ -37,7 +39,9 @@ export async function getSessionUser() {
 export async function requireSessionUser() {
   const user = await getSessionUser();
   if (!user) {
-    redirect("/login");
+    const [locale, path] = await Promise.all([getLocale(), getRequestPath()]);
+    const back = withLocale(path, locale);
+    redirect(await localizedPath(`/login?next=${encodeURIComponent(back)}`));
   }
   return user;
 }

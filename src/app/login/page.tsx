@@ -3,6 +3,7 @@ import { GitHubSignIn } from "@/components/github-sign-in";
 import { MicrosoftSignIn } from "@/components/microsoft-sign-in";
 import { PageShell } from "@/components/page-shell";
 import { getCopy } from "@/lib/locale";
+import { withLocale } from "@/lib/paths";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 export const metadata: Metadata = {
@@ -15,8 +16,9 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<{ next?: string }>;
 }) {
-  const { next } = await searchParams;
-  const { copy } = await getCopy();
+  const { next: requested } = await searchParams;
+  const { copy, locale } = await getCopy();
+  const next = requested && requested.startsWith("/") ? requested : withLocale("/ideas", locale);
   const configured = isSupabaseConfigured();
 
   return (

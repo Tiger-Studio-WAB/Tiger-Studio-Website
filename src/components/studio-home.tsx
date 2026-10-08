@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { fill, type UiCopy } from "@/lib/i18n";
 
 function formatCount(value: number) {
@@ -133,11 +133,11 @@ export function StudioHome({
       <section className="band bg-mist">
         <div className="mx-auto w-full max-w-6xl px-6">
           <h2 className="text-center">{copy.aboutHowTitle}</h2>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-12 grid gap-10 md:grid-cols-2">
             {cards.map((card) => (
               <Link key={card.href} href={card.href} className="studio-card">
                 <div className="relative h-44">
-                  <Image src={card.image} alt={card.alt} fill sizes="(min-width: 1280px) 25vw, 50vw" className="object-cover" />
+                  <Image src={card.image} alt={card.alt} fill sizes="(min-width: 768px) 42vw, 100vw" className="object-cover" />
                 </div>
                 <div className="flex flex-1 flex-col p-6">
                   <h3 className="text-[1.35rem] leading-snug">{card.title}</h3>

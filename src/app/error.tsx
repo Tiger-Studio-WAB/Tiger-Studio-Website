@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 
 export default function ErrorPage({
   error,

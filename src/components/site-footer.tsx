@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { nav } from "@/lib/content";
 import type { ContentLanguage } from "@/lib/help-types";
 import type { UiCopy } from "@/lib/i18n";

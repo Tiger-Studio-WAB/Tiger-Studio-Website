@@ -1,15 +1,14 @@
-import Link from "next/link";
+import { LanguageMenu } from "@/components/language-menu";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { SiteNav } from "@/components/site-nav";
-import type { ContentLanguage, Profile } from "@/lib/help-types";
+import type { Profile } from "@/lib/help-types";
 import type { UiCopy } from "@/lib/i18n";
 
 export function SiteHeader({
   copy,
-  locale,
   profile,
 }: {
   copy: UiCopy;
-  locale: ContentLanguage;
   profile: Profile | null;
 }) {
   return (
@@ -24,7 +23,12 @@ export function SiteHeader({
           </span>
           <span className="text-lg font-semibold tracking-wide">{copy.brand}</span>
         </Link>
-        <SiteNav copy={copy} locale={locale} profile={profile} />
+        <SiteNav
+          copy={copy}
+          profile={profile}
+          language={<LanguageMenu label={copy.languagePicker} />}
+          menuLanguage={<LanguageMenu label={copy.languagePicker} />}
+        />
       </div>
     </header>
   );

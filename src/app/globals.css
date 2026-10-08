@@ -160,7 +160,7 @@ a.orbit-box {
   min-height: 2.85rem;
   padding: 0.8rem 1.55rem;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: 0.45rem;
   font-size: 1rem;
   font-weight: 600;
   line-height: 1;
@@ -660,42 +660,71 @@ a.orbit-box {
   letter-spacing: 0.04em;
 }
 
-.lang-picker {
-  display: inline-flex;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: #fff;
+.lang-menu {
+  position: relative;
 }
 
-.lang-picker button {
-  min-height: 1.85rem;
-  padding: 0.2rem 0.6rem;
-  font-size: 0.72rem;
+.lang-menu summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2rem;
+  padding: 0 0.15rem;
+  list-style: none;
+  cursor: pointer;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--ink);
 }
 
-.lang-picker button[aria-pressed="true"] {
-  background: var(--brand-red);
-  color: #fff;
+.lang-menu summary::-webkit-details-marker {
+  display: none;
 }
 
-.lang-picker button:hover,
-.lang-picker button:focus-visible {
-  background: var(--mist);
+.lang-menu summary::after {
+  content: "";
+  width: 0.35rem;
+  height: 0.35rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-1px) rotate(45deg);
+}
+
+.lang-menu summary:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+.lang-menu-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.35rem);
+  z-index: 60;
+  min-width: 6.5rem;
+  padding: 0.3rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  box-shadow: 0 10px 24px rgba(14, 32, 52, 0.1);
+}
+
+.lang-menu-panel a {
+  display: block;
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.3rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   color: var(--ink);
 }
 
-.lang-picker button[aria-pressed="true"]:hover,
-.lang-picker button[aria-pressed="true"]:focus-visible {
-  background: var(--brand-red);
-  color: #fff;
+.lang-menu-panel a[aria-current="true"] {
+  color: var(--brand-red);
 }
 
-.lang-picker button:focus-visible {
-  outline: 2px solid var(--brand-blue);
-  outline-offset: -2px;
+.lang-menu-panel a:hover,
+.lang-menu-panel a:focus-visible {
+  background: var(--mist);
 }
 
 .pointer-card,

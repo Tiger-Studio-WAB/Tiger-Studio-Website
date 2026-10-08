@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { PageShell } from "@/components/page-shell";
 import {
   oauthHint,

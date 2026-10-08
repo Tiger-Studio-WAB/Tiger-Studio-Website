@@ -1,22 +1,24 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
-import { LanguageToggle } from "@/components/language-toggle";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { SignOutButton } from "@/components/sign-out-button";
 import { nav } from "@/lib/content";
-import type { ContentLanguage, Profile } from "@/lib/help-types";
+import type { Profile } from "@/lib/help-types";
 import type { UiCopy } from "@/lib/i18n";
+import { stripLocalePath } from "@/lib/paths";
 
 export function SiteNav({
   copy,
-  locale,
   profile,
+  language,
+  menuLanguage,
 }: {
   copy: UiCopy;
-  locale: ContentLanguage;
   profile: Profile | null;
+  language: ReactNode;
+  menuLanguage: ReactNode;
 }) {
   const pathname = usePathname();
   const [openPath, setOpenPath] = useState<string | null>(null);
@@ -60,7 +62,8 @@ export function SiteNav({
   }, [open]);
 
   function active(href: string) {
-    return pathname === href || pathname.startsWith(`${href}/`);
+    const current = stripLocalePath(pathname);
+    return current === href || current.startsWith(`${href}/`);
   }
 
   return (
@@ -82,7 +85,7 @@ export function SiteNav({
             </Link>
           )}
         </div>
-        <LanguageToggle locale={locale} copy={copy} />
+        {language}
         <button
           type="button"
           className="site-menu-button"
@@ -98,10 +101,13 @@ export function SiteNav({
         <div id={panelId} className="site-menu-overlay" role="dialog" aria-modal="true" aria-label={copy.menu}>
           <div className="flex h-[4.75rem] items-center justify-between">
             <p className="text-lg font-semibold tracking-wide">{copy.brand}</p>
-            <button ref={closeRef} type="button" className="site-menu-button" onClick={() => setOpenPath(null)}>
-              <span className="sr-only">{copy.menu}</span>
-              <CloseIcon />
-            </button>
+            <div className="flex items-center gap-2">
+              {menuLanguage}
+              <button ref={closeRef} type="button" className="site-menu-button" onClick={() => setOpenPath(null)}>
+                <span className="sr-only">{copy.menu}</span>
+                <CloseIcon />
+              </button>
+            </div>
           </div>
           <nav className="mt-2" aria-label="Primary">
             {items.map((item) => (

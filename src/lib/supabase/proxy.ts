@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isAllowedMember } from "@/lib/domain";
+import { LOCALE_HEADER, PATH_HEADER, localeFromPathname, stripLocalePath, withLocale } from "@/lib/paths";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
 
 function isProtectedPath(pathname: string) {
@@ -10,17 +11,36 @@ function isProtectedPath(pathname: string) {
 }
 
 export async function updateSession(request: NextRequest) {
-  const env = getSupabasePublicEnv();
-  if (!env) {
-    if (isProtectedPath(request.nextUrl.pathname)) {
-      const login = new URL("/login", request.url);
-      login.searchParams.set("next", request.nextUrl.pathname);
-      return NextResponse.redirect(login);
-    }
-    return NextResponse.next({ request });
+  const visiblePath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+  const locale = localeFromPathname(request.nextUrl.pathname);
+  const stripped = stripLocalePath(request.nextUrl.pathname);
+
+  function continueResponse() {
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set(LOCALE_HEADER, locale);
+    requestHeaders.set(PATH_HEADER, `${stripped}${request.nextUrl.search}`);
+    const init = { request: { headers: requestHeaders } };
+    if (locale === "en") return NextResponse.next(init);
+    const dest = request.nextUrl.clone();
+    dest.pathname = stripped;
+    return NextResponse.rewrite(dest, init);
   }
 
-  let supabaseResponse = NextResponse.next({ request });
+  function redirectTo(path: string) {
+    return NextResponse.redirect(new URL(withLocale(path, locale), request.url));
+  }
+
+  if (!getSupabasePublicEnv()) {
+    if (isProtectedPath(stripped)) {
+      const login = new URL(withLocale("/login", locale), request.url);
+      login.searchParams.set("next", visiblePath);
+      return NextResponse.redirect(login);
+    }
+    return continueResponse();
+  }
+
+  const env = getSupabasePublicEnv()!;
+  let supabaseResponse = continueResponse();
 
   const supabase = createServerClient(env.url, env.key, {
     cookies: {
@@ -29,7 +49,7 @@ export async function updateSession(request: NextRequest) {
       },
       setAll(cookiesToSet, headers) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        supabaseResponse = NextResponse.next({ request });
+        supabaseResponse = continueResponse();
         cookiesToSet.forEach(({ name, value, options }) =>
           supabaseResponse.cookies.set(name, value, options),
         );
@@ -52,23 +72,22 @@ export async function updateSession(request: NextRequest) {
 
   const signedIn = Boolean(claims);
   const allowed = signedIn && isAllowedMember(email, provider);
-  const pathname = request.nextUrl.pathname;
 
   if (signedIn && !allowed) {
     await supabase.auth.signOut();
-    const errorUrl = new URL("/auth/error", request.url);
+    const errorUrl = new URL(withLocale("/auth/error", locale), request.url);
     errorUrl.searchParams.set("reason", "domain");
     return NextResponse.redirect(errorUrl);
   }
 
-  if (isProtectedPath(pathname) && !allowed) {
-    const login = new URL("/login", request.url);
-    login.searchParams.set("next", pathname);
+  if (isProtectedPath(stripped) && !allowed) {
+    const login = new URL(withLocale("/login", locale), request.url);
+    login.searchParams.set("next", visiblePath);
     return NextResponse.redirect(login);
   }
 
-  if (pathname === "/login" && allowed) {
-    return NextResponse.redirect(new URL("/ideas", request.url));
+  if ((stripped === "/login" || request.nextUrl.pathname === "/login") && allowed) {
+    return redirectTo("/ideas");
   }
 
   return supabaseResponse;
