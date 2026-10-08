@@ -4,7 +4,7 @@
   "private": true,
   "description": "Public hub for Tiger Studio, a student passion club. News, changelogs, and destinations point to other websites.",
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "next dev",
