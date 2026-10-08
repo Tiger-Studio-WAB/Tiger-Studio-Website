@@ -26,29 +26,22 @@ export default async function NewsPage() {
         {posts.length === 0 ? (
           <EmptyState title={copy.newsEmptyTitle} body={copy.newsEmptyBody} />
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="mx-auto flex max-w-3xl flex-col gap-10">
             {posts.map((post) => (
-              <Link
-                key={post.slug}
-                href={post.href}
-                className="panel tap-card block overflow-hidden"
-                data-reveal
-              >
-                <SoftImage src={post.cover} alt="" className="h-44 w-full object-cover" />
-                <div className="p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              <Link key={post.slug} href={post.href} className="studio-card" data-reveal>
+                <SoftImage src={post.cover} alt="" className="h-72 w-full object-cover" />
+                <div className="p-7 md:p-8">
+                  <p className="text-sm font-semibold text-brand-red">
                     {post.date} · {copy.newsBy} {post.author}
                   </p>
-                  <h2 className="mt-3 text-2xl font-bold italic">{post.title}</h2>
+                  <h2 className="mt-3 text-[1.7rem] leading-snug">{post.title}</h2>
                   {post.summary ? (
-                    <p className="mt-3 text-sm leading-7 text-muted-foreground">{post.summary}</p>
+                    <p className="mt-3 text-base leading-7 text-muted-foreground">{post.summary}</p>
                   ) : null}
                   {post.usedFallback ? (
-                    <p className="mt-3 text-xs text-muted-foreground">{copy.newsFallbackNote}</p>
+                    <p className="mt-3 text-sm text-muted-foreground">{copy.newsFallbackNote}</p>
                   ) : null}
-                  <p className="mt-4 text-sm font-semibold text-brand-red">
-                    {copy.newsRead} →
-                  </p>
+                  <span className="btn btn-outline mt-6">{copy.newsRead}</span>
                 </div>
               </Link>
             ))}

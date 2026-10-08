@@ -28,19 +28,20 @@ export default async function NewsArticlePage({ params }: Props) {
 
   return (
     <PageShell>
-      <Link href="/news" className="text-sm font-semibold text-brand-red hover:underline">
-        ← {copy.newsBack}
-      </Link>
-      <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-        {post.date} · {copy.newsBy} {post.author}
-      </p>
-      <h1 className="mt-3 text-4xl font-bold italic">{post.title}</h1>
-      <span className="rule-yellow mt-4" />
-      {post.usedFallback ? (
-        <p className="mt-4 text-sm text-muted-foreground">{copy.newsFallbackNote}</p>
-      ) : null}
-      <article className="panel mt-8 p-6 md:p-8">
-        <MarkdownDoc source={post.body} imageBase={post.imageBase} omitHeading={post.title} />
+      <article className="mx-auto max-w-3xl">
+        <Link href="/news" className="text-sm font-semibold text-brand-red hover:underline">
+          ← {copy.newsBack}
+        </Link>
+        <p className="mt-6 text-sm font-semibold text-brand-red">
+          {post.date} · {copy.newsBy} {post.author}
+        </p>
+        <h1 className="mt-3 text-[clamp(2.1rem,4vw,3rem)] leading-[1.15]">{post.title}</h1>
+        {post.usedFallback ? (
+          <p className="mt-4 text-sm text-muted-foreground">{copy.newsFallbackNote}</p>
+        ) : null}
+        <div className="mt-8">
+          <MarkdownDoc source={post.body} imageBase={post.imageBase} omitHeading={post.title} />
+        </div>
       </article>
     </PageShell>
   );
