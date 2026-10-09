@@ -8,7 +8,7 @@ export function PageShell({
   className?: string;
 }) {
   return (
-    <Reveal className={`mx-auto w-full max-w-6xl px-5 py-10 ${className ?? ""}`}>
+    <Reveal className={`mx-auto w-full max-w-6xl px-6 py-14 md:py-16 ${className ?? ""}`}>
       {children}
     </Reveal>
   );

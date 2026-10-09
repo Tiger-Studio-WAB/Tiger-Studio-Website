@@ -2,7 +2,9 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { SoftImage } from "@/components/soft-image";
 import { resolveDocHref } from "@/lib/docs";
+import { getLocale } from "@/lib/locale";
 import { omitMatchingTitleHeading, prepareMarkdownBody, resolveMarkdownImage } from "@/lib/markdown";
+import { withLocale } from "@/lib/paths";
 
 function languageFromPreNode(node: unknown) {
   if (!node || typeof node !== "object" || !("children" in node)) return undefined;
@@ -61,7 +63,7 @@ function MarkdownPre({
   );
 }
 
-export function MarkdownDoc({
+export async function MarkdownDoc({
   source,
   currentSlug = [],
   imageBase,
@@ -72,6 +74,7 @@ export function MarkdownDoc({
   imageBase?: string;
   omitHeading?: string;
 }) {
+  const locale = await getLocale();
   return (
     <div className="prose-docs">
       <Markdown
@@ -79,7 +82,8 @@ export function MarkdownDoc({
         components={{
           pre: MarkdownPre,
           a: ({ href, children }) => {
-            const next = resolveDocHref(href, currentSlug) ?? href;
+            const resolved = resolveDocHref(href, currentSlug) ?? href;
+            const next = resolved?.startsWith("/") ? withLocale(resolved, locale) : resolved;
             return (
               <a
                 href={next}

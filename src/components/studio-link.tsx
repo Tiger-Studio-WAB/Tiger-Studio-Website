@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { hostname } from "@/lib/format";
 
 export function isInternalHref(href: string) {

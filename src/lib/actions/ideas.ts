@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireSessionUser } from "@/lib/auth";
+import { localizedPath } from "@/lib/locale";
+import { allLocalePaths } from "@/lib/paths";
 import { awardBadge } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import { IDEA_CATEGORIES, type ContentLanguage, type IdeaCategory } from "@/lib/help-types";
@@ -28,7 +30,7 @@ export async function createIdea(formData: FormData) {
   const sourceLanguage = asLanguage(formData.get("source_language"));
 
   if (title.length < 3 || body.length < 10) {
-    redirect("/ideas/new?error=validation");
+    redirect(await localizedPath("/ideas/new?error=validation"));
   }
 
   const supabase = await createClient();
@@ -46,11 +48,12 @@ export async function createIdea(formData: FormData) {
     .single();
 
   if (error || !data) {
-    redirect("/ideas/new?error=save");
+    redirect(await localizedPath("/ideas/new?error=save"));
   }
 
-  revalidatePath("/ideas");
-  redirect(`/ideas/${data.id}`);
+  for (const path of allLocalePaths("/ideas")) revalidatePath(path);
+  for (const path of allLocalePaths(`/ideas/${data.id}`)) revalidatePath(path);
+  redirect(await localizedPath(`/ideas/${data.id}`));
 }
 
 export type CreateResponseState = {
@@ -89,7 +92,7 @@ export async function createResponse(
     await awardBadge(user.id, "helpful_reply");
   }
 
-  revalidatePath(`/ideas/${ideaId}`);
-  revalidatePath("/me");
+  for (const path of allLocalePaths(`/ideas/${ideaId}`)) revalidatePath(path);
+  for (const path of allLocalePaths("/me")) revalidatePath(path);
   return { ok: true };
 }

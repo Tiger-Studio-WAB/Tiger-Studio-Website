@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { MarkdownDoc } from "@/components/markdown-doc";
 import { Reveal } from "@/components/reveal";

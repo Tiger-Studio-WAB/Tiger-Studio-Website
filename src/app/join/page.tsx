@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { GitHubSignIn } from "@/components/github-sign-in";
 import { MicrosoftSignIn } from "@/components/microsoft-sign-in";
 import { PageHero } from "@/components/page-hero";
 import { PageShell } from "@/components/page-shell";
 import { getSessionUser } from "@/lib/auth";
 import { getCopy } from "@/lib/locale";
+import { withLocale } from "@/lib/paths";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { site } from "@/lib/site";
 
@@ -15,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function JoinPage() {
-  const [{ copy }, user] = await Promise.all([getCopy(), getSessionUser()]);
+  const [{ copy, locale }, user] = await Promise.all([getCopy(), getSessionUser()]);
   const configured = isSupabaseConfigured();
 
   return (
@@ -48,10 +49,10 @@ export default async function JoinPage() {
                 </Link>
               ) : (
                 <>
-                  <GitHubSignIn label={copy.signInGitHub} nextPath="/ideas" disabled={!configured} />
+                  <GitHubSignIn label={copy.signInGitHub} nextPath={withLocale("/ideas", locale)} disabled={!configured} />
                   <MicrosoftSignIn
                     label={copy.signInMicrosoft}
-                    nextPath="/ideas"
+                    nextPath={withLocale("/ideas", locale)}
                     disabled={!configured}
                   />
                 </>

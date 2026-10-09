@@ -1,67 +1,34 @@
-import Link from "next/link";
-import { LanguageToggle } from "@/components/language-toggle";
-import { SignOutButton } from "@/components/sign-out-button";
-import { nav } from "@/lib/content";
+import { LanguageMenu } from "@/components/language-menu";
+import { LocaleLink as Link } from "@/components/locale-link";
+import { SiteNav } from "@/components/site-nav";
+import type { Profile } from "@/lib/help-types";
 import type { UiCopy } from "@/lib/i18n";
-import type { ContentLanguage, Profile } from "@/lib/help-types";
 
 export function SiteHeader({
   copy,
-  locale,
   profile,
 }: {
   copy: UiCopy;
-  locale: ContentLanguage;
   profile: Profile | null;
 }) {
-  const labels: Record<(typeof nav)[number]["href"], string> = {
-    "/products": copy.products,
-    "/about": copy.about,
-    "/join": copy.join,
-    "/docs": copy.docs,
-    "/help": copy.help,
-  };
-
-  const links = nav.map((item) => (
-    <Link key={item.href} href={item.href}>
-      {labels[item.href]}
-    </Link>
-  ));
-
   return (
-    <header className="sticky top-0 z-40 bg-brand-red text-white">
-      <div className="site-header-bar mx-auto w-full max-w-6xl px-5 py-3">
+    <header className="site-header sticky top-0 z-40">
+      <div className="site-header-bar mx-auto flex w-full max-w-6xl items-center px-5">
         <Link
           href="/"
-          className="shrink-0 rounded-[var(--radius-sm)] text-lg font-bold italic text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          className="flex shrink-0 items-center gap-2.5 rounded-md text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-blue"
         >
-          {copy.brand}
+          <span className="brand-mark" aria-hidden="true">
+            T
+          </span>
+          <span className="text-lg font-semibold tracking-wide">{copy.brand}</span>
         </Link>
-        <nav className="site-nav site-nav-desktop items-center gap-4 text-sm font-semibold">
-          {links}
-          {profile ? (
-            <>
-              <Link href="/ideas">{copy.ideas}</Link>
-              <Link href="/me">{copy.myBoard}</Link>
-            </>
-          ) : null}
-        </nav>
-        <div className="site-header-tools text-sm font-semibold">
-          {profile ? <SignOutButton label={copy.signOut} /> : <Link href="/login">{copy.signIn}</Link>}
-          <LanguageToggle locale={locale} copy={copy} />
-          <details className="site-menu">
-            <summary>{copy.menu}</summary>
-            <div className="site-menu-panel site-nav text-sm font-semibold">
-              {links}
-              {profile ? (
-                <>
-                  <Link href="/ideas">{copy.ideas}</Link>
-                  <Link href="/me">{copy.myBoard}</Link>
-                </>
-              ) : null}
-            </div>
-          </details>
-        </div>
+        <SiteNav
+          copy={copy}
+          profile={profile}
+          language={<LanguageMenu label={copy.languagePicker} />}
+          menuLanguage={<LanguageMenu label={copy.languagePicker} />}
+        />
       </div>
     </header>
   );

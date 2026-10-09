@@ -3,6 +3,7 @@
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { authErrorPath, OAUTH_NEXT_COOKIE, safeNextPath } from "@/lib/auth-flow";
+import { localizedPath } from "@/lib/locale";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
@@ -29,7 +30,7 @@ async function startOAuth(
   formData?: FormData,
 ) {
   if (!isSupabaseConfigured()) {
-    redirect(authErrorPath("setup"));
+    redirect(await localizedPath(authErrorPath("setup")));
   }
 
   const headerStore = await headers();
@@ -49,7 +50,7 @@ async function startOAuth(
   });
 
   if (error || !data.url) {
-    redirect(authErrorPath("oauth", error?.message ?? `${provider} sign-in did not start`));
+    redirect(await localizedPath(authErrorPath("oauth", error?.message ?? `${provider} sign-in did not start`)));
   }
 
   redirect(data.url);
@@ -64,11 +65,12 @@ export async function signInWithMicrosoft(formData?: FormData) {
 }
 
 export async function signOut() {
+  const home = await localizedPath("/");
   if (!isSupabaseConfigured()) {
-    redirect("/");
+    redirect(home);
   }
 
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/");
+  redirect(home);
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { BadgeRow } from "@/components/badge-row";
 import { PageHero } from "@/components/page-hero";
 import { PageShell } from "@/components/page-shell";

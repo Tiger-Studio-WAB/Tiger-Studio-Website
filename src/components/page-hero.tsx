@@ -1,44 +1,20 @@
-"use client";
-
-import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(useGSAP);
+import type { ReactNode } from "react";
 
 type Props = {
   kicker?: string;
-  title: React.ReactNode;
+  title: ReactNode;
   lede?: string;
 };
 
 export function PageHero({ kicker, title, lede }: Props) {
-  const rootRef = useRef<HTMLElement>(null);
-
-  useGSAP(
-    () => {
-      const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-        tl.from(".hero-kicker", { y: 8, autoAlpha: 0, duration: 0.32 })
-          .from(".hero-title", { y: 12, autoAlpha: 0, duration: 0.4 }, "-=0.18")
-          .from(".hero-rule", { scaleX: 0, transformOrigin: "left center", duration: 0.32 }, "-=0.22")
-          .from(".hero-lede", { y: 10, autoAlpha: 0, duration: 0.34 }, "-=0.18");
-      });
-      return () => mm.revert();
-    },
-    { scope: rootRef },
-  );
-
   return (
-    <header ref={rootRef} className="hero-grid text-white">
-      <div className="mx-auto max-w-6xl px-5 py-14 md:py-20">
-        {kicker ? (
-          <p className="hero-kicker text-xs font-semibold uppercase tracking-[0.18em] text-white/70">{kicker}</p>
+    <header className="page-band">
+      <div className="mx-auto max-w-3xl px-6 py-16 text-center md:py-24">
+        {kicker ? <p className="hero-kicker text-sm font-semibold text-brand-red">{kicker}</p> : null}
+        <h1 className="hero-title mt-3 text-[clamp(2.15rem,4.2vw,3.35rem)] font-bold leading-[1.15]">{title}</h1>
+        {lede ? (
+          <p className="hero-lede mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">{lede}</p>
         ) : null}
-        <h1 className="hero-title mt-3 max-w-4xl text-4xl font-bold italic leading-[1.1] md:text-6xl">{title}</h1>
-        <span className="hero-rule rule-yellow mt-4" />
-        {lede ? <p className="hero-lede mt-6 max-w-2xl text-lg leading-relaxed text-white/90">{lede}</p> : null}
       </div>
     </header>
   );

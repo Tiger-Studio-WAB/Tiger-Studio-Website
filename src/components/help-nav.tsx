@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { LocaleLink as Link } from "@/components/locale-link";
 import type { UiCopy } from "@/lib/i18n";
+import { stripLocalePath } from "@/lib/paths";
 
 gsap.registerPlugin(useGSAP);
 
@@ -19,7 +20,7 @@ const items = [
 ] as const;
 
 export function HelpNav({ copy }: { copy: UiCopy }) {
-  const pathname = usePathname();
+  const pathname = stripLocalePath(usePathname());
   const rootRef = useRef<HTMLElement>(null);
 
   useGSAP(

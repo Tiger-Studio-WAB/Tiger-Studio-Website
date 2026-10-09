@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Geist } from "next/font/google";
 import { Noto_Sans_SC } from "next/font/google";
+import { LocaleProvider } from "@/components/locale-context";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { CodeCopyListener } from "@/components/code-copy-listener";
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#d72316",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
@@ -64,15 +65,17 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       className={`${geistSans.variable} ${notoSansSc.variable} h-full`}
     >
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
-        <a className="skip-link" href="#main">
-          {copy.skipToMain}
-        </a>
-        <CodeCopyListener />
-        <SiteHeader copy={copy} locale={locale} profile={profile} />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <SiteFooter copy={copy} locale={locale} />
+        <LocaleProvider locale={locale}>
+          <a className="skip-link" href="#main">
+            {copy.skipToMain}
+          </a>
+          <CodeCopyListener />
+          <SiteHeader copy={copy} profile={profile} />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <SiteFooter copy={copy} locale={locale} />
+        </LocaleProvider>
       </body>
     </html>
   );

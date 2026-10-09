@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { BadgeRow } from "@/components/badge-row";
 import { authorLabel } from "@/lib/display-name";
 import type { PlaytestShare } from "@/lib/help-types";

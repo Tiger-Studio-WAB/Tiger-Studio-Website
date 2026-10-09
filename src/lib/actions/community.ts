@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireSessionUser } from "@/lib/auth";
+import { localizedPath } from "@/lib/locale";
+import { allLocalePaths } from "@/lib/paths";
 import { awardBadge, getPlaytestShare } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import { safeHttpUrl } from "@/lib/urls";
@@ -10,6 +12,16 @@ import { safeHttpUrl } from "@/lib/urls";
 function sharePath(shareId?: string, query?: string) {
   const base = shareId ? `/help/share/${shareId}` : "/help/share";
   return query ? `${base}?${query}` : base;
+}
+
+async function go(path: string): Promise<never> {
+  redirect(await localizedPath(path));
+}
+
+function refreshPaths(paths: string[]) {
+  for (const path of paths) {
+    for (const variant of allLocalePaths(path)) revalidatePath(variant);
+  }
 }
 
 export async function createPlaytestShare(formData: FormData) {
@@ -22,7 +34,7 @@ export async function createPlaytestShare(formData: FormData) {
   const link = rawLink ? safeHttpUrl(rawLink) : null;
 
   if (title.length < 3 || whatToTry.length < 10 || (rawLink && !link)) {
-    redirect("/help/share?error=validation");
+    return go("/help/share?error=validation");
   }
 
   const supabase = await createClient();
@@ -40,15 +52,12 @@ export async function createPlaytestShare(formData: FormData) {
     .maybeSingle();
 
   if (error) {
-    redirect("/help/share?error=save");
+    return go("/help/share?error=save");
   }
 
   await awardBadge(user.id, "first_playtest");
-  revalidatePath("/help");
-  revalidatePath("/help/share");
-  if (data?.id) revalidatePath(`/help/share/${data.id}`);
-  revalidatePath("/me");
-  redirect(data?.id ? sharePath(data.id, "ok=1") : "/help/share?ok=1");
+  refreshPaths(["/help", "/help/share", ...(data?.id ? [`/help/share/${data.id}`] : []), "/me"]);
+  return go(data?.id ? sharePath(data.id, "ok=1") : "/help/share?ok=1");
 }
 
 export async function createProductFeedback(formData: FormData) {
@@ -58,12 +67,12 @@ export async function createProductFeedback(formData: FormData) {
   const isAnonymous = formData.get("is_anonymous") === "on";
 
   if (!shareId || body.length < 10) {
-    redirect(sharePath(shareId || undefined, "error=validation"));
+    return go(sharePath(shareId || undefined, "error=validation"));
   }
 
   const share = await getPlaytestShare(shareId);
   if (!share) {
-    redirect(sharePath(shareId, "error=save"));
+    return go(sharePath(shareId, "error=save"));
   }
 
   const supabase = await createClient();
@@ -76,13 +85,10 @@ export async function createProductFeedback(formData: FormData) {
   });
 
   if (error) {
-    redirect(sharePath(share.id, "error=save"));
+    return go(sharePath(share.id, "error=save"));
   }
 
   await awardBadge(user.id, "first_feedback");
-  revalidatePath("/help");
-  revalidatePath("/help/share");
-  revalidatePath(`/help/share/${share.id}`);
-  revalidatePath("/me");
-  redirect(sharePath(share.id, "ok=1"));
+  refreshPaths(["/help", "/help/share", `/help/share/${share.id}`, "/me"]);
+  return go(sharePath(share.id, "ok=1"));
 }

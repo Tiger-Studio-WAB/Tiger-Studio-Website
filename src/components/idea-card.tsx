@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import type { UiCopy } from "@/lib/i18n";
 import type { Idea, IdeaCategory } from "@/lib/help-types";
 

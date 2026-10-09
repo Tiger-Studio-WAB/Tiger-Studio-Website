@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { authErrorPath, OAUTH_NEXT_COOKIE, safeNextPath } from "@/lib/auth-flow";
+import { localeFromPathname, withLocale } from "@/lib/paths";
 import { isAllowedMember } from "@/lib/domain";
 import { createClient } from "@/lib/supabase/server";
 
@@ -18,16 +19,18 @@ export async function GET(request: Request) {
   );
   cookieStore.delete(OAUTH_NEXT_COOKIE);
 
+  const locale = localeFromPathname(next);
+
   if (!code) {
     return NextResponse.redirect(
-      `${origin}${authErrorPath("oauth", oauthError ?? "GitHub did not return an auth code")}`,
+      `${origin}${withLocale(authErrorPath("oauth", oauthError ?? "GitHub did not return an auth code"), locale)}`,
     );
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
-    return NextResponse.redirect(`${origin}${authErrorPath("oauth", error.message)}`);
+    return NextResponse.redirect(`${origin}${withLocale(authErrorPath("oauth", error.message), locale)}`);
   }
 
   const { data } = await supabase.auth.getUser();
@@ -36,7 +39,7 @@ export async function GET(request: Request) {
 
   if (!isAllowedMember(email, provider)) {
     await supabase.auth.signOut();
-    return NextResponse.redirect(`${origin}${authErrorPath("domain")}`);
+    return NextResponse.redirect(`${origin}${withLocale(authErrorPath("domain"), locale)}`);
   }
 
   const forwardedHost = request.headers.get("x-forwarded-host");

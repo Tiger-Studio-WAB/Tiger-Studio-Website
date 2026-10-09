@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { IdeaForm } from "@/components/idea-form";
 import { PageShell } from "@/components/page-shell";
 import { requireSessionUser } from "@/lib/auth";

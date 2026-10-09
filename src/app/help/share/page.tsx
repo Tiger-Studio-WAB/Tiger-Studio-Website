@@ -9,7 +9,8 @@ import { ShareForm } from "@/components/share-form";
 import { SharePreview } from "@/components/share-preview";
 import { getSessionUser } from "@/lib/auth";
 import { listPlaytestShares } from "@/lib/data";
-import { getCopy } from "@/lib/locale";
+import { getCopy, localizedPath } from "@/lib/locale";
+import { withLocale } from "@/lib/paths";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -23,9 +24,9 @@ export default async function HelpSharePage({
   searchParams: Promise<{ error?: string; ok?: string; share_id?: string }>;
 }) {
   const { error, ok, share_id } = await searchParams;
-  if (share_id) redirect(`/help/share/${share_id}`);
+  if (share_id) redirect(await localizedPath(`/help/share/${share_id}`));
 
-  const [{ copy }, user, shares] = await Promise.all([getCopy(), getSessionUser(), listPlaytestShares()]);
+  const [{ copy, locale }, user, shares] = await Promise.all([getCopy(), getSessionUser(), listPlaytestShares()]);
   const configured = isSupabaseConfigured();
 
   return (
@@ -42,8 +43,8 @@ export default async function HelpSharePage({
             ) : (
               <div className="space-y-4">
                 <p className="text-sm leading-7">{copy.shareNeedSignIn}</p>
-                <GitHubSignIn label={copy.signInGitHub} nextPath="/help/share" disabled={!configured} />
-                <MicrosoftSignIn label={copy.signInMicrosoft} nextPath="/help/share" disabled={!configured} />
+                <GitHubSignIn label={copy.signInGitHub} nextPath={withLocale("/help/share", locale)} disabled={!configured} />
+                <MicrosoftSignIn label={copy.signInMicrosoft} nextPath={withLocale("/help/share", locale)} disabled={!configured} />
                 {!configured ? <p className="text-sm text-brand-red">{copy.setupNeeded}</p> : null}
               </div>
             )}

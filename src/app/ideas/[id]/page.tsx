@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/page-shell";
 import { ResponseForm } from "@/components/response-form";

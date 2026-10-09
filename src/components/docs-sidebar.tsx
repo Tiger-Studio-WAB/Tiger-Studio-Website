@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/locale-link";
 import type { DocsTree } from "@/lib/docs";
 import type { UiCopy } from "@/lib/i18n";
 

@@ -1,5 +1,4 @@
-import { HomeLinks } from "@/components/home-links";
-import { OrbitHero } from "@/components/orbit-hero";
+import { StudioHome } from "@/components/studio-home";
 import { getHub } from "@/lib/hub";
 import { getCopy } from "@/lib/locale";
 import { site } from "@/lib/site";
@@ -10,20 +9,11 @@ export default async function HomePage() {
   return (
     <>
       <JsonLd />
-      <OrbitHero
-        languages={hub.languageStats}
-        recentCommits={hub.recentCommits}
-        pullRequestCount={hub.pullRequestCount}
-        commitCount={hub.commitCount}
+      <StudioHome
         copy={copy}
-      />
-      <HomeLinks
-        links={[
-          { href: "/products", title: copy.products, body: copy.homeProductsBody },
-          { href: "/about", title: copy.about, body: copy.homeAboutBody },
-          { href: "/join", title: copy.join, body: copy.homeJoinBody },
-          { href: "/help", title: copy.help, body: copy.homeHelpBody },
-        ]}
+        motto={site.motto}
+        commitCount={hub.commitCount}
+        pullRequestCount={hub.pullRequestCount}
       />
     </>
   );
